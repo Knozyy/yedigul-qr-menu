@@ -80,7 +80,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   const categories = useMemo(
     () => CATEGORIES.map((c) => ({ id: c.id, label: localize(c, lang) })),
-    [lang]
+    [CATEGORIES, lang]
   );
 
   // stacked sections (normal browsing) — drops categories emptied by filters
@@ -90,7 +90,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       title: localize(c, lang),
       items: ITEMS.filter((it) => it.cat === c.id && passesDiet(it, gf, veg)).map((it) => mapItem(it, lang, ui)),
     })).filter((s) => s.items.length > 0);
-  }, [lang, gf, veg, ui]);
+  }, [CATEGORIES, ITEMS, lang, gf, veg, ui]);
 
   const sectionIds = useMemo(() => sections.map((s) => s.id), [sections]);
   const { active: activeCat, register, scrollTo } = useScrollSpy(
@@ -109,7 +109,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         (localize(it.name, lang).toLowerCase().includes(needle) ||
           localize(it.desc, lang).toLowerCase().includes(needle))
     ).map((it) => mapItem(it, lang, ui));
-  }, [q, gf, veg, lang, ui]);
+  }, [ITEMS, q, gf, veg, lang, ui]);
 
   // favorites (flat)
   const favResults = useMemo(
@@ -117,7 +117,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       ITEMS.filter((it) => favorites.includes(it.id) && passesDiet(it, gf, veg)).map((it) =>
         mapItem(it, lang, ui)
       ),
-    [favorites, gf, veg, lang, ui]
+    [ITEMS, favorites, gf, veg, lang, ui]
   );
 
   const sheet = useMemo(() => {
@@ -138,7 +138,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       allergens: allergens && allergens.length ? allergens.join(' · ') : ui.noAlg,
       tags: buildTags(sel, ui),
     };
-  }, [selectedId, lang, ui]);
+  }, [ITEMS, CATEGORIES, selectedId, lang, ui]);
 
   // category chip click — leave search/fav mode then scroll to the section
   const onSelectCategory = useCallback(
