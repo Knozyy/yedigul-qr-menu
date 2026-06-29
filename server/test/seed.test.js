@@ -30,3 +30,17 @@ test('seed is idempotent', () => {
   const second = db.prepare('SELECT COUNT(*) n FROM products').get().n;
   assert.equal(first, second, 'second seed does not duplicate');
 });
+
+test('seed maps a known product row field-for-field', () => {
+  const db = openDb(':memory:');
+  seed(db);
+  const fava = db.prepare('SELECT * FROM products WHERE id = ?').get('fava');
+  assert.equal(fava.category_id, 'cold');
+  assert.equal(fava.name_tr, 'Fava');
+  assert.equal(fava.name_en, 'Broad Bean Purée');
+  assert.equal(fava.price, 240);
+  assert.equal(fava.is_market_price, 0);
+  assert.equal(fava.is_available, 1);
+  assert.equal(fava.popular, 1);
+  assert.deepEqual(JSON.parse(fava.diet), ['gf', 'veg']);
+});
