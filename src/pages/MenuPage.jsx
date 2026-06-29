@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CATEGORIES, ITEMS, UI } from '../data/menu';
+import { UI } from '../data/menu';
+import { useMenu } from '../context/MenuContext';
 import { getThemeVars } from '../lib/theme';
 import { getTableNumber, readStorage, writeStorage } from '../lib/storage';
 import useScrollSpy from '../lib/useScrollSpy';
@@ -38,6 +39,7 @@ const passesDiet = (it, gf, veg) => {
 };
 
 export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
+  const { categories: CATEGORIES, items: ITEMS, loading } = useMenu();
   const [lang, setLang] = useState(() => readStorage('lang', defaultLang === 'en' ? 'en' : 'tr'));
   const [dark, setDark] = useState(() => readStorage('dark', !!defaultDark));
   const [favorites, setFavorites] = useState(() => readStorage('favorites', []));
@@ -160,6 +162,14 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   }, [mode, pendingScroll, scrollTo]);
 
   const themeVars = getThemeVars(dark, accent);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0b1422', color: '#92A3C0' }}>
+        {ui.loading}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex justify-center font-inter" style={{ background: '#0b1422' }}>
