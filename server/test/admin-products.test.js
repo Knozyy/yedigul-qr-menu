@@ -85,3 +85,24 @@ test('PATCH unknown product returns 404', async () => {
   });
   assert.equal(res.status, 404);
 });
+
+test('PATCH with price and is_market_price together nulls the price', async () => {
+  const res = await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH',
+    headers: auth(),
+    body: JSON.stringify({ price: 999, is_market_price: 1 }),
+  });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.is_market_price, 1);
+  assert.equal(body.price, null);
+});
+
+test('PATCH to a non-existent category returns 400 not 500', async () => {
+  const res = await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH',
+    headers: auth(),
+    body: JSON.stringify({ category_id: 'does-not-exist' }),
+  });
+  assert.equal(res.status, 400);
+});

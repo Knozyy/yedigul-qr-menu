@@ -37,32 +37,36 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const cat = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.category_id);
     if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
     const id = b.id || randomUUID().slice(0, 8);
-    db.prepare(
-      `INSERT INTO products
-        (id, category_id, name_tr, name_en, desc_tr, desc_en, price, is_market_price,
-         image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort)
-       VALUES
-        (@id, @category_id, @name_tr, @name_en, @desc_tr, @desc_en, @price, @is_market_price,
-         NULL, @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort)`
-    ).run({
-      id,
-      category_id: b.category_id,
-      name_tr: b.name_tr,
-      name_en: b.name_en,
-      desc_tr: b.desc_tr ?? '',
-      desc_en: b.desc_en ?? '',
-      price: b.is_market_price ? null : (b.price ?? null),
-      is_market_price: b.is_market_price ? 1 : 0,
-      is_available: b.is_available === 0 ? 0 : 1,
-      popular: b.popular ? 1 : 0,
-      chef: b.chef ? 1 : 0,
-      diet: JSON.stringify(b.diet ?? []),
-      ing_tr: JSON.stringify(b.ing_tr ?? []),
-      ing_en: JSON.stringify(b.ing_en ?? []),
-      alg_tr: JSON.stringify(b.alg_tr ?? []),
-      alg_en: JSON.stringify(b.alg_en ?? []),
-      sort: b.sort ?? 0,
-    });
+    try {
+      db.prepare(
+        `INSERT INTO products
+          (id, category_id, name_tr, name_en, desc_tr, desc_en, price, is_market_price,
+           image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort)
+         VALUES
+          (@id, @category_id, @name_tr, @name_en, @desc_tr, @desc_en, @price, @is_market_price,
+           NULL, @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort)`
+      ).run({
+        id,
+        category_id: b.category_id,
+        name_tr: b.name_tr,
+        name_en: b.name_en,
+        desc_tr: b.desc_tr ?? '',
+        desc_en: b.desc_en ?? '',
+        price: b.is_market_price ? null : (b.price ?? null),
+        is_market_price: b.is_market_price ? 1 : 0,
+        is_available: b.is_available === 0 ? 0 : 1,
+        popular: b.popular ? 1 : 0,
+        chef: b.chef ? 1 : 0,
+        diet: JSON.stringify(b.diet ?? []),
+        ing_tr: JSON.stringify(b.ing_tr ?? []),
+        ing_en: JSON.stringify(b.ing_en ?? []),
+        alg_tr: JSON.stringify(b.alg_tr ?? []),
+        alg_en: JSON.stringify(b.alg_en ?? []),
+        sort: b.sort ?? 0,
+      });
+    } catch {
+      return res.status(400).json({ error: 'Geçersiz veri (örn. kategori bulunamadı)' });
+    }
     res.status(201).json(getProduct(db, id));
   });
 
@@ -80,11 +84,17 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       sets.push(`${f} = @${f}`);
       params[f] = v;
     }
+    // Piyasa Fiyatı invariant: market price => price NULL (explicit, not order-dependent)
     if ('is_market_price' in b && b.is_market_price) {
-      sets.push('price = NULL');
+      params.price = null;
+      if (!sets.includes('price = @price')) sets.push('price = @price');
     }
     if (sets.length) {
-      db.prepare(`UPDATE products SET ${sets.join(', ')} WHERE id = @id`).run(params);
+      try {
+        db.prepare(`UPDATE products SET ${sets.join(', ')} WHERE id = @id`).run(params);
+      } catch {
+        return res.status(400).json({ error: 'Geçersiz veri (örn. kategori bulunamadı)' });
+      }
     }
     res.json(getProduct(db, req.params.id));
   });
