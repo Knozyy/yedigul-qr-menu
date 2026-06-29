@@ -7,6 +7,7 @@ export function createApp({ db, uploadsDir, auth }) {
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
+  if (uploadsDir) app.use('/uploads', express.static(uploadsDir));
   app.use('/api/menu', createMenuRouter(db));
   if (auth) {
     app.use('/api/auth', auth.router);

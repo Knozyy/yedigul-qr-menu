@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
+import multer from 'multer';
+import { extname, join } from 'node:path';
+import { existsSync, unlinkSync } from 'node:fs';
 
 const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en'];
 const PRODUCT_FIELDS = [
@@ -22,6 +25,25 @@ function getProduct(db, id) {
 export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   const router = Router();
   router.use(requireAuth);
+
+  const ALLOWED = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
+  const upload = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => cb(null, uploadsDir),
+      filename: (req, file, cb) =>
+        cb(null, `${req.params.id}-${Date.now()}${ALLOWED[file.mimetype] || extname(file.originalname)}`),
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => cb(null, !!ALLOWED[file.mimetype]),
+  });
+
+  function removeImageFile(url) {
+    if (!url) return;
+    const p = join(uploadsDir, url.replace('/uploads/', ''));
+    if (existsSync(p)) {
+      try { unlinkSync(p); } catch { /* dosya yoksa yok say */ }
+    }
+  }
 
   router.get('/menu', (req, res) => {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort').all();
@@ -146,6 +168,27 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     if (count > 0) return res.status(409).json({ error: 'Kategoride ürün var, önce ürünleri taşı/sil' });
     db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
     res.status(204).end();
+  });
+
+  router.post('/products/:id/image', (req, res) => {
+    const existing = db.prepare('SELECT image_url FROM products WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    upload.single('image')(req, res, (err) => {
+      if (err) return res.status(400).json({ error: 'Yükleme hatası: ' + err.message });
+      if (!req.file) return res.status(400).json({ error: 'Geçersiz dosya (jpg/png/webp, ≤5MB)' });
+      removeImageFile(existing.image_url);
+      const url = `/uploads/${req.file.filename}`;
+      db.prepare('UPDATE products SET image_url = ? WHERE id = ?').run(url, req.params.id);
+      res.json(getProduct(db, req.params.id));
+    });
+  });
+
+  router.delete('/products/:id/image', (req, res) => {
+    const existing = db.prepare('SELECT image_url FROM products WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    removeImageFile(existing.image_url);
+    db.prepare('UPDATE products SET image_url = NULL WHERE id = ?').run(req.params.id);
+    res.json(getProduct(db, req.params.id));
   });
 
   return router;
