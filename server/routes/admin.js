@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
 import multer from 'multer';
-import { extname, join } from 'node:path';
+import { resolve, sep } from 'node:path';
 import { existsSync, unlinkSync } from 'node:fs';
 
 const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en'];
@@ -31,7 +31,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     storage: multer.diskStorage({
       destination: (req, file, cb) => cb(null, uploadsDir),
       filename: (req, file, cb) =>
-        cb(null, `${req.params.id}-${Date.now()}${ALLOWED[file.mimetype] || extname(file.originalname)}`),
+        cb(null, `${req.params.id}-${Date.now()}${ALLOWED[file.mimetype]}`),
     }),
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => cb(null, !!ALLOWED[file.mimetype]),
@@ -39,9 +39,12 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
 
   function removeImageFile(url) {
     if (!url) return;
-    const p = join(uploadsDir, url.replace('/uploads/', ''));
-    if (existsSync(p)) {
-      try { unlinkSync(p); } catch { /* dosya yoksa yok say */ }
+    const root = resolve(uploadsDir);
+    const target = resolve(uploadsDir, url.replace('/uploads/', ''));
+    // refuse to touch anything outside uploadsDir (path-traversal guard)
+    if (target !== root && !target.startsWith(root + sep)) return;
+    if (existsSync(target)) {
+      try { unlinkSync(target); } catch { /* dosya yoksa/erişilemezse yok say */ }
     }
   }
 

@@ -1,8 +1,8 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { openDb } from '../db.js';
 import { seed } from '../seed.js';
 import { createApp } from '../app.js';
@@ -65,4 +65,23 @@ test('DELETE image clears image_url', async () => {
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.equal(body.image_url, null);
+});
+
+test('image delete refuses to unlink files outside uploadsDir', async () => {
+  const sentinel = join(tmpdir(), `yedigul-sentinel-${Date.now()}.txt`);
+  writeFileSync(sentinel, 'keep me');
+  const rel = relative(uploadsDir, sentinel).split(sep).join('/');
+  // point a product's image_url at a path escaping uploadsDir via traversal
+  await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH',
+    headers: { cookie, 'content-type': 'application/json' },
+    body: JSON.stringify({ image_url: `/uploads/${rel}` }),
+  });
+  // trigger removeImageFile through the delete-image route
+  const res = await fetch(`${base}/api/admin/products/fava/image`, {
+    method: 'DELETE', headers: { cookie },
+  });
+  assert.equal(res.status, 200);
+  assert.ok(existsSync(sentinel), 'file outside uploadsDir must NOT be deleted');
+  unlinkSync(sentinel);
 });
