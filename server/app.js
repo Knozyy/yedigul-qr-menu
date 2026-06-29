@@ -7,6 +7,7 @@ export function createApp({ db, uploadsDir, auth }) {
   app.use(express.json());
   app.use(cookieParser());
   app.use('/api/menu', createMenuRouter(db));
+  if (auth) app.use('/api/auth', auth.router);
   // auth ve admin route'ları sonraki task'larda eklenir
   app.set('appDeps', { db, uploadsDir, auth });
   return app;
