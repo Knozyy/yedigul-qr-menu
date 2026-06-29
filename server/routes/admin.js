@@ -105,5 +105,48 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     res.status(204).end();
   });
 
+  router.post('/categories', (req, res) => {
+    const b = req.body ?? {};
+    if (!b.id || !b.name_tr || !b.name_en) {
+      return res.status(400).json({ error: 'id, name_tr, name_en zorunlu' });
+    }
+    const exists = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.id);
+    if (exists) return res.status(409).json({ error: 'Bu id zaten var' });
+    db.prepare(
+      `INSERT INTO categories (id, name_tr, name_en, sort, is_active)
+       VALUES (@id, @name_tr, @name_en, @sort, @is_active)`
+    ).run({
+      id: b.id, name_tr: b.name_tr, name_en: b.name_en,
+      sort: b.sort ?? 0, is_active: b.is_active === 0 ? 0 : 1,
+    });
+    res.status(201).json(db.prepare('SELECT * FROM categories WHERE id = ?').get(b.id));
+  });
+
+  router.patch('/categories/:id', (req, res) => {
+    const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Kategori bulunamadı' });
+    const b = req.body ?? {};
+    const sets = [];
+    const params = { id: req.params.id };
+    for (const f of ['name_tr', 'name_en', 'sort', 'is_active']) {
+      if (!(f in b)) continue;
+      sets.push(`${f} = @${f}`);
+      params[f] = f === 'is_active' ? (b[f] ? 1 : 0) : b[f];
+    }
+    if (sets.length) {
+      db.prepare(`UPDATE categories SET ${sets.join(', ')} WHERE id = @id`).run(params);
+    }
+    res.json(db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id));
+  });
+
+  router.delete('/categories/:id', (req, res) => {
+    const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Kategori bulunamadı' });
+    const count = db.prepare('SELECT COUNT(*) n FROM products WHERE category_id = ?').get(req.params.id).n;
+    if (count > 0) return res.status(409).json({ error: 'Kategoride ürün var, önce ürünleri taşı/sil' });
+    db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
+    res.status(204).end();
+  });
+
   return router;
 }
