@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 # backend
-server/data.db
+server/data.db*
 server/uploads/
 .env
