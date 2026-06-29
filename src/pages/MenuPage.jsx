@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { CATEGORIES, ITEMS, UI } from './data/menu';
-import { getThemeVars } from './lib/theme';
-import { getTableNumber, readStorage, writeStorage } from './lib/storage';
-import useScrollSpy from './lib/useScrollSpy';
-import Header from './components/Header';
-import CategoryBar from './components/CategoryBar';
-import SearchFilters from './components/SearchFilters';
-import ProductList from './components/ProductList';
-import MenuSections from './components/MenuSections';
-import BottomSheet from './components/BottomSheet';
+import { useParams } from 'react-router-dom';
+import { CATEGORIES, ITEMS, UI } from '../data/menu';
+import { getThemeVars } from '../lib/theme';
+import { getTableNumber, readStorage, writeStorage } from '../lib/storage';
+import useScrollSpy from '../lib/useScrollSpy';
+import Header from '../components/Header';
+import CategoryBar from '../components/CategoryBar';
+import SearchFilters from '../components/SearchFilters';
+import ProductList from '../components/ProductList';
+import MenuSections from '../components/MenuSections';
+import BottomSheet from '../components/BottomSheet';
 
 const localize = (field, lang) => (field ? field[lang] : '');
 
@@ -36,7 +37,7 @@ const passesDiet = (it, gf, veg) => {
   return true;
 };
 
-export default function App({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
+export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
   const [lang, setLang] = useState(() => readStorage('lang', defaultLang === 'en' ? 'en' : 'tr'));
   const [dark, setDark] = useState(() => readStorage('dark', !!defaultDark));
   const [favorites, setFavorites] = useState(() => readStorage('favorites', []));
@@ -50,7 +51,8 @@ export default function App({ defaultLang = 'tr', defaultDark = false, accent = 
 
   const stickyRef = useRef(null);
   const ui = UI[lang];
-  const tableNumber = useMemo(() => getTableNumber(), []);
+  const { id: routeTable } = useParams();
+  const tableNumber = useMemo(() => routeTable || getTableNumber(), [routeTable]);
 
   // persist preferences
   useEffect(() => writeStorage('lang', lang), [lang]);
