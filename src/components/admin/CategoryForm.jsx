@@ -33,6 +33,16 @@ export default function CategoryForm({ categories, onChanged }) {
     }
   }
 
+  async function onToggleActive(cat, next) {
+    setError('');
+    try {
+      await api.patch(`/admin/categories/${cat.id}`, { is_active: next });
+      onChanged();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3 p-4 rounded-xl border mb-4" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
       <form onSubmit={onAdd} className="flex flex-col gap-2">
@@ -45,12 +55,24 @@ export default function CategoryForm({ categories, onChanged }) {
       </form>
       {error && <span className="text-sm" style={{ color: '#ef6b6b' }}>{error}</span>}
       <ul className="flex flex-col gap-1">
-        {categories.map((c) => (
-          <li key={c.id} className="flex items-center justify-between text-sm" style={{ color: 'var(--text)' }}>
-            <span>{c.name_tr} <span style={{ color: 'var(--muted)' }}>({c.id})</span></span>
-            <button onClick={() => onDelete(c.id)} style={{ color: '#ef6b6b' }} className="text-[12px]">Sil</button>
-          </li>
-        ))}
+        {categories.map((c) => {
+          const active = c.is_active === 1;
+          return (
+            <li key={c.id} className="flex items-center justify-between text-sm" style={{ color: 'var(--text)', opacity: active ? 1 : 0.55 }}>
+              <span>{c.name_tr} <span style={{ color: 'var(--muted)' }}>({c.id})</span></span>
+              <span className="flex items-center gap-3">
+                <button
+                  onClick={() => onToggleActive(c, active ? 0 : 1)}
+                  className="text-[11px] px-2.5 py-1 rounded-full border whitespace-nowrap"
+                  style={{ borderColor: 'var(--border-strong)', color: active ? 'var(--gold)' : 'var(--muted)' }}
+                >
+                  {active ? 'Aktif' : 'Pasif'}
+                </button>
+                <button onClick={() => onDelete(c.id)} style={{ color: '#ef6b6b' }} className="text-[12px]">Sil</button>
+              </span>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

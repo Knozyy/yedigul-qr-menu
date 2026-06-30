@@ -50,3 +50,23 @@ test('DELETE empty category succeeds', async () => {
   });
   assert.equal(res.status, 204);
 });
+
+test('PATCH is_active=0 hides the category and its products from the public menu', async () => {
+  const before = await (await fetch(`${base}/api/menu`)).json();
+  assert.ok(before.categories.some((c) => c.id === 'cold'), 'cold is visible initially');
+
+  const patch = await fetch(`${base}/api/admin/categories/cold`, {
+    method: 'PATCH', headers: h(),
+    body: JSON.stringify({ is_active: 0 }),
+  });
+  assert.equal(patch.status, 200);
+
+  const after = await (await fetch(`${base}/api/menu`)).json();
+  assert.ok(!after.categories.some((c) => c.id === 'cold'), 'cold category hidden');
+  assert.ok(!after.products.some((p) => p.cat === 'cold'), 'cold products hidden');
+
+  // reactivate so other tests are unaffected
+  await fetch(`${base}/api/admin/categories/cold`, {
+    method: 'PATCH', headers: h(), body: JSON.stringify({ is_active: 1 }),
+  });
+});
