@@ -14,7 +14,7 @@ export function openDb(path) {
     );
     CREATE TABLE IF NOT EXISTS products (
       id              TEXT PRIMARY KEY,
-      category_id     TEXT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+      category_id     TEXT NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
       name_tr         TEXT NOT NULL,
       name_en         TEXT NOT NULL,
       desc_tr         TEXT NOT NULL DEFAULT '',
