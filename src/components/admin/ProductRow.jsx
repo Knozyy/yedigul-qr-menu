@@ -1,0 +1,31 @@
+export default function ProductRow({ product, onToggleAvailable, onEdit }) {
+  const priceLabel = product.is_market_price ? 'Piyasa Fiyatı' : `${product.price ?? '—'} TL`;
+  const active = product.is_available === 1;
+  return (
+    <div
+      className="flex items-center gap-3 p-3 rounded-xl border"
+      style={{ background: 'var(--surface)', borderColor: 'var(--border)', opacity: active ? 1 : 0.55 }}
+    >
+      <div className="flex-1 min-w-0">
+        <div className="font-outfit text-[15px] font-semibold truncate" style={{ color: 'var(--text)' }}>
+          {product.name_tr}
+        </div>
+        <div className="text-[12px]" style={{ color: 'var(--gold)' }}>{priceLabel}</div>
+      </div>
+      <button
+        onClick={() => onToggleAvailable(product, active ? 0 : 1)}
+        className="text-[11px] px-2.5 py-1 rounded-full border whitespace-nowrap"
+        style={{ borderColor: 'var(--border-strong)', color: active ? 'var(--gold)' : 'var(--muted)' }}
+      >
+        {active ? 'Aktif' : 'Pasif'}
+      </button>
+      <button
+        onClick={() => onEdit(product)}
+        className="text-[12px] px-3 py-1.5 rounded-lg font-medium"
+        style={{ background: 'var(--gold-tint)', color: 'var(--gold)' }}
+      >
+        Düzenle
+      </button>
+    </div>
+  );
+}
