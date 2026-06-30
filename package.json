@@ -10,7 +10,8 @@
     "start": "node server/index.js",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test:server": "node --test server/test/*.test.js"
+    "test:server": "node --test server/test/*.test.js",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "better-sqlite3": "^12.11.1",
