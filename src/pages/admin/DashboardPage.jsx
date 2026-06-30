@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getThemeVars } from '../../lib/theme';
 import { api } from '../../lib/api';
 import ProductRow from '../../components/admin/ProductRow';
+import ProductForm from '../../components/admin/ProductForm';
 
 export default function DashboardPage() {
   const { logout } = useAuth();
@@ -13,6 +14,7 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
+  const [editing, setEditing] = useState(null); // ürün objesi | 'new' | null
 
   const reload = useCallback(async () => {
     try {
@@ -35,10 +37,7 @@ export default function DashboardPage() {
     }
   }, [reload]);
 
-  const onEdit = useCallback((product) => {
-    // Task 14'te form açılır
-    console.log('edit', product.id);
-  }, []);
+  const onEdit = useCallback((product) => setEditing(product), []);
 
   async function onLogout() {
     await logout();
@@ -55,7 +54,26 @@ export default function DashboardPage() {
           </button>
         </header>
         {error && <p className="text-sm mb-2" style={{ color: '#ef6b6b' }}>{error}</p>}
-        {categories.map((cat) => (
+
+        {editing ? (
+          <ProductForm
+            product={editing === 'new' ? null : editing}
+            categories={categories}
+            onSaved={() => reload()}
+            onCancel={() => setEditing(null)}
+            onDeleted={() => { setEditing(null); reload(); }}
+          />
+        ) : (
+          <button
+            onClick={() => setEditing('new')}
+            className="mb-4 px-4 py-2 rounded-lg font-semibold"
+            style={{ background: 'var(--gold)', color: '#fff' }}
+          >
+            + Yeni ürün
+          </button>
+        )}
+
+        {!editing && categories.map((cat) => (
           <section key={cat.id} className="mb-5">
             <h2 className="font-outfit text-sm font-semibold mb-2" style={{ color: 'var(--muted)' }}>
               {cat.name_tr}
