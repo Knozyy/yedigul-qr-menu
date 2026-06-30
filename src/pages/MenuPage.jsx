@@ -175,7 +175,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   return (
     <div className="min-h-screen flex justify-center font-inter" style={{ background: '#0b1422' }}>
-      <div style={themeVars}>
+      <div className="w-full max-w-[468px]" style={themeVars}>
         <div
           className="w-full max-w-[468px] mx-auto min-h-screen flex flex-col relative"
           style={{ background: 'var(--bg)', color: 'var(--text)', boxShadow: '0 0 90px rgba(0,0,0,.55)' }}
