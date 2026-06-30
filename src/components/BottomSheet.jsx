@@ -43,17 +43,27 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
 
           <div className="px-[22px] pt-1.5 pb-[26px]">
             <div className="relative">
-              <div
-                className="w-full h-[170px] rounded-[18px] flex items-center justify-center text-center border"
-                style={{
-                  background: 'repeating-linear-gradient(135deg, var(--thumb-a) 0 8px, var(--thumb-b) 8px 16px)',
-                  borderColor: 'var(--border)',
-                }}
-              >
-                <span className="font-outfit text-[11px] font-semibold tracking-[.22em]" style={{ color: 'var(--thumb-ink)' }}>
-                  {sheet.thumb}
-                </span>
-              </div>
+              {sheet.image ? (
+                <img
+                  src={sheet.image}
+                  alt={sheet.name}
+                  className="w-full h-[170px] rounded-[18px] object-cover border"
+                  style={{ borderColor: 'var(--border)' }}
+                  loading="lazy"
+                />
+              ) : (
+                <div
+                  className="w-full h-[170px] rounded-[18px] flex items-center justify-center text-center border"
+                  style={{
+                    background: 'repeating-linear-gradient(135deg, var(--thumb-a) 0 8px, var(--thumb-b) 8px 16px)',
+                    borderColor: 'var(--border)',
+                  }}
+                >
+                  <span className="font-outfit text-[11px] font-semibold tracking-[.22em]" style={{ color: 'var(--thumb-ink)' }}>
+                    {sheet.thumb}
+                  </span>
+                </div>
+              )}
               <button
                 onClick={() => onToggleFav(sheet.id)}
                 aria-label="favorite"

@@ -29,18 +29,28 @@ export default function ProductCard({ item, onClick, isFav, onToggleFav }) {
       style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: '0 3px 14px var(--shadow)' }}
     >
       <div className="relative flex-none w-[72px] h-[72px]">
-        <div
-          className="w-full h-full rounded-[13px] flex items-center justify-center text-center p-1 border"
-          style={{
-            background:
-              'repeating-linear-gradient(135deg, var(--thumb-a) 0 6px, var(--thumb-b) 6px 12px)',
-            borderColor: 'var(--border)',
-          }}
-        >
-          <span className="font-outfit text-[8.5px] font-semibold tracking-[.18em]" style={{ color: 'var(--thumb-ink)' }}>
-            {item.thumb}
-          </span>
-        </div>
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full rounded-[13px] object-cover border"
+            style={{ borderColor: 'var(--border)' }}
+            loading="lazy"
+          />
+        ) : (
+          <div
+            className="w-full h-full rounded-[13px] flex items-center justify-center text-center p-1 border"
+            style={{
+              background:
+                'repeating-linear-gradient(135deg, var(--thumb-a) 0 6px, var(--thumb-b) 6px 12px)',
+              borderColor: 'var(--border)',
+            }}
+          >
+            <span className="font-outfit text-[8.5px] font-semibold tracking-[.18em]" style={{ color: 'var(--thumb-ink)' }}>
+              {item.thumb}
+            </span>
+          </div>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation();
