@@ -12,8 +12,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3001;
 const DB_PATH = process.env.DB_PATH || join(__dirname, 'data.db');
 const UPLOADS_DIR = process.env.UPLOADS_DIR || join(__dirname, 'uploads');
-const SECRET = process.env.JWT_SECRET || 'change-me-in-env';
+const DEFAULT_SECRET = 'change-me-in-env';
+const SECRET = process.env.JWT_SECRET || DEFAULT_SECRET;
 const PASSWORD = process.env.ADMIN_PASSWORD || '';
+const IS_PROD = process.env.NODE_ENV === 'production';
+
+if (SECRET === DEFAULT_SECRET) {
+  const msg = 'JWT_SECRET ayarlanmamış — bilinen varsayılan kullanılıyor. Admin oturum token\'ları taklit edilebilir.';
+  if (IS_PROD) {
+    console.error(`HATA: ${msg} Üretimde başlatma iptal edildi.`);
+    process.exit(1);
+  }
+  console.warn(`UYARI: ${msg}`);
+}
 
 mkdirSync(UPLOADS_DIR, { recursive: true });
 
