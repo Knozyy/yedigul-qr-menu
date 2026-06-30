@@ -53,12 +53,16 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
 
   const field = 'px-3 py-2 rounded-lg border bg-transparent outline-none w-full';
   const fieldStyle = { borderColor: 'var(--border-strong)', color: 'var(--text)' };
+  // native select dropdowns render options on an OS surface, so set a solid
+  // dark background + light text or the options are invisible in dark mode
+  const selectStyle = { borderColor: 'var(--border-strong)', color: 'var(--text)', background: 'var(--surface)' };
+  const optionStyle = { background: 'var(--surface)', color: 'var(--text)' };
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-3 p-4 rounded-xl border" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
-      <select className={field} style={fieldStyle} value={form.category_id} onChange={(e) => set('category_id', e.target.value)} required>
-        <option value="">Kategori seç…</option>
-        {categories.map((c) => <option key={c.id} value={c.id}>{c.name_tr}</option>)}
+      <select className="px-3 py-2 rounded-lg border outline-none w-full" style={selectStyle} value={form.category_id} onChange={(e) => set('category_id', e.target.value)} required>
+        <option value="" style={optionStyle}>Kategori seç…</option>
+        {categories.map((c) => <option key={c.id} value={c.id} style={optionStyle}>{c.name_tr}</option>)}
       </select>
       <input className={field} style={fieldStyle} placeholder="Ad (TR)" value={form.name_tr} onChange={(e) => set('name_tr', e.target.value)} required />
       <input className={field} style={fieldStyle} placeholder="Ad (EN)" value={form.name_en} onChange={(e) => set('name_en', e.target.value)} required />
