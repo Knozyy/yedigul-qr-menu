@@ -49,10 +49,10 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen" style={{ ...vars, background: 'var(--bg)', color: 'var(--text)' }}>
       <div className="max-w-[640px] mx-auto p-4">
-        <header className="flex items-center justify-between mb-4">
+        <header className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h1 className="font-outfit text-lg font-semibold">Yönetim Paneli</h1>
-          <div>
-            <button onClick={() => setShowCategories((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border mr-2" style={{ borderColor: 'var(--border-strong)' }}>
+          <div className="flex gap-2">
+            <button onClick={() => setShowCategories((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
               Kategoriler
             </button>
             <button onClick={onLogout} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
