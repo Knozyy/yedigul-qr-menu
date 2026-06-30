@@ -5,6 +5,7 @@ import { getThemeVars } from '../../lib/theme';
 import { api } from '../../lib/api';
 import ProductRow from '../../components/admin/ProductRow';
 import ProductForm from '../../components/admin/ProductForm';
+import CategoryForm from '../../components/admin/CategoryForm';
 
 export default function DashboardPage() {
   const { logout } = useAuth();
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null); // ürün objesi | 'new' | null
+  const [showCategories, setShowCategories] = useState(false);
 
   const reload = useCallback(async () => {
     try {
@@ -49,9 +51,14 @@ export default function DashboardPage() {
       <div className="max-w-[640px] mx-auto p-4">
         <header className="flex items-center justify-between mb-4">
           <h1 className="font-outfit text-lg font-semibold">Yönetim Paneli</h1>
-          <button onClick={onLogout} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
-            Çıkış
-          </button>
+          <div>
+            <button onClick={() => setShowCategories((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border mr-2" style={{ borderColor: 'var(--border-strong)' }}>
+              Kategoriler
+            </button>
+            <button onClick={onLogout} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
+              Çıkış
+            </button>
+          </div>
         </header>
         {error && <p className="text-sm mb-2" style={{ color: '#ef6b6b' }}>{error}</p>}
 
@@ -71,6 +78,10 @@ export default function DashboardPage() {
           >
             + Yeni ürün
           </button>
+        )}
+
+        {showCategories && !editing && (
+          <CategoryForm categories={categories} onChanged={reload} />
         )}
 
         {!editing && categories.map((cat) => (
