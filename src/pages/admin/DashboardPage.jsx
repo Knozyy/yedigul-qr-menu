@@ -27,8 +27,12 @@ export default function DashboardPage() {
   useEffect(() => { reload(); }, [reload]);
 
   const onToggleAvailable = useCallback(async (product, next) => {
-    await api.patch(`/admin/products/${product.id}`, { is_available: next });
-    reload();
+    try {
+      await api.patch(`/admin/products/${product.id}`, { is_available: next });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
   }, [reload]);
 
   const onEdit = useCallback((product) => {
