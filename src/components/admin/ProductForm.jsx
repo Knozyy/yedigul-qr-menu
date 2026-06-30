@@ -39,8 +39,16 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
 
   async function onDelete() {
     if (!saved?.id || !confirm('Ürün silinsin mi?')) return;
-    await api.del(`/admin/products/${saved.id}`);
-    onDeleted(saved.id);
+    setBusy(true);
+    setError('');
+    try {
+      await api.del(`/admin/products/${saved.id}`);
+      onDeleted(saved.id);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   const field = 'px-3 py-2 rounded-lg border bg-transparent outline-none w-full';
