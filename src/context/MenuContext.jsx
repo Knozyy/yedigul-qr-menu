@@ -3,6 +3,9 @@ import { api } from '../lib/api';
 
 const MenuContext = createContext(null);
 const POLL_MS = 30000;
+// static export mode: menu data is baked into the bundle as a JSON file
+// (no backend on the shared host), so there is nothing to poll
+const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
@@ -13,7 +16,14 @@ export function MenuProvider({ children }) {
 
   const reload = useCallback(async () => {
     try {
-      const data = await api.get('/menu');
+      let data;
+      if (IS_STATIC) {
+        const res = await fetch(`${import.meta.env.BASE_URL}menu-data.json`);
+        if (!res.ok) throw new Error(`Menü yüklenemedi (${res.status})`);
+        data = await res.json();
+      } else {
+        data = await api.get('/menu');
+      }
       setCategories(data.categories);
       setItems(data.products);
       setError(null);
@@ -29,6 +39,7 @@ export function MenuProvider({ children }) {
 
   useEffect(() => {
     reload();
+    if (IS_STATIC) return undefined;
     const t = setInterval(reload, POLL_MS);
     return () => clearInterval(t);
   }, [reload]);

@@ -33,3 +33,4 @@ server/uploads/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+dist-menu

@@ -8,6 +8,11 @@ export function AuthProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // static export has no backend (and no admin panel) — skip the session check
+    if (import.meta.env.VITE_STATIC === '1') {
+      setReady(true);
+      return;
+    }
     api.get('/auth/me')
       .then(() => setAuthed(true))
       .catch(() => setAuthed(false))

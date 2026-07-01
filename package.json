@@ -11,7 +11,9 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test:server": "node --test server/test/*.test.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:menu": "vite build --mode static --base=/menu/ --outDir dist-menu",
+    "export:menu": "npm run build:menu && node scripts/export-static.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^12.11.1",
