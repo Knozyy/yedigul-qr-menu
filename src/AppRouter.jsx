@@ -15,7 +15,6 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<MenuPage />} />
-      <Route path="/masa/:id" element={<MenuPage />} />
       <Route path="/admin/login" element={<LoginPage />} />
       <Route path="/admin" element={<RequireAuth><DashboardPage /></RequireAuth>} />
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -6,7 +6,6 @@ export default function Header({
   onToggleTheme,
   lang,
   onSetLang,
-  tableNumber,
   favView,
   favCount,
   onToggleFavView,
@@ -79,20 +78,7 @@ export default function Header({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 mt-3.5">
-        <div
-          className="inline-flex items-center gap-2 rounded-full border py-[7px] pr-[13px] pl-[11px]"
-          style={{ borderColor: 'var(--gold-soft)', background: 'var(--gold-tint)' }}
-        >
-          <span className="w-[7px] h-[7px] rounded-full" style={{ background: 'var(--gold)' }} />
-          <span
-            className="font-outfit text-[13px] font-medium tracking-[.01em]"
-            style={{ color: 'var(--text)' }}
-          >
-            {ui.tableWord} {tableNumber}
-          </span>
-        </div>
-
+      <div className="flex items-center justify-end gap-3 mt-3.5">
         <div
           className="inline-flex p-[3px] rounded-full border"
           style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}

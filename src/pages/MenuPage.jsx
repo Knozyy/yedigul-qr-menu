@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { UI } from '../data/menu';
 import { useMenu } from '../context/MenuContext';
 import { getThemeVars } from '../lib/theme';
-import { getTableNumber, readStorage, writeStorage } from '../lib/storage';
+import { readStorage, writeStorage } from '../lib/storage';
 import useScrollSpy from '../lib/useScrollSpy';
 import Header from '../components/Header';
 import CategoryBar from '../components/CategoryBar';
@@ -54,8 +53,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   const stickyRef = useRef(null);
   const ui = UI[lang];
-  const { id: routeTable } = useParams();
-  const tableNumber = useMemo(() => routeTable || getTableNumber(), [routeTable]);
 
   // persist preferences
   useEffect(() => writeStorage('lang', lang), [lang]);
@@ -187,7 +184,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
               onToggleTheme={() => setDark((d) => !d)}
               lang={lang}
               onSetLang={setLang}
-              tableNumber={tableNumber}
               favView={favView}
               favCount={favorites.length}
               onToggleFavView={() => setFavView((v) => !v)}
