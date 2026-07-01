@@ -5,9 +5,10 @@ import { resolve, sep } from 'node:path';
 import { existsSync, unlinkSync } from 'node:fs';
 
 const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en'];
+// image_url intentionally excluded: only the dedicated image routes may set it
 const PRODUCT_FIELDS = [
   'category_id', 'name_tr', 'name_en', 'desc_tr', 'desc_en', 'price',
-  'is_market_price', 'image_url', 'is_available', 'popular', 'chef',
+  'is_market_price', 'is_available', 'popular', 'chef',
   'diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'sort',
 ];
 

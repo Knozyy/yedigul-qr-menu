@@ -9,7 +9,28 @@ const cookieOpts = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
-export function createAuth({ secret, password }) {
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000;
+
+export function createAuth({ secret, password, maxAttempts = MAX_ATTEMPTS, lockoutMs = LOCKOUT_MS }) {
+  // in-memory brute-force guard: failed login attempts per IP
+  const attempts = new Map(); // ip -> { count, lockedUntil }
+
+  function isLocked(ip) {
+    const a = attempts.get(ip);
+    if (!a) return false;
+    if (a.lockedUntil && Date.now() < a.lockedUntil) return true;
+    if (a.lockedUntil && Date.now() >= a.lockedUntil) attempts.delete(ip);
+    return false;
+  }
+
+  function recordFailure(ip) {
+    const a = attempts.get(ip) ?? { count: 0, lockedUntil: 0 };
+    a.count += 1;
+    if (a.count >= maxAttempts) a.lockedUntil = Date.now() + lockoutMs;
+    attempts.set(ip, a);
+  }
+
   function requireAuth(req, res, next) {
     const token = req.cookies?.[COOKIE];
     if (!token) return res.status(401).json({ error: 'Yetkisiz' });
@@ -23,9 +44,15 @@ export function createAuth({ secret, password }) {
 
   const router = Router();
   router.post('/login', (req, res) => {
+    const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+    if (isLocked(ip)) {
+      return res.status(429).json({ error: 'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.' });
+    }
     if (!password || req.body?.password !== password) {
+      recordFailure(ip);
       return res.status(401).json({ error: 'Hatalı şifre' });
     }
+    attempts.delete(ip);
     const token = jwt.sign({ role: 'admin' }, secret, { expiresIn: '7d' });
     res.cookie(COOKIE, token, cookieOpts);
     res.json({ authenticated: true });

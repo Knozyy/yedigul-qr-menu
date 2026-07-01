@@ -8,11 +8,11 @@ import { seed } from '../seed.js';
 import { createApp } from '../app.js';
 import { createAuth } from '../auth.js';
 
-let server, base, cookie, uploadsDir;
+let server, base, cookie, uploadsDir, db;
 
 before(async () => {
   uploadsDir = mkdtempSync(join(tmpdir(), 'yedigul-up-'));
-  const db = openDb(':memory:');
+  db = openDb(':memory:');
   seed(db);
   const auth = createAuth({ secret: 's', password: 'pw' });
   const app = createApp({ db, uploadsDir, auth });
@@ -67,16 +67,24 @@ test('DELETE image clears image_url', async () => {
   assert.equal(body.image_url, null);
 });
 
+test('generic PATCH ignores image_url (only image routes may set it)', async () => {
+  const res = await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH',
+    headers: { cookie, 'content-type': 'application/json' },
+    body: JSON.stringify({ image_url: '/uploads/evil.png' }),
+  });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.notEqual(body.image_url, '/uploads/evil.png', 'PATCH must not set image_url');
+});
+
 test('image delete refuses to unlink files outside uploadsDir', async () => {
   const sentinel = join(tmpdir(), `yedigul-sentinel-${Date.now()}.txt`);
   writeFileSync(sentinel, 'keep me');
   const rel = relative(uploadsDir, sentinel).split(sep).join('/');
-  // point a product's image_url at a path escaping uploadsDir via traversal
-  await fetch(`${base}/api/admin/products/fava`, {
-    method: 'PATCH',
-    headers: { cookie, 'content-type': 'application/json' },
-    body: JSON.stringify({ image_url: `/uploads/${rel}` }),
-  });
+  // simulate a corrupted/malicious DB value pointing outside uploadsDir
+  // (PATCH can no longer set image_url, so write it directly)
+  db.prepare('UPDATE products SET image_url = ? WHERE id = ?').run(`/uploads/${rel}`, 'fava');
   // trigger removeImageFile through the delete-image route
   const res = await fetch(`${base}/api/admin/products/fava/image`, {
     method: 'DELETE', headers: { cookie },
