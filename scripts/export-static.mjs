@@ -3,7 +3,7 @@
 // vite build'den sonra çalıştırır; çıkan klasör public_html/menu/ olur.
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { mkdirSync, writeFileSync, existsSync, readdirSync, copyFileSync, statSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readdirSync, copyFileSync, statSync, rmSync } from 'node:fs';
 
 // fs.cpSync bu ortamda (Node 25 + non-ASCII yol) native crash veriyor;
 // readdir + copyFile ile güvenli özyinelemeli kopya
@@ -59,6 +59,7 @@ console.log(`menu-data.json yazıldı: ${categories.length} kategori, ${products
 // canlı site kopyası projede duruyorsa menüyü doğrudan içine senkronla
 const SITE_MENU = join(root, 'public_html', 'menu');
 if (existsSync(join(root, 'public_html'))) {
+  rmSync(SITE_MENU, { recursive: true, force: true }); // eski hash'li asset'ler birikmesin
   copyDir(OUT_DIR, SITE_MENU);
   console.log(`public_html/menu güncellendi — FTP ile 'menu' klasörünü yüklemen yeterli.`);
 } else {
