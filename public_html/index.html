@@ -1,2054 +1,347 @@
-<!doctype html>
-<html class="" lang="en">
-
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Yedigül Restaurant - Anadolukavağı</title>
-    <meta name="keywords" CONTENT="anadolukavağı,boğaz,yedigül,yedigül restaurant,balık,balık restoranı,balıkçı,kavak balıkçı,bosphorus,anadolu kavağı balıkçı,anadolu kavağı,anadolukavağı balık restoranı,alp eyüboğlu,boğazda balık,boğazda rakı keyfi,kavak,sarıyer,yuşa hazretleri">
-<meta name="description" CONTENT="Anadolukavağı Yedigül Restaurant"> 
-<meta name=”author” content=”Webantre”>
-<meta name=”owner” content=”Yedigül Restaurant” >
-<meta name="Language" CONTENT="Tr">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Place favicon.ico in the root directory -->
-     <link rel="shortcut icon" href="favicon.ico">
-    <!-- All css files are included here. -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/core.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <!-- customizer style css -->
-    <link href="css/color/color-10.css" data-style="styles" rel="stylesheet">
-    <!-- Modernizr JS -->
-    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js');</script>
+  <title>Yedigül Restaurant — Anadolukavağı Boğaz Balık Restoranı</title>
 
-    <style>
-        .floating-reservation-btn {
-            position: fixed;
-            right: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 99999;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 999px;
-            background: #25D366;
-            color: #ffffff;
-            text-decoration: none;
-            box-shadow: 0 8px 24px rgba(0,0,0,.22);
-            transition: all .25s ease;
-            font-weight: 700;
-            line-height: 1.15;
-        }
-        .floating-reservation-btn:hover,
-        .floating-reservation-btn:focus {
-            color: #ffffff;
-            right: 22px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.28);
-            text-decoration: none;
-        }
-        .floating-reservation-icon {
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.18);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .floating-reservation-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-            display: block;
-        }
-        .floating-reservation-text {
-            font-size: 13px;
-            white-space: nowrap;
-            text-align: left;
-        }
-        @media (max-width: 767px) {
-            .floating-reservation-btn {
-                right: 12px;
-                padding: 10px 12px;
-                gap: 8px;
-            }
-            .floating-reservation-btn:hover,
-            .floating-reservation-btn:focus {
-                right: 12px;
-            }
-            .floating-reservation-icon {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
-            }
-            .floating-reservation-text {
-                font-size: 12px;
-            }
-        }
-    </style>
+  <meta name="description" content="Anadolukavağı'nın sahil şeridinde, Boğaz'ın eşsiz silüeti eşliğinde 30 yılı aşkın süredir balığı bir sanata dönüştüren Yedigül Restaurant. Spesiyallerimiz, galerimiz ve rezervasyon.">
+  <meta name="keywords" content="anadolukavağı, boğaz, yedigül, yedigül restaurant, balık, balık restoranı, balıkçı, kavak balıkçı, bosphorus, anadolu kavağı balıkçı, anadolu kavağı, boğazda balık, boğazda rakı keyfi, kavak, sarıyer, yuşa hazretleri">
+  <meta name="author" content="Yedigül Restaurant">
+  <meta name="language" content="tr">
+  <meta name="theme-color" content="#0A192F">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="restaurant">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="Yedigül Restaurant">
+  <meta property="og:title" content="Yedigül Restaurant — Anadolukavağı Boğaz Balık Restoranı">
+  <meta property="og:description" content="Boğaz'ın muhteşem silüeti eşliğinde 30 yılı aşkın süredir devam eden bir lezzet hikâyesi.">
+  <meta property="og:image" content="images/slider/1.jpg">
+
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap&subset=latin,latin-ext" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/site.css">
 </head>
-
 <body>
-    <!--[if lt IE 8]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->  
-    
-    
-    <!-- Pre Loader
-	============================================ -->
-	<div class="preloader">
-		<div class="loading-center">
-			<div class="loading-center-absolute">
-				<div class="object object_one"></div>
-				<div class="object object_two"></div>
-				<div class="object object_three"></div>
-			</div>
-		</div>
-	</div>
-  <!-- Body main wrapper start -->
-    <div class="wrapper white-bg">
-    	<!--Header section start-->
-    	<div class="header sticky-header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-2 col-sm-3 col-xs-6">
-                    <div class="logo"><a href="index.html"><img src="images/logo/logo.png" alt=""></a></div>
-                </div>
-                <div class="col-md-10 col-sm-9 col-xs-6">
-                    <div class="mgea-full-width">
-                        <div class="header-right">
-                            <div class="header-menu hidden-sm hidden-xs">
-                                <div class="menu">
-                                    <ul>
-                                        <li><a href="index.html">Ana Sayfa</a>
-                                            
-                                        </li>
-                                        <li><a href="#about">Tarİhçe</a></li>
-                                            
-                                                </li>
-                                                <li class="mega-sub"><a href="#spesiyal">Spesİyaller</a>
-                                                    
-                                                </li>
-                                            
-                                        </li>
-                                        <li><a href="menu/">Menümüz</a></li>
 
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" id="top">
+    <div class="nav__inner">
+      <a class="nav__brand" href="index.html" aria-label="Yedigül Restaurant ana sayfa">
+        <img class="nav__logo" src="images/logo/logo.png" alt="Yedigül Restaurant logosu">
+        <span class="nav__wordmark">Yedigül<small>Anadolukavağı</small></span>
+      </a>
 
-                                                <li><a href="#galeri">Galerİ</a></li>
-                                                <li><a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank">Rezervasyon</a></li>
+      <nav class="nav__links" aria-label="Ana menü">
+        <a class="nav__link" href="#top">Ana Sayfa</a>
+        <a class="nav__link" href="#tarihce">Tarihçe</a>
+        <a class="nav__link" href="#spesiyaller">Spesiyaller</a>
+        <a class="nav__link" href="menu/">Menümüz</a>
+        <a class="nav__link" href="#galeri">Galeri</a>
+        <a class="nav__link" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener">Rezervasyon</a>
+        <a class="nav__link nav__link--cta" href="#iletisim">İletişim</a>
+      </nav>
 
-                                        <li><a href="#contact">İLETİŞİM</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="search">
-                                <div class="search-inner">
-                                    <a href="#"><i class="mdi mdi-magnify"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="search-inside" style="display: none;">
-                            <a href="#" class="search-close"><i class="mdi mdi-close"></i></a>
-                            <div class="search-overlay"></div>
-                            <div class="searchbar-inner">
-                                <div class="search">
-                                    <form action="#">
-                                        <input type="search" placeholder="Search here"><button type="submit"><i class="mdi mdi-magnify"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Mobile menu start -->
-        <div class="mobile-menu-area hidden-lg hidden-md">
-            <div class="container">
-                <div class="col-md-12">
-                    <nav id="dropdown">
-                         <ul>
-                                        <li><a href="index.html">Ana Sayfa</a>
-                                            
-                                        </li>
-                                        <li><a href="#about">Tarİhçe</a></li>
-                                            
-                                                </li>
-                                                <li class="mega-sub"><a href="#spesiyal">Spesİyaller</a>
-                                                    
-                                                </li>
-                                            
-                                        </li>
-                                        <li><a href="menu/">Menümüz</a></li>
-
-
-                                                <li><a href="#galeri">Galerİ</a></li>
-                                                <li><a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank">Rezervasyon</a></li>
-
-                                        <li><a href="#contact">İLETİŞİM</a></li>
-                                    </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        <!-- Mobile menu end -->
-    	</div>
-       <!--Header section end-->
-       
-       <!--slider section start-->
-        <div class="slider-container">
-			<!-- Slider Image -->
-			<div id="mainSlider" class="nivoSlider slider-image">
-				<img src="images/slider/1.jpg" alt="" title="#htmlcaption1"/>
-				<img src="images/slider/3.jpg" alt="" title="#htmlcaption2"/>
-				<img src="images/slider/2.jpg" alt="" title="#htmlcaption3"/>
-			</div>
-			<!-- Slider Caption 1 -->
-			<div id="htmlcaption1" class="nivo-html-caption slider-caption-1">
-				<div class="slider-text-table">
-					<div class="slider-text-tablecell">
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col-md-2 col-sm-3 hidden-xs">
-									<div class="social-media-follow">
-										<div class="social-box-inner">
-											<ul>
-												<li><a href="https://www.instagram.com/alp_eyuboglu/?hl=tr"><i class="mdi mdi-facebook"></i></a></li>
-												<li><a href="https://twitter.com/search?q=yedig%C3%BCl%20restaurant&src=typd"><i class="mdi mdi-twitter"></i></a></li>
-												<li><a href="#"><i class="mdi mdi-dribbble"></i></a></li>
-												<li><a href="#"><i class="mdi mdi-pinterest"></i></a></li>
-												<li><a href="https://www.instagram.com/alp_eyuboglu/?hl=tr"><i class="mdi mdi-instagram"></i></a></li>
-											</ul>	
-										</div>
-										<p>Takip edin</p>
-									</div>
-								</div>
-								<div class="col-md-10 col-sm-9 col-xs-12">
-									<div class="slide2-text">
-										<div class="middle-text">
-											<div class="title-1 wow rotateInDownRight" data-wow-duration="0.9s" data-wow-delay="0s">
-												<h2>Yedigül Restauranta Hoşgeldiniz !</h2>
-											</div>	
-											<div class="title-2 wow bounceInRight" data-wow-duration="1.2s" data-wow-delay="0.2s">
-												<h1>Boğazda Balık Keyfİ...</h1>
-											</div>	
-											<div class="desc wow slideInRight" data-wow-duration="1.2s" data-wow-delay="0.2s">
-												
-											</div>
-											<div class="order-now wow bounceInUp" data-wow-duration="1.3s" data-wow-delay=".5s">
-												<a href="#spesiyal">ŞİMDİ  GÖR</a>
-											</div>	
-										</div>	
-									</div>				
-								</div>
-							</div>	
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Slider Caption 2 -->
-			<div id="htmlcaption2" class="nivo-html-caption slider-caption-2">
-				<div class="slider-text-table">
-					<div class="slider-text-tablecell">
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col-md-2 col-sm-3 hidden-xs">
-									<div class="social-media-follow">
-										<div class="social-box-inner">
-											<ul>
-												<li><a href="https://www.instagram.com/alp_eyuboglu/?hl=tr"><i class="mdi mdi-facebook"></i></a></li>
-												<li><a href="https://twitter.com/search?q=yedig%C3%BCl%20restaurant&src=typd"><i class="mdi mdi-twitter"></i></a></li>
-												<li><a href="#"><i class="mdi mdi-dribbble"></i></a></li>
-												<li><a href="#"><i class="mdi mdi-pinterest"></i></a></li>
-												<li><a href="https://www.instagram.com/alp_eyuboglu/?hl=tr"><i class="mdi mdi-instagram"></i></a></li>
-											</ul>	
-										</div>
-										<p>Takip Edin</p>
-									</div>
-								</div>
-								<div class="col-md-10 col-sm-9 col-xs-12">
-									<div class="slide2-text">
-										<div class="middle-text">
-											<div class="title-1 wow rotateInDownRight" data-wow-duration="0.9s" data-wow-delay="0s">
-												<h2>Yedigül Restauranta Hoşgeldiniz !</h2>
-											</div>	
-											<div class="title-2 wow bounceInRight" data-wow-duration="1.2s" data-wow-delay="0.2s">
-												<h1>EŞSİZ GÖRSEL ZİYAFET...</h1>
-											</div>	
-											<div class="desc wow slideInRight" data-wow-duration="1.2s" data-wow-delay="0.2s">
-												
-											</div>
-											<div class="order-now wow bounceInUp" data-wow-duration="1.3s" data-wow-delay=".5s">
-												<a href="#galeri">ŞİMDİ GÖR</a>
-											</div>	
-										</div>	
-									</div>				
-								</div>
-							</div>	
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Slider Caption 3 -->
-			<div id="htmlcaption3" class="nivo-html-caption slider-caption-3">
-				<div class="slider-text-table">
-					<div class="slider-text-tablecell">
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col-md-2 col-sm-3 hidden-xs">
-									<div class="social-media-follow">
-										<div class="social-box-inner">
-											<ul>
-												<li><a href="https://www.instagram.com/alp_eyuboglu/?hl=tr"><i class="mdi mdi-facebook"></i></a></li>
-												<li><a href="https://twitter.com/search?q=yedig%C3%BCl%20restaurant&src=typd"><i class="mdi mdi-twitter"></i></a></li>
-												<li><a href="#"><i class="mdi mdi-dribbble"></i></a></li>
-												<li><a href="#"><i class="mdi mdi-pinterest"></i></a></li>
-												<li><a href="https://www.instagram.com/alp_eyuboglu/?hl=tr"><i class="mdi mdi-instagram"></i></a></li>
-											</ul>	
-										</div>
-										<p>Takip Edin</p>
-									</div>
-								</div>
-								<div class="col-md-10 col-sm-9 col-xs-12">
-									<div class="slide3-text">
-										<div class="middle-text">
-											<div class="title-1 wow rotateInDownRight" data-wow-duration="0.9s" data-wow-delay="0s">
-												<h2>Yedigül Restauranta Hoşgeldiniz !</h2>
-											</div>	
-											<div class="title-2 wow bounceInRight" data-wow-duration="1.2s" data-wow-delay="0.2s">
-												<h1>BENZERSİZ LEZZETLER..</h1>
-											</div>	
-											<div class="desc wow slideInRight" data-wow-duration="1.2s" data-wow-delay="0.2s">
-												
-											</div>
-											<div class="order-now wow bounceInUp" data-wow-duration="1.3s" data-wow-delay=".5s">
-												<a href="#menu">Şimdi Gör</a>
-											</div>	
-										</div>	
-									</div>				
-								</div>
-							</div>	
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-        <!--slider section end-->
-        
-        <!--Home about section start-->
-        <div class="home-about white-bg ptb-100" id="about">
-        	<div class="container">
-        		<div class="row">
-        			<div class="col-md-6 col-sm-6 col-xs-12" >
-        				<div class="welcome-about">
-        					<h2 class="title_1">Tarihçemiz	</h2>
-        					<h3 class="title_2">30 Yılı aşkın süredir devam eden bir lezzet hikayesi...  </h3>
-        					<p class="text1">Doğa ile denizin kesiştiği ve buram buram tarih kokan Anadolukavağı'nın en güzel sahil şeridinde bulunan restaurantımız sizleri boğazın o muhteşem silüeti eşliğinde ağırlamaktadır.</p>
-        					<p class="text2">Yıllardan beri balığı bir sanat haline dönüştüren Yedigül Restaurant'ın ustaları babadan oğula geçen bu lezzeti siz misafirlerine  sunmaktan mutluluk duymaktadır.Klasik tarifler yerine lezzete lezzet katacak farklı tarifleri ile boğazda balık lezzetine farklı bir boyut kazandırmaktadır. </p>
-        					<div class="read-more" id="spesiyal">
-        						<a href="#spesiyal">SPESİYALLERİMİZ</a>
-        					</div>
-        				</div>
-        			</div>
-        			<div class="col-md-6 col-sm-6 col-xs-12">
-        				<div class="welcome-about-img">
-        					<img src="images/about/home-about.jpg" alt="">
-        				</div>
-        			</div>
-        		</div>
-        	</div>
-        </div>
-        <!--Home about section end-->
-        <!--popular dises start-->
-        <div class="popular-dishes">
-            <div class="bg-img-2 ptb-100">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <div class="section-title text-center grey_bg">
-                                <h2>Spesiyallerimiz</h2>
-                                <p>  Yapım şekli Yedigül Restaurant'a tescilli birbirinden lezzetli spessiyallerimiz ...</p>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="dises-list">
-                                    <div class="dises-show text-center">
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/1.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Midye Tava</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/2.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Lakerda</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 hidden-sm col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/3.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Hamsi Tava</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>	
-                                    <div class="dises-show text-center">
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/4.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Kabak Tatlısı</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/5.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">İstavrit Tava</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 hidden-sm col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/6.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Kalkan Izgara</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>	
-                                    <div class="dises-show text-center">
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/7.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Sardalya Tava</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/8.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Midye Dolma</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 hidden-sm col-xs-12">
-                                            <div class="single-disesh">
-                                                <div class="disesh-img">
-                                                    <a href="#"><img src="images/dish/9.png" alt=""></a>
-                                                </div>
-                                                <div class="disesh-desc pt-50">
-                                                    <h3><a href="">Levrek Buhulama</a></h3>
-                                                    <p class="price">Yedigül Usulü</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>	
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--popular dises end-->
-        
-        <!--Food menu section start-->
-        <div class="food-menu white-bg ptb-100" id="menu">
-        	<div class="container">
-        		<div class="row">
-        			<div class="col-md-8 col-md-offset-2">
-        				<div class="section-title mb-50 text-center white_bg">
-        					<h2 class="mb-50">Menümüz</h2>
-        					<p> Birbirinden güzel lezzetlerden oluşan deniz ürünlerininin yanısıra ona en yakışan diğer lezzetleri, kendi yöntemlerimiz ile hazırlıyarak siz müşterilerimiz için görsel bir şölene çeviriyoruz.</p>
-        				</div>
-        			</div>
-        		</div>
-        		<div class="row">
-        			<div class="food-item-tab home-page">
-        				<div class="col-md-12">
-        					<div class="foode-item-box fix mb-60">
-        						<ul class="nav" role="tablist">
-									<li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" data-toggle="tab">Tüm Menü</a></li>
-									<li role="presentation"><a href="#tab3" aria-controls="tab3" data-toggle="tab">Ara Sıcaklar ve Çorbalar</a></li>
-									<li role="presentation"><a href="#tab2" aria-controls="tab2" data-toggle="tab">Salata ve Mezeler</a></li>
-									<li role="presentation" ><a  href="#tab4"  aria-controls="tab4" data-toggle="tab">Balıklar</a></li>
-								</ul>
-        					</div>
-        				</div>
-						<div class="food-item-desc">
-							<div class="col-md-12">
-								<div class="tab-content">
-									<div role="tabpanel" class="tab-pane" id="tab4">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/01.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Deniz Levreği</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/2.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Kalkan Izgara</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/3.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Lüfer Izgara</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/4.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Palamut Tava</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/5.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Çinekop Izgara</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/6.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">İstavrit Tava</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/7.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Çipura Izgara</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/8.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Dil Balığı</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									<div role="tabpanel" class="tab-pane" id="tab2">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/10.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Ahtapot Salatası</a></h2>
-																	<p>Menü/Salatalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/11.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Mevsim Salata</a></h2>
-																	<p>Menü/Salatalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/12.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Çoban Salata</a></h2>
-																	<p>Menü/Salatalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/13.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Akdeniz Salatası</a></h2>
-																	<p>Menü/Salatalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/15.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Haydari</a></h2>
-																	<p>Menü/Mezeler</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/16.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Patlıcan Salatası</a></h2>
-																	<p>Menü/Mezeler</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/17.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Humus</a></h2>
-																	<p>Menü/Mezeler</p>
-																</div>
-																<div class="single-food-price">
-																
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/18.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Pilaki</a></h2>
-																	<p>Menü/Mezeler</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											
-										</div>
-									</div>
-									<div role="tabpanel" class="tab-pane" id="tab3">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/20.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Kalamar</a></h2>
-																	<p>Menü/Ara Sıcak</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/21.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Midye Tava</a></h2>
-																	<p>Menü/Ara Sıcaklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/22.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Paçanga Böreği</a></h2>
-																	<p>Menü/Ara Sıcaklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/23.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Balık Çorbası</a></h2>
-																	<p>Menü/Çorbalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/24.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Süzme Mercimek Çorbası</a></h2>
-																	<p>Menü/Çorbalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/25.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Karalahana Çorbası</a></h2>
-																	<p>Menü/Çorbalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													
-												
-												</div>
-											</div>
-										</div>
-									</div>
-									<div role="tabpanel" class="tab-pane active" id="tab1">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/20.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Kalamar</a></h2>
-																	<p>Menu/Ara Sıcak</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/4.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Palamut Tava</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/8.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Dil Balığı</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/23.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Balık Çorbası</a></h2>
-																	<p>Menü/Çorbalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/5.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Deniz Levreği</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/2.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Kalkan Izgara</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/13.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Akdeniz Salatası</a></h2>
-																	<p>Menü/Salatalar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/3.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Lüfer Izgara</a></h2>
-																	<p>Menü/Balıklar</p>
-																</div>
-																<div class="single-food-price">
-																	
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div role="tabpanel" class="tab-pane" id="tab5">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/01.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/4.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/2.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/3.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/8.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/7.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/6.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/5.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div role="tabpanel" class="tab-pane" id="tab6">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/01.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/2.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/3.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/4.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/5.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/6.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/7.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/8.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div role="tabpanel" class="tab-pane" id="tab7">
-										<div class="row">
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_left">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/4.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/01.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/2.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/3.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6 col-sm-6 col-xs-12">
-												<div class="fooder-menu-description float_right">
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/8.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/5.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item mb-30">
-
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/7.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-													<div class="single-food-item">
-														<div class="single-food-inner">
-															<div class="food-img">
-																<img src="images/food/6.png" alt="">
-															</div>
-															<div class="single-food-item-desc">
-																<div class="single-food-item-title">
-																	<h2><a href="#">Fried Potatoes With Garlic</a></h2>
-																	<p>Mushroom / Garlic / Veggies</p>
-																</div>
-																<div class="single-food-price">
-																	<p>$100</p>
-																</div>
-															</div>	
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-        			</div>
-        		</div>
-        	</div>
-        </div>
-        <!--Food menu section end-->
-        
-        <!--Our gallery start-->
-        <div class="our-gallery" id="galeri">
-            <div class="bg-img-2">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <div class="section-title grey_bg mb-50 text-center">
-                                <h2 class="mb-50">Galeri</h2>
-                                <p> En güzel fotoğraflardan oluşan galerimizi belirli guruplara göre sınıflandırdık.Fotoğraflar arasında istediğiniz gibi gezinti yapabilirsiniz.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="gallery-menu fix text-center mb-60">
-                                <ul>
-                                    <li class="active" data-filter="*">HEPSi</li>
-                                    <li data-filter=".desert">MANZARA</li>
-                                    <li data-filter=".coffee">YEMEK</li>
-                                    <li data-filter=".catering">KIRMIZI HALI</li>
-                                </ul>
-                            </div>
-                            <div class="gallery-item-box row">
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/1.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/1.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/2.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/2.jpg" alt="">
-                                    </div>
-                                </div> 
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/3.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>	
-                                        <img src="images/gallery/3.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/4.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/4.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/5.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/5.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/6.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/6.jpg" alt="">
-                                    </div>
-                                </div>
-								  
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/7.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/7.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/8.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/8.jpg" alt="">
-                                    </div>
-                                </div> 
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/9.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>	
-                                        <img src="images/gallery/9.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/10.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/10.jpg" alt="">
-                                    </div>
-                                </div>
-                               
-                                 <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/11.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/11.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/12.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/12.jpg" alt="">
-                                    </div>
-                                </div> 
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/13.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>	
-                                        <img src="images/gallery/13.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/14.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/14.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/15.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/15.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/16.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/16.jpg" alt="">
-                                    </div>
-                                </div>
-								  
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item coffee drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/17.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/17.jpg" alt="">
-                                    </div>
-                                </div>
-                                 <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/18.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/18.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/19.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/19.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/24.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/24.jpg" alt="">
-                                    </div>
-                                </div>
-								  
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item desert drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/25.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/25.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item catering drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/20.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/20.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item catering drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/21.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/21.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item catering drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/22.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/22.jpg" alt="">
-                                    </div>
-                                </div>
-								  
-                                <div class="col-md-4 col-sm-6 col-xs-12 gallery-item catering drink mb-30">
-                                    <div class="single-item-gallery">
-                                        <a href="images/gallery/23.jpg">
-                                            <span class="plus"><i class="mdi mdi-plus"></i></span>
-                                        </a>
-                                        <img src="images/gallery/23.jpg" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-        	</div>
-        </div>
-        <!--Our gallery end-->
-      
-        <!--our blog start-->
-        <div class="our-blog grey-bg ptb-100">
-        	<div class="container">
-        		<div class="row">
-        			<div class="col-md-8 col-md-offset-2">
-						<div class="section-title grey_bg mb-50 text-center">
-							<h2 class="mb-50">Haberler Bizden</h2>
-							<p> Anadolukavağı Yedigül Restaurant hakkındaki tüm haberleri bu bölümden takip edebilirsiniz.</p>
-						</div>
-					</div>
-        		</div>
-        		<div class="blog-details">
-        			<div class="row">
-        				<div class="col-md-4 col-sm-6 col-xs-12">
-        					<div class="single-blog">
-        						<div class="blog-thumbnail">
-        							<img src="images/blog/10.jpg" alt="">
-        						</div>
-        						<div class="blog-desc">
-        						    <div class="publish-date">
-        								<p>15<span>Ara</span></p>
-        							</div>
-        							<div class="blog-title">
-        							    <h3><a href="#">Yeni web sitemiz yayında !</a></h3>
-        							</div>
-        						</div>
-        					</div>
-        				</div>
-        				<div class="col-md-4 col-sm-6 col-xs-12">
-        					<div class="single-blog">
-        						<div class="blog-thumbnail">
-        							<img src="images/blog/2.jpg" alt="">
-        						</div>
-        						<div class="blog-desc">
-        						    <div class="publish-date">
-        								<p>10<span>Kas</span></p>
-        							</div>
-        							<div class="blog-title">
-        							    <h3><a href="#">Unutma ve Unutturma...</a></h3>
-        							</div>
-        						</div>
-        				    </div>
-        				</div>
-        				<div class="col-md-4 hidden-sm col-xs-12">
-        					<div class="single-blog">
-        						<div class="blog-thumbnail">
-        							<img src="images/blog/3.jpg" alt="">
-        						</div>
-        						<div class="blog-desc">
-        						    <div class="publish-date">
-        								<p>13<span>Eyl</span></p>
-        							</div>
-        							<div class="blog-title">
-        							    <h3><a href="#">Sonbahar'da Anadolukavağı</a></h3>
-        							</div>
-        						</div>
-        					</div>
-        				</div>
-        			</div>
-        		</div>
-        	</div>
-        </div>
-        <!--our blog end-->
-        <!--Tstimonial section start-->
-        <div class="testimonial ptb-100">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2">
-						<div class="section-title white_bg mb-50 text-center">
-							<h2 class="mb-50">Ziyaretretçi Defteri</h2>
-							<p>  Sitemizin bu bölümünü mail adresimize sizlerden gelen  bizim için yazılmış o güzel duygulara yer vermek istedik...</p>
-						</div>
-					</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="testimonial-sliders">
-                            <div class="row">
-                                <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
-                                    <div class="testimonial-image-slider text-center">
-                                        <div class="sin-testiImage">
-                                            <img src="images/testimonial/1.jpg" alt="testimonial 1" />
-                                        </div>
-                                        <div class="sin-testiImage">
-                                            <img src="images/testimonial/2.jpg" alt="testimonial 1" />
-                                        </div>
-                                        <div class="sin-testiImage">
-                                            <img src="images/testimonial/1.jpg" alt="testimonial 1" />
-                                        </div>
-                                        <div class="sin-testiImage">
-                                            <img src="images/testimonial/2.jpg" alt="testimonial 1" />
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-10 col-md-offset-1">
-                                    <div class="testimonial-text-slider text-center mt-30">
-                                        <div class="single-test-text">
-                                            <p class="text-qoute">
-                                                <i class="fa fa-quote-left" aria-hidden="true"></i>
-                                            </p>
-                                            <p class="test-text">Methini duyduğum bu mekena ; balık restoranı değilmi ne kadar farklı olabilir ki diye gittim.Ancak tüm balık menüsü anlayışım değişti mükemmel mekan, mükemmel manzara, mükemmel hizmet... </p>
-                                            <div class="test-title mb-50">
-                                                <h4>Sevda Mutlu</h4>
-                                                <p>Yönetici</p>
-                                            </div>
-                                        </div>
-                                        <div class="single-test-text">
-                                            <p class="text-qoute">
-                                                <i class="fa fa-quote-left" aria-hidden="true"></i>
-                                            </p>
-                                            <p class="test-text">Bir kere gidip , ayda en az bir kere gitmeye çalıştığım bir mekan.Gerçekten lezzetleri, manzarası, ve güler yüzlü personeli ile muazzam bir mekan...</p>
-                                            <div class="test-title mb-50">
-                                                <h4>Erkan Deliorman</h4>
-                                                <p>Reklamcı</p>
-                                            </div>
-                                        </div>
-                                        <div class="single-test-text">
-                                            <p class="text-qoute">
-                                                <i class="fa fa-quote-left" aria-hidden="true"></i>
-                                            </p>
-                                            <p class="test-text">Kendilerine özgü spesiyalleri ile balığı yem yapış hemde sunuş şekilleri  boğazın o eşssiz silüeti ile birleştiğinde karşınıza vazgeçilmez bir mekan ve keyif çıkıyor...</p>
-                                            <div class="test-title mb-50">
-                                                <h4>Tayfun Aziz</h4>
-                                                <p>Doktor</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                        </div>
-                    </div>  
-                </div>
-            </div>
-        </div>
-        <!--Tstimonial section end-->
-        <!--Team brand start-->
-        <div class="team-brand ptb-100 grey-bg">
-            <div class="container">
-                <div class="row">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 col-xs-12 col-sm-12">
-                                <div class="team-list">
-                                    <div class="single-team">
-                                        <a href="#"><img src="images/logo/team-1.png" alt=""></a>
-                                    </div>
-                                    <div class="single-team">
-                                        <a href="#"><img src="images/logo/team-2.png" alt=""></a>
-                                    </div>
-                                    <div class="single-team">
-                                        <a href="#"><img src="images/logo/team-3.png" alt=""></a>
-                                    </div>
-                                    <div class="single-team">
-                                        <a href="#"><img src="images/logo/team-4.png" alt=""></a>
-                                    </div>
-                                    <div class="single-team">
-                                        <a href="#"><img src="images/logo/team-5.png" alt=""></a>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Team brand end-->
-        <!--Offer section start-->
-        <div class="offer-section fix">
-            <div class="bg-img ptb-100">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3">
-                            <div class="offer-inner text-center">
-                                <h2 class="ttle1">
-                                    100% Ev Yapımı
-                                </h2>
-                                <h2 class="ttle2">
-                                    Bizim Balık Çorbamız
-                                </h2>
-                                <p>  Yüzde yüz kendi tarifimiz ile hazırladığımız balık çorbamız her mevsim siz müşterilerimizin spesiyali olarak menümüzde yer almaktadır. </p>
-                                <div class="order-now">
-                                    <a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank">Hemen Rezervasyon Yap !</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Offer section end-->
-        <!--Footer section start-->
-        <div class="footer" id="contact">
-            <div class="footer-top ptb-100 grey-bg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="single-footer">
-                                <h3 class="single-footer-title">ADRESİMİZ</h3>
-                                <div class="single-footer-details mt-30">
-                                    <p class="addresses">
-                                        <strong>Adres:</strong>Anadolu Kavağı Mahallesi, Macar Tabya Cd. 6 A - 34825 Beykoz/İstanbul
-                                    </p>
-                                    <p class="email">
-                                       <strong> Email:</strong> info@yedigulrestaurant.com<br>
-                                    <p class="phon">
-                                        <strong>Telefon:</strong>+90 216 320 21 80<br><strong>Rezervasyon:</strong>+90 536 937 92 80
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="single-footer">
-                                <h3 class="single-footer-title">HİZMET SAATLERİMİZ</h3>
-                                <div class="single-footer-details mt-30">
-                                    <p>Restaurantımızın faaliyette bulunduğu saatler aşağıda belirtilmiştir.  </p>
-                                    <div class="open-list">
-                                        <ul>
-                                            <li>Pazartesi - Cuma. . . . . . . . <span>11:00 - 00:00</span></li>
-                                            <li>Cumartesi - Pazar. . . . . . . <span> 11:00 - 00:00</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="single-footer instagram">
-                                <h3 class="single-footer-title">instagram</h3>
-                                <div class="single-footer-details mt-30">
-                                   <ul>
-                                       <li><a href="https://www.instagram.com/p/BbRzzXCFReS/?hl=tr&taken-by=alp_eyuboglu" target="_blank"><img src="images/instagram/1.jpg" alt=""></a></li>
-                                       <li><a href="https://www.instagram.com/p/BbrzV4wFGzK/?hl=tr&taken-by=alp_eyuboglu" target="_blank"><img src="images/instagram/2.jpg" alt=""></a></li>
-                                       <li><a href="https://www.instagram.com/p/BVnRC9-lo5e/?hl=tr&taken-by=alp_eyuboglu" target="_blank"><img src="images/instagram/3.jpg" alt=""></a></li>
-                                       <li><a href="https://www.instagram.com/p/BaTF_tDlk9d/?hl=tr&taken-by=alp_eyuboglu" target="_blank"><img src="images/instagram/4.jpg" alt=""></a></li>
-                                       <li><a href="https://www.instagram.com/p/BXs5RtUlFPe/?hl=tr&taken-by=alp_eyuboglu" target="_blank"><img src="images/instagram/5.jpg" alt=""></a></li>
-                                       <li><a href="https://www.instagram.com/p/BH2aDboBva-/?hl=tr&taken-by=alp_eyuboglu" target="_blank"><img src="images/instagram/6.jpg" alt=""></a></li>
-                                   </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="single-footer newsletter">
-                                <h3 class="single-footer-title">MAİL LİSTESİ</h3>
-                                <div class="single-footer-details mt-30">
-                                    <p>Mail listemize kayıt olun bizim ile ilgili gelişmelerden haberdar olun </p>
-                                    <div class="newsletter-form">
-                                        <form action="mgonder2.asp?giris=serbest" target="_blank" method="post">
-                                            <input type="text" name="email" placeholder="E-Mail Adresinizi Giriniz.">
-                                            <input name="gizli" type="hidden" id="gizliDeger" >
-                                            <button type="submit">Kayıt Ol</button>
-                                        </form>   
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>   
-            </div>
-            <div class="copyright text-center ptb-20 white-bg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <p>Copyright &copy; Yedigül Restaurant 2017.Her Hakkı Saklıdır.Designed by <a target="_blank" href="http://www.webantre.com" >Webantre</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>    
-        </div>
-        <!--Footer section end-->
+      <button class="nav__toggle" type="button" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="navpanel">
+        <span></span>
+      </button>
     </div>
-    <!-- Body main wrapper end -->
-    
-   
-    <!-- Placed js at the end of the document so the pages load faster -->
 
-    
-    <!-- All js plugins included in this file. -->
-    <script src="js/vendor/jquery-1.12.0.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.nivo.slider.pack.js"></script>
-    <script src="js/isotope.pkgd.min.js"></script>
-    <script src="js/ajax-mail.js"></script>
-    <script src="js/jquery.magnific-popup.js"></script>
-    <script src="js/jquery.counterup.min.js"></script>
-    <script src="js/animated-headlines.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/jquery.collapse.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Mobile slide-in panel -->
+    <div class="nav__panel" id="navpanel">
+      <nav class="nav__panel-links" aria-label="Mobil menü">
+        <a href="#top" style="--i:0"><span class="n">01</span> Ana Sayfa</a>
+        <a href="#tarihce" style="--i:1"><span class="n">02</span> Tarihçe</a>
+        <a href="#spesiyaller" style="--i:2"><span class="n">03</span> Spesiyaller</a>
+        <a href="menu/" style="--i:3"><span class="n">04</span> Menümüz</a>
+        <a href="#galeri" style="--i:4"><span class="n">05</span> Galeri</a>
+        <a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener" style="--i:5"><span class="n">06</span> Rezervasyon</a>
+        <a href="#iletisim" style="--i:6"><span class="n">07</span> İletişim</a>
+      </nav>
+      <div class="nav__panel-foot">
+        <span>Anadolu Kavağı Mah. Macar Tabya Cd. 6/A · Beykoz</span>
+        <a href="tel:+902163202180">+90 216 320 21 80</a>
+      </div>
+    </div>
+  </header>
 
+  <main>
 
-    <script>
-        (function () {
-            var form = document.getElementById('whatsappReservationForm');
-            if (!form) return;
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" aria-label="Yedigül Restaurant'a hoş geldiniz">
+      <div class="hero__bg">
+        <div class="hero__slide is-active">
+          <img src="images/slider/1.jpg" alt="Boğaz'da gün batımında Yedigül Restaurant manzarası" fetchpriority="high">
+        </div>
+        <div class="hero__slide">
+          <img src="images/slider/3.jpg" alt="Anadolukavağı sahilinde eşsiz görsel ziyafet" loading="lazy">
+        </div>
+        <div class="hero__slide">
+          <img src="images/slider/2.jpg" alt="Yedigül Restaurant'ın benzersiz balık lezzetleri" loading="lazy">
+        </div>
+      </div>
 
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
+      <div class="hero__inner">
+        <p class="hero__eyebrow eyebrow">Anadolukavağı · Boğaziçi</p>
+        <h1 class="hero__title">
+          <span class="line"><span>Boğaz'da</span></span>
+          <span class="line"><span>balık <em>keyfi</em></span></span>
+        </h1>
+        <p class="hero__caption">Doğa ile denizin kesiştiği sahil şeridinde, Boğaz'ın o muhteşem silüeti eşliğinde sizleri ağırlıyoruz. Yedigül Restaurant'a hoş geldiniz.</p>
+        <div class="hero__actions">
+          <a class="btn btn--gold" href="menu/">Menümüz <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener">Rezervasyon</a>
+        </div>
+      </div>
 
-                var ad = (form.querySelector('[name="ad"]') || {}).value || '';
-                var email = (form.querySelector('[name="email"]') || {}).value || '';
-                var tel = (form.querySelector('[name="tel"]') || {}).value || '';
-                var kisi = (form.querySelector('[name="kisi"]') || {}).value || '';
-                var saat = (form.querySelector('[name="saat"]') || {}).value || '';
-                var tarih = (form.querySelector('[name="tarih"]') || {}).value || '';
+      <div class="hero__meta" aria-hidden="true">
+        <span class="label">Est.</span>
+        <span class="val">1990'lar</span>
+        <span class="label">30+ yıl</span>
+      </div>
 
-                var message = 'Merhaba, rezervasyon yaptırmak istiyorum.%0A%0A' +
-                    'Ad Soyad: ' + ad + '%0A' +
-                    'E-Mail: ' + email + '%0A' +
-                    'Mobil Tel: ' + tel + '%0A' +
-                    'Kişi Sayısı: ' + kisi + '%0A' +
-                    'Saat: ' + saat + '%0A' +
-                    'Tarih: ' + tarih;
+      <div class="hero__dots" role="tablist" aria-label="Slayt seçimi">
+        <button class="hero__dot is-active" type="button" aria-label="1. slayt"></button>
+        <button class="hero__dot" type="button" aria-label="2. slayt"></button>
+        <button class="hero__dot" type="button" aria-label="3. slayt"></button>
+      </div>
 
-                window.open('https://wa.me/905369379280?text=' + message, '_blank');
-            });
-        })();
-    </script>
+      <span class="hero__scroll" aria-hidden="true">Keşfet</span>
+    </section>
 
-    <a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." class="floating-reservation-btn" target="_blank" aria-label="WhatsApp ile rezervasyon yaptır">
-        <span class="floating-reservation-icon">
-            <svg viewBox="0 0 32 32" aria-hidden="true">
-                <path d="M19.11 17.21c-.28-.14-1.63-.8-1.88-.89-.25-.09-.44-.14-.63.14-.18.28-.72.89-.88 1.08-.16.19-.33.21-.61.07-.28-.14-1.19-.44-2.26-1.4-.83-.74-1.39-1.66-1.55-1.94-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.49.14-.16.18-.28.28-.47.09-.19.05-.35-.02-.49-.07-.14-.63-1.52-.86-2.08-.23-.55-.47-.47-.63-.48h-.54c-.19 0-.49.07-.75.35-.26.28-.98.95-.98 2.32s1 2.69 1.14 2.88c.14.19 1.95 2.98 4.73 4.17.66.28 1.18.45 1.58.57.66.21 1.26.18 1.73.11.53-.08 1.63-.67 1.86-1.31.23-.64.23-1.19.16-1.31-.07-.12-.25-.19-.54-.33z"></path>
-                <path d="M16.02 3.2c-6.99 0-12.67 5.67-12.67 12.65 0 2.23.58 4.42 1.68 6.34L3.2 28.8l6.8-1.78a12.7 12.7 0 0 0 6.02 1.52h.01c6.98 0 12.66-5.67 12.66-12.66 0-3.39-1.32-6.57-3.72-8.96A12.57 12.57 0 0 0 16.02 3.2zm0 23.2h-.01a10.6 10.6 0 0 1-5.4-1.48l-.39-.23-4.04 1.06 1.08-3.94-.25-.4a10.53 10.53 0 0 1-1.63-5.55c0-5.83 4.76-10.58 10.62-10.58 2.83 0 5.5 1.1 7.5 3.1a10.5 10.5 0 0 1 3.11 7.48c0 5.84-4.76 10.59-10.59 10.59z"></path>
-            </svg>
-        </span>
-        <span class="floating-reservation-text">Rezervasyon<br>Yaptır</span>
-    </a>
+    <!-- ===================== TARİHÇE ===================== -->
+    <section class="section about" id="tarihce">
+      <div class="wrap about__grid">
+        <div class="about__media reveal">
+          <img src="images/about/home-about.jpg" alt="Yedigül Restaurant'ın Boğaz manzaralı sahil şeridi" loading="lazy">
+          <div class="about__stamp">
+            <b>30<span style="font-size:1.2rem">+</span></b>
+            <span>Yıllık Lezzet</span>
+          </div>
+        </div>
 
+        <div class="about__body">
+          <p class="eyebrow reveal">Tarihçemiz</p>
+          <h2 class="about__title reveal" data-delay="1">30 yılı aşkın süredir devam eden bir <em>lezzet hikâyesi</em></h2>
+          <p class="about__text reveal" data-delay="2">Doğa ile denizin kesiştiği ve buram buram tarih kokan Anadolukavağı'nın en güzel sahil şeridinde bulunan restaurantımız, sizleri <strong>Boğaz'ın o muhteşem silüeti</strong> eşliğinde ağırlamaktadır.</p>
+          <p class="about__text reveal" data-delay="3">Yıllardan beri balığı bir sanat hâline dönüştüren Yedigül Restaurant'ın ustaları, babadan oğula geçen bu lezzeti siz misafirlerine sunmaktan mutluluk duymaktadır. Klasik tarifler yerine lezzete lezzet katacak farklı tarifleriyle, Boğaz'da balık lezzetine yepyeni bir boyut kazandırmaktadır.</p>
+          <div class="about__cta reveal" data-delay="4">
+            <a class="btn btn--dark" href="#spesiyaller">Spesiyallerimiz <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SPESİYALLER ===================== -->
+    <section class="section specials" id="spesiyaller">
+      <div class="wrap">
+        <div class="specials__head">
+          <div>
+            <p class="eyebrow reveal">Spesiyallerimiz</p>
+            <h2 class="specials__title reveal" data-delay="1">Yedigül <em>usulü</em></h2>
+          </div>
+          <p class="specials__intro reveal" data-delay="2">Yapım şekli Yedigül Restaurant'a tescilli, birbirinden lezzetli spesiyallerimiz — her biri Boğaz'ın sofrasına özenle taşınır.</p>
+        </div>
+
+        <div class="specials__grid">
+          <figure class="dish dish--wide reveal">
+            <img src="images/dish/9.png" alt="Levrek Buğulama" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">01</span><span class="dish__name">Levrek Buğulama</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal" data-delay="1">
+            <img src="images/dish/6.png" alt="Kalkan Izgara" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">02</span><span class="dish__name">Kalkan Izgara</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal" data-delay="2">
+            <img src="images/dish/1.png" alt="Midye Tava" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">03</span><span class="dish__name">Midye Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish dish--tall reveal">
+            <img src="images/dish/2.png" alt="Lakerda" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">04</span><span class="dish__name">Lakerda</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal" data-delay="1">
+            <img src="images/dish/3.png" alt="Hamsi Tava" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">05</span><span class="dish__name">Hamsi Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal" data-delay="2">
+            <img src="images/dish/8.png" alt="Midye Dolma" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">06</span><span class="dish__name">Midye Dolma</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal">
+            <img src="images/dish/5.png" alt="İstavrit Tava" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">07</span><span class="dish__name">İstavrit Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal" data-delay="1">
+            <img src="images/dish/7.png" alt="Sardalya Tava" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">08</span><span class="dish__name">Sardalya Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+          <figure class="dish reveal" data-delay="2">
+            <img src="images/dish/4.png" alt="Kabak Tatlısı" loading="lazy">
+            <figcaption class="dish__body"><span class="dish__num">09</span><span class="dish__name">Kabak Tatlısı</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MENU TEASER BAND ===================== -->
+    <section class="menuband" aria-label="Dijital menümüz">
+      <div class="menuband__bg">
+        <img src="images/slider/2.jpg" alt="" aria-hidden="true" loading="lazy">
+      </div>
+      <div class="wrap menuband__inner">
+        <p class="menuband__rule reveal"><span>Menümüz</span></p>
+        <h2 class="menuband__title reveal" data-delay="1">Boğaz'ın <em>tüm sofrası</em>, cebinizde</h2>
+        <p class="menuband__text reveal" data-delay="2">Birbirinden güzel deniz ürünleri ve onlara en çok yakışan mezeler, çorbalar ve salatalar — hepsi güncel dijital menümüzde. Türkçe ve İngilizce olarak keşfedin.</p>
+        <a class="btn btn--gold reveal" data-delay="3" href="menu/">Menüyü Aç <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <!-- ===================== GALERİ ===================== -->
+    <section class="section gallery" id="galeri">
+      <div class="wrap">
+        <div class="gallery__head">
+          <p class="eyebrow center reveal">Galeri</p>
+          <h2 class="gallery__title reveal" data-delay="1">Boğaz'dan <em>kareler</em></h2>
+          <p class="gallery__intro reveal" data-delay="2">En güzel fotoğraflardan oluşan galerimizde, manzaramız ve lezzetlerimiz arasında dilediğiniz gibi gezinebilirsiniz.</p>
+        </div>
+
+        <div class="gallery__grid">
+          <div class="gcell gcell--tall reveal" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/1.jpg" data-alt="Yedigül Restaurant Boğaz manzarası">
+            <img src="images/gallery/1.jpg" alt="Boğaz manzarası" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="1" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/12.jpg" data-alt="Yedigül Restaurant'tan bir lezzet">
+            <img src="images/gallery/12.jpg" alt="Yedigül lezzetlerinden" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="2" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/5.jpg" data-alt="Sahil şeridi manzarası">
+            <img src="images/gallery/5.jpg" alt="Sahil manzarası" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="3" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/14.jpg" data-alt="Deniz ürünleri sunumu">
+            <img src="images/gallery/14.jpg" alt="Deniz ürünleri" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/7.jpg" data-alt="Boğaz'da akşam">
+            <img src="images/gallery/7.jpg" alt="Boğaz'da akşam" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell gcell--tall reveal" data-delay="1" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/24.jpg" data-alt="Restaurant manzarası">
+            <img src="images/gallery/24.jpg" alt="Restaurant manzarası" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="2" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/16.jpg" data-alt="Sofradan bir kare">
+            <img src="images/gallery/16.jpg" alt="Sofradan bir kare" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="3" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/9.jpg" data-alt="Boğaz silüeti">
+            <img src="images/gallery/9.jpg" alt="Boğaz silüeti" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/18.jpg" data-alt="Kıyıdan manzara">
+            <img src="images/gallery/18.jpg" alt="Kıyıdan manzara" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="1" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/13.jpg" data-alt="Yedigül lezzetleri">
+            <img src="images/gallery/13.jpg" alt="Yedigül lezzetleri" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="2" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/25.jpg" data-alt="Anadolukavağı manzarası">
+            <img src="images/gallery/25.jpg" alt="Anadolukavağı manzarası" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+          <div class="gcell reveal" data-delay="3" tabindex="0" role="button" aria-label="Galeri fotoğrafını büyüt" data-full="images/gallery/11.jpg" data-alt="Bir tabak lezzet">
+            <img src="images/gallery/11.jpg" alt="Bir tabak lezzet" loading="lazy"><span class="plus" aria-hidden="true">+</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== İLETİŞİM ===================== -->
+    <footer class="section contact" id="iletisim">
+      <div class="wrap">
+        <div class="contact__grid">
+          <div class="contact__body">
+            <p class="eyebrow reveal">İletişim</p>
+            <h2 class="contact__title reveal" data-delay="1">Sizi Boğaz'da <em>ağırlayalım</em></h2>
+
+            <div class="contact__list">
+              <div class="contact__item reveal" data-delay="2">
+                <span class="k">Adres</span>
+                <span class="v">Anadolu Kavağı Mahallesi, Macar Tabya Cd. 6/A<br>34825 Beykoz / İstanbul</span>
+              </div>
+              <div class="contact__item reveal" data-delay="2">
+                <span class="k">Telefon</span>
+                <a class="v" href="tel:+902163202180">+90 216 320 21 80</a>
+              </div>
+              <div class="contact__item reveal" data-delay="3">
+                <span class="k">Rezervasyon · WhatsApp</span>
+                <a class="v" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener">+90 536 937 92 80</a>
+              </div>
+              <div class="contact__item reveal" data-delay="3">
+                <span class="k">E-Posta</span>
+                <a class="v" href="mailto:info@yedigulrestaurant.com">info@yedigulrestaurant.com</a>
+              </div>
+              <div class="contact__item reveal" data-delay="4">
+                <span class="k">Çalışma Saatleri</span>
+                <div class="contact__hours">
+                  <div><span>Pazartesi – Cuma</span><span>11:00 – 00:00</span></div>
+                  <div><span>Cumartesi – Pazar</span><span>11:00 – 00:00</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact__map reveal" data-delay="2">
+            <iframe
+              title="Yedigül Restaurant konumu — Anadolu Kavağı, Beykoz"
+              src="https://www.google.com/maps?q=Anadolu%20Kava%C4%9F%C4%B1%20Macar%20Tabya%20Caddesi%206%20Beykoz%20%C4%B0stanbul&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- Newsletter — legacy ASP backend, field names preserved -->
+        <div class="newsletter reveal" data-delay="2">
+          <h3 class="newsletter__title">Mail <em>listemiz</em></h3>
+          <p class="newsletter__text">Anadolukavağı Yedigül Restaurant'tan haberler ve mevsimin lezzetleri için e-posta listemize katılın.</p>
+          <form action="mgonder2.asp?giris=serbest" target="_blank" method="post">
+            <input type="text" name="email" placeholder="E-Mail adresinizi giriniz" aria-label="E-posta adresiniz" required>
+            <div class="gizli-field" aria-hidden="true">
+              <label for="gizliDeger">Bu alanı boş bırakın</label>
+              <input name="gizli" type="text" id="gizliDeger" tabindex="-1" autocomplete="off">
+            </div>
+            <button class="btn btn--gold" type="submit">Kayıt Ol</button>
+          </form>
+        </div>
+
+        <div class="footer-bar">
+          <div class="footer-bar__brand">
+            <img src="images/logo/logo.png" alt="Yedigül Restaurant logosu">
+            <span>© <span id="yr">2026</span> Yedigül Restaurant · Her hakkı saklıdır.</span>
+          </div>
+          <div class="footer-bar__social">
+            <a href="https://www.instagram.com/alp_eyuboglu/?hl=tr" target="_blank" rel="noopener">Instagram</a>
+            <a href="menu/">Menümüz</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ===================== FLOATING WHATSAPP ===================== -->
+  <a class="wa-float" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener" aria-label="WhatsApp ile rezervasyon yaptırın">
+    <span class="wa-float__pulse" aria-hidden="true"></span>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.78 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.18c-.24.68-1.42 1.32-1.95 1.36-.5.05-.5.4-3.15-.66-2.66-1.06-4.32-3.79-4.45-3.97-.13-.18-1.06-1.41-1.06-2.69 0-1.28.67-1.9.91-2.16.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.58.79 2 .86 2.15.07.14.12.31.02.5-.09.18-.14.3-.27.46-.13.15-.28.34-.4.46-.13.13-.27.28-.12.53.15.26.66 1.09 1.42 1.77.98.87 1.8 1.14 2.06 1.27.26.13.4.11.55-.07.15-.18.63-.74.8-.99.16-.26.33-.21.55-.13.22.08 1.42.67 1.66.79.24.12.4.18.46.28.06.1.06.58-.18 1.26Z"/></svg>
+    <span>Rezervasyon<br>Yaptır</span>
+  </a>
+
+  <!-- ===================== LIGHTBOX ===================== -->
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Galeri görüntüleyici" aria-hidden="true">
+    <button class="lightbox__close" type="button" aria-label="Kapat">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Önceki">‹</button>
+    <img src="" alt="">
+    <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Sonraki">›</button>
+  </div>
+
+  <script src="js/site.js" defer></script>
 </body>
-
 </html>
