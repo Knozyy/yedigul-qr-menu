@@ -2406,12 +2406,35 @@ a.button.btn-gray:hover,a.button.btn-border:hover{color:#e54c2a}
   75% { -webkit-transform: scale(0); }
 }
 @keyframes object_three {
-  75% { 
+  75% {
     transform: scale(0);
     -webkit-transform: scale(0);
   }
 }
 
+/* === mobile fixes (2026-07) === */
+@media (max-width: 767px) {
+  /* Food menu tab bar: css/responsive.css (loaded after this file, not editable)
+     sets .foode-item-box to a fixed height:100px at this same breakpoint, which
+     clips the tab list once "Salata ve Mezeler" and "Balıklar" wrap onto extra
+     lines, making those two tabs invisible and unclickable. Override with
+     !important (required to beat the later-loaded vendored rule at equal
+     specificity) so the box grows to fit its content, and wrap the tabs into a
+     centered flex row instead. */
+  .foode-item-box.foode-item-box {
+    height: auto !important;
+    min-height: 100px;
+    overflow: visible !important;
+  }
+  .foode-item-box ul.nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .foode-item-box ul li a {
+    padding: 12px 10px;
+  }
+}
 
 
 
