@@ -25,15 +25,19 @@ export default function ProductList({
         </div>
       )}
 
-      {items.map((item) => (
-        <ProductCard
-          key={item.id}
-          item={item}
-          onClick={() => onItemClick(item.id)}
-          isFav={favorites.includes(item.id)}
-          onToggleFav={onToggleFav}
-        />
-      ))}
+      {items.length > 0 && (
+        <div className="flex flex-col gap-[13px] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:gap-y-4">
+          {items.map((item) => (
+            <ProductCard
+              key={item.id}
+              item={item}
+              onClick={() => onItemClick(item.id)}
+              isFav={favorites.includes(item.id)}
+              onToggleFav={onToggleFav}
+            />
+          ))}
+        </div>
+      )}
 
       {items.length === 0 && (
         <div className="text-center py-12 px-5 font-inter text-sm" style={{ color: 'var(--muted)' }}>

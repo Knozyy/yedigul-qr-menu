@@ -39,15 +39,17 @@ export default function MenuSections({
             </span>
           </div>
 
-          {section.items.map((item) => (
-            <ProductCard
-              key={item.id}
-              item={item}
-              onClick={() => onItemClick(item.id)}
-              isFav={favorites.includes(item.id)}
-              onToggleFav={onToggleFav}
-            />
-          ))}
+          <div className="flex flex-col gap-[13px] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:gap-y-4">
+            {section.items.map((item) => (
+              <ProductCard
+                key={item.id}
+                item={item}
+                onClick={() => onItemClick(item.id)}
+                isFav={favorites.includes(item.id)}
+                onToggleFav={onToggleFav}
+              />
+            ))}
+          </div>
         </section>
       ))}
     </main>

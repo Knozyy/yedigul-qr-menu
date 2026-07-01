@@ -172,9 +172,9 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   return (
     <div className="min-h-screen flex justify-center font-inter" style={{ background: '#0b1422' }}>
-      <div className="w-full max-w-[468px]" style={themeVars}>
+      <div className="w-full max-w-[468px] lg:max-w-[1000px]" style={themeVars}>
         <div
-          className="w-full max-w-[468px] mx-auto min-h-screen flex flex-col relative"
+          className="w-full max-w-[468px] lg:max-w-[1000px] mx-auto min-h-screen flex flex-col relative"
           style={{ background: 'var(--bg)', color: 'var(--text)', boxShadow: '0 0 90px rgba(0,0,0,.55)' }}
         >
           <div ref={stickyRef} className="sticky top-0 z-30">
