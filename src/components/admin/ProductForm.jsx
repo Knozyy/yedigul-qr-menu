@@ -7,8 +7,20 @@ const empty = {
   price: '', is_market_price: 0, is_available: 1, popular: 0, chef: 0, diet: [],
 };
 
+const listToText = (a) => (Array.isArray(a) ? a.join(', ') : '');
+const textToList = (s) => s.split(',').map((x) => x.trim()).filter(Boolean);
+
 export default function ProductForm({ product, categories, onSaved, onCancel, onDeleted }) {
-  const [form, setForm] = useState(() => ({ ...empty, ...product, diet: product?.diet ?? [] }));
+  const [form, setForm] = useState(() => ({
+    ...empty,
+    ...product,
+    diet: product?.diet ?? [],
+    // ingredient/allergen lists edited as comma-separated text
+    ing_tr: listToText(product?.ing_tr),
+    ing_en: listToText(product?.ing_en),
+    alg_tr: listToText(product?.alg_tr),
+    alg_en: listToText(product?.alg_en),
+  }));
   const [saved, setSaved] = useState(product ?? null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -23,6 +35,10 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
     const payload = {
       ...form,
       price: form.is_market_price ? null : (form.price === '' ? null : Number(form.price)),
+      ing_tr: textToList(form.ing_tr),
+      ing_en: textToList(form.ing_en),
+      alg_tr: textToList(form.alg_tr),
+      alg_en: textToList(form.alg_en),
     };
     try {
       const res = saved?.id
@@ -68,6 +84,14 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
       <input className={field} style={fieldStyle} placeholder="Ad (EN)" value={form.name_en} onChange={(e) => set('name_en', e.target.value)} required />
       <textarea className={field} style={fieldStyle} placeholder="Açıklama (TR)" value={form.desc_tr} onChange={(e) => set('desc_tr', e.target.value)} />
       <textarea className={field} style={fieldStyle} placeholder="Açıklama (EN)" value={form.desc_en} onChange={(e) => set('desc_en', e.target.value)} />
+      <div className="flex flex-col gap-2">
+        <span className="text-[12px]" style={{ color: 'var(--muted)' }}>İçindekiler — virgülle ayırın (örn. Levrek, Limon, Zeytinyağı)</span>
+        <input className={field} style={fieldStyle} placeholder="İçindekiler (TR)" value={form.ing_tr} onChange={(e) => set('ing_tr', e.target.value)} />
+        <input className={field} style={fieldStyle} placeholder="Ingredients (EN)" value={form.ing_en} onChange={(e) => set('ing_en', e.target.value)} />
+        <span className="text-[12px]" style={{ color: 'var(--muted)' }}>Alerjenler — virgülle ayırın (boş = alerjen yok)</span>
+        <input className={field} style={fieldStyle} placeholder="Alerjenler (TR)" value={form.alg_tr} onChange={(e) => set('alg_tr', e.target.value)} />
+        <input className={field} style={fieldStyle} placeholder="Allergens (EN)" value={form.alg_en} onChange={(e) => set('alg_en', e.target.value)} />
+      </div>
       <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--text)' }}>
         <input type="checkbox" checked={!!form.is_market_price} onChange={(e) => set('is_market_price', e.target.checked ? 1 : 0)} />
         Piyasa Fiyatı
