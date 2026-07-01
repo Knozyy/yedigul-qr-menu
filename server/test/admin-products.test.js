@@ -98,6 +98,19 @@ test('PATCH with price and is_market_price together nulls the price', async () =
   assert.equal(body.price, null);
 });
 
+test('PATCH turning market price off restores a numeric price', async () => {
+  // fava is market-priced from the previous test; switch back with a price
+  const res = await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH',
+    headers: auth(),
+    body: JSON.stringify({ is_market_price: 0, price: 300 }),
+  });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.is_market_price, 0);
+  assert.equal(body.price, 300);
+});
+
 test('PATCH to a non-existent category returns 400 not 500', async () => {
   const res = await fetch(`${base}/api/admin/products/fava`, {
     method: 'PATCH',

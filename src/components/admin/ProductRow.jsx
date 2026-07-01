@@ -11,6 +11,23 @@ export default function ProductRow({ product, onToggleAvailable, onEdit, onMove,
         <button className={arrow} onClick={() => onMove(product, -1)} disabled={isFirst} aria-label="yukarı taşı">▲</button>
         <button className={arrow} onClick={() => onMove(product, 1)} disabled={isLast} aria-label="aşağı taşı">▼</button>
       </div>
+      {product.image_url ? (
+        <img
+          src={product.image_url}
+          alt=""
+          className="flex-none w-10 h-10 rounded-lg object-cover border"
+          style={{ borderColor: 'var(--border)' }}
+          loading="lazy"
+        />
+      ) : (
+        <div
+          className="flex-none w-10 h-10 rounded-lg border"
+          style={{
+            background: 'repeating-linear-gradient(135deg, var(--thumb-a) 0 5px, var(--thumb-b) 5px 10px)',
+            borderColor: 'var(--border)',
+          }}
+        />
+      )}
       <div className="flex-1 min-w-0">
         <div className="font-outfit text-[15px] font-semibold truncate" style={{ color: 'var(--text)' }}>
           {product.name_tr}

@@ -7,7 +7,13 @@ async function request(method, path, body, isForm = false) {
       opts.body = JSON.stringify(body);
     }
   }
-  const res = await fetch(`/api${path}`, opts);
+  let res;
+  try {
+    res = await fetch(`/api${path}`, opts);
+  } catch {
+    // network failure — don't surface the raw "Failed to fetch"
+    throw new Error('Sunucuya ulaşılamıyor. Bağlantınızı kontrol edin.');
+  }
   if (res.status === 204) return null;
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `Hata (${res.status})`);
