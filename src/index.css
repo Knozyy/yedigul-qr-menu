@@ -54,3 +54,19 @@ body {
 .yg-anim-sheet {
   animation: yg-sheet-up 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
+
+@keyframes yg-toast-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.yg-anim-toast {
+  transform: translateX(-50%);
+  animation: yg-toast-up 0.24s ease both;
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getThemeVars } from '../../lib/theme';
@@ -6,6 +6,7 @@ import { api } from '../../lib/api';
 import ProductRow from '../../components/admin/ProductRow';
 import ProductForm from '../../components/admin/ProductForm';
 import CategoryForm from '../../components/admin/CategoryForm';
+import Toast from '../../components/Toast';
 
 export default function DashboardPage() {
   const { logout } = useAuth();
@@ -17,6 +18,16 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null); // ürün objesi | 'new' | null
   const [showCategories, setShowCategories] = useState(false);
+  const [toast, setToast] = useState('');
+  const toastTimer = useRef(null);
+
+  const showToast = useCallback((text) => {
+    setToast(text);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(''), 2200);
+  }, []);
+
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
 
   const reload = useCallback(async () => {
     try {
@@ -66,9 +77,9 @@ export default function DashboardPage() {
           <ProductForm
             product={editing === 'new' ? null : editing}
             categories={categories}
-            onSaved={() => reload()}
+            onSaved={() => { reload(); showToast('Kaydedildi'); }}
             onCancel={() => setEditing(null)}
-            onDeleted={() => { setEditing(null); reload(); }}
+            onDeleted={() => { setEditing(null); reload(); showToast('Ürün silindi'); }}
           />
         ) : (
           <button
@@ -81,7 +92,7 @@ export default function DashboardPage() {
         )}
 
         {showCategories && !editing && (
-          <CategoryForm categories={categories} onChanged={reload} />
+          <CategoryForm categories={categories} onChanged={() => { reload(); showToast('Güncellendi'); }} />
         )}
 
         {!editing && categories.map((cat) => (
@@ -96,6 +107,8 @@ export default function DashboardPage() {
             </div>
           </section>
         ))}
+
+        <Toast text={toast} />
       </div>
     </div>
   );

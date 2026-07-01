@@ -41,11 +41,15 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
       alg_en: textToList(form.alg_en),
     };
     try {
-      const res = saved?.id
+      const wasExisting = !!saved?.id;
+      const res = wasExisting
         ? await api.patch(`/admin/products/${saved.id}`, payload)
         : await api.post('/admin/products', payload);
       setSaved(res);
       onSaved(res);
+      // editing an existing product: close back to the list.
+      // new product: stay open so an image can be uploaded now that it has an id.
+      if (wasExisting) onCancel();
     } catch (err) {
       setError(err.message);
     } finally {

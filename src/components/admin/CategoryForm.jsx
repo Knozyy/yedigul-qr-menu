@@ -1,8 +1,17 @@
 import { useState } from 'react';
 import { api } from '../../lib/api';
 
+// "Şaraplar & Kokteyller" -> "saraplar-kokteyller"
+function slugify(s) {
+  const map = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u' };
+  return s
+    .toLocaleLowerCase('tr')
+    .replace(/[çğıöşü]/g, (ch) => map[ch])
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export default function CategoryForm({ categories, onChanged }) {
-  const [id, setId] = useState('');
   const [nameTr, setNameTr] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [error, setError] = useState('');
@@ -13,9 +22,17 @@ export default function CategoryForm({ categories, onChanged }) {
   async function onAdd(e) {
     e.preventDefault();
     setError('');
+    const base = slugify(nameTr);
+    if (!base) {
+      setError('Geçerli bir kategori adı girin.');
+      return;
+    }
+    // avoid id collisions with existing categories
+    let id = base;
+    for (let n = 2; categories.some((c) => c.id === id); n++) id = `${base}-${n}`;
     try {
-      await api.post('/admin/categories', { id: id.trim(), name_tr: nameTr, name_en: nameEn });
-      setId(''); setNameTr(''); setNameEn('');
+      await api.post('/admin/categories', { id, name_tr: nameTr, name_en: nameEn });
+      setNameTr(''); setNameEn('');
       onChanged();
     } catch (err) {
       setError(err.message);
@@ -46,7 +63,6 @@ export default function CategoryForm({ categories, onChanged }) {
   return (
     <div className="flex flex-col gap-3 p-4 rounded-xl border mb-4" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
       <form onSubmit={onAdd} className="flex flex-col gap-2">
-        <input className={field} style={fieldStyle} placeholder="ID (örn. wine)" value={id} onChange={(e) => setId(e.target.value)} required />
         <input className={field} style={fieldStyle} placeholder="Ad (TR)" value={nameTr} onChange={(e) => setNameTr(e.target.value)} required />
         <input className={field} style={fieldStyle} placeholder="Ad (EN)" value={nameEn} onChange={(e) => setNameEn(e.target.value)} required />
         <button type="submit" className="px-4 py-2 rounded-lg font-semibold self-start" style={{ background: 'var(--gold)', color: '#fff' }}>
