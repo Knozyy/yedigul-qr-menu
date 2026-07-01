@@ -52,6 +52,26 @@ export default function DashboardPage() {
 
   const onEdit = useCallback((product) => setEditing(product), []);
 
+  // reorder within the product's category: swap with neighbour, persist
+  // per-category indexes (only rows whose sort actually changed are PATCHed)
+  const onMoveProduct = useCallback(async (product, dir) => {
+    const list = products.filter((p) => p.category_id === product.category_id);
+    const i = list.findIndex((p) => p.id === product.id);
+    const j = i + dir;
+    if (j < 0 || j >= list.length) return;
+    [list[i], list[j]] = [list[j], list[i]];
+    try {
+      await Promise.all(
+        list
+          .map((p, idx) => (p.sort !== idx ? api.patch(`/admin/products/${p.id}`, { sort: idx }) : null))
+          .filter(Boolean)
+      );
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }, [products, reload]);
+
   async function onLogout() {
     await logout();
     navigate('/admin/login', { replace: true });
@@ -101,8 +121,16 @@ export default function DashboardPage() {
               {cat.name_tr}
             </h2>
             <div className="flex flex-col gap-2">
-              {products.filter((p) => p.category_id === cat.id).map((p) => (
-                <ProductRow key={p.id} product={p} onToggleAvailable={onToggleAvailable} onEdit={onEdit} />
+              {products.filter((p) => p.category_id === cat.id).map((p, idx, list) => (
+                <ProductRow
+                  key={p.id}
+                  product={p}
+                  onToggleAvailable={onToggleAvailable}
+                  onEdit={onEdit}
+                  onMove={onMoveProduct}
+                  isFirst={idx === 0}
+                  isLast={idx === list.length - 1}
+                />
               ))}
             </div>
           </section>

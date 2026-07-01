@@ -60,6 +60,26 @@ export default function CategoryForm({ categories, onChanged }) {
     }
   }
 
+  // swap with neighbour and persist indexes (only changed rows are PATCHed)
+  async function onMove(cat, dir) {
+    const i = categories.findIndex((c) => c.id === cat.id);
+    const j = i + dir;
+    if (j < 0 || j >= categories.length) return;
+    const list = [...categories];
+    [list[i], list[j]] = [list[j], list[i]];
+    setError('');
+    try {
+      await Promise.all(
+        list
+          .map((c, idx) => (c.sort !== idx ? api.patch(`/admin/categories/${c.id}`, { sort: idx }) : null))
+          .filter(Boolean)
+      );
+      onChanged();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3 p-4 rounded-xl border mb-4" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
       <form onSubmit={onAdd} className="flex flex-col gap-2">
@@ -71,11 +91,18 @@ export default function CategoryForm({ categories, onChanged }) {
       </form>
       {error && <span className="text-sm" style={{ color: '#ef6b6b' }}>{error}</span>}
       <ul className="flex flex-col gap-1">
-        {categories.map((c) => {
+        {categories.map((c, idx) => {
           const active = c.is_active === 1;
+          const arrow = 'w-6 h-5 flex items-center justify-center text-[10px] leading-none disabled:opacity-25';
           return (
-            <li key={c.id} className="flex items-center justify-between text-sm" style={{ color: 'var(--text)', opacity: active ? 1 : 0.55 }}>
-              <span>{c.name_tr} <span style={{ color: 'var(--muted)' }}>({c.id})</span></span>
+            <li key={c.id} className="flex items-center justify-between gap-2 text-sm" style={{ color: 'var(--text)', opacity: active ? 1 : 0.55 }}>
+              <span className="flex items-center gap-1 min-w-0">
+                <span className="flex flex-col -my-1" style={{ color: 'var(--muted)' }}>
+                  <button className={arrow} onClick={() => onMove(c, -1)} disabled={idx === 0} aria-label="yukarı taşı">▲</button>
+                  <button className={arrow} onClick={() => onMove(c, 1)} disabled={idx === categories.length - 1} aria-label="aşağı taşı">▼</button>
+                </span>
+                <span className="truncate">{c.name_tr} <span style={{ color: 'var(--muted)' }}>({c.id})</span></span>
+              </span>
               <span className="flex items-center gap-3">
                 <button
                   onClick={() => onToggleActive(c, active ? 0 : 1)}
