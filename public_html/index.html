@@ -54,23 +54,25 @@
       </button>
     </div>
 
-    <!-- Mobile slide-in panel -->
-    <div class="nav__panel" id="navpanel">
-      <nav class="nav__panel-links" aria-label="Mobil menü">
-        <a href="#top" style="--i:0"><span class="n">01</span> Ana Sayfa</a>
-        <a href="#tarihce" style="--i:1"><span class="n">02</span> Tarihçe</a>
-        <a href="#spesiyaller" style="--i:2"><span class="n">03</span> Spesiyaller</a>
-        <a href="menu/" style="--i:3"><span class="n">04</span> Menümüz</a>
-        <a href="#galeri" style="--i:4"><span class="n">05</span> Galeri</a>
-        <a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener" style="--i:5"><span class="n">06</span> Rezervasyon</a>
-        <a href="#iletisim" style="--i:6"><span class="n">07</span> İletişim</a>
-      </nav>
-      <div class="nav__panel-foot">
-        <span>Anadolu Kavağı Mah. Macar Tabya Cd. 6/A · Beykoz</span>
-        <a href="tel:+902163202180">+90 216 320 21 80</a>
-      </div>
-    </div>
   </header>
+
+  <!-- Mobile slide-in panel — .nav dışında durmalı: kaydırılınca .nav'a gelen
+       backdrop-filter, içindeki position:fixed öğeyi nav'a hapsediyor -->
+  <div class="nav__panel" id="navpanel">
+    <nav class="nav__panel-links" aria-label="Mobil menü">
+      <a href="#top" style="--i:0"><span class="n">01</span> Ana Sayfa</a>
+      <a href="#tarihce" style="--i:1"><span class="n">02</span> Tarihçe</a>
+      <a href="#spesiyaller" style="--i:2"><span class="n">03</span> Spesiyaller</a>
+      <a href="menu/" style="--i:3"><span class="n">04</span> Menümüz</a>
+      <a href="#galeri" style="--i:4"><span class="n">05</span> Galeri</a>
+      <a href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener" style="--i:5"><span class="n">06</span> Rezervasyon</a>
+      <a href="#iletisim" style="--i:6"><span class="n">07</span> İletişim</a>
+    </nav>
+    <div class="nav__panel-foot">
+      <span>Anadolu Kavağı Mah. Macar Tabya Cd. 6/A · Beykoz</span>
+      <a href="tel:+902163202180">+90 216 320 21 80</a>
+    </div>
+  </div>
 
   <main>
 

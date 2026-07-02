@@ -320,6 +320,18 @@ body.nav-open .nav__panel {
   clip-path: circle(150% at calc(100% - 44px) 44px);
   visibility: visible;
 }
+/* panel açıkken arkadaki sayfa kaymasın */
+body.nav-open { overflow: hidden; }
+/* panel açıkken nav (marka + X butonu) panelin üzerinde kalmalı;
+   is-scrolled'ın krem/cam görünümü ink panel üzerinde sırıtmasın */
+body.nav-open .nav {
+  z-index: 120;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  border-bottom-color: transparent;
+}
 .nav__panel-links { display: flex; flex-direction: column; gap: .35rem; position: relative; }
 .nav__panel-links a {
   font-family: var(--serif);
