@@ -30,8 +30,15 @@ export function openDb(path) {
       ing_en          TEXT NOT NULL DEFAULT '[]',
       alg_tr          TEXT NOT NULL DEFAULT '[]',
       alg_en          TEXT NOT NULL DEFAULT '[]',
-      sort            INTEGER NOT NULL DEFAULT 0
+      sort            INTEGER NOT NULL DEFAULT 0,
+      kcal            INTEGER
     );
   `);
+  // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
+  // eski data.db'lere eksik kolonları veri kaybı olmadan ekle
+  const cols = db.prepare('PRAGMA table_info(products)').all().map((c) => c.name);
+  if (!cols.includes('kcal')) {
+    db.exec('ALTER TABLE products ADD COLUMN kcal INTEGER');
+  }
   return db;
 }

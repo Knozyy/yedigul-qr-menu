@@ -4,7 +4,7 @@ import ImageUploader from './ImageUploader';
 
 const empty = {
   category_id: '', name_tr: '', name_en: '', desc_tr: '', desc_en: '',
-  price: '', is_market_price: 0, is_available: 1, popular: 0, chef: 0, diet: [],
+  price: '', kcal: '', is_market_price: 0, is_available: 1, popular: 0, chef: 0, diet: [],
 };
 
 const listToText = (a) => (Array.isArray(a) ? a.join(', ') : '');
@@ -35,6 +35,7 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
     const payload = {
       ...form,
       price: form.is_market_price ? null : (form.price === '' ? null : Number(form.price)),
+      kcal: form.kcal === '' || form.kcal == null ? null : Number(form.kcal),
       ing_tr: textToList(form.ing_tr),
       ing_en: textToList(form.ing_en),
       alg_tr: textToList(form.alg_tr),
@@ -103,6 +104,7 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
       {!form.is_market_price && (
         <input className={field} style={fieldStyle} type="number" placeholder="Fiyat (TL)" value={form.price ?? ''} onChange={(e) => set('price', e.target.value)} />
       )}
+      <input className={field} style={fieldStyle} type="number" min="0" placeholder="Kalori (kcal) — porsiyon başı enerji" value={form.kcal ?? ''} onChange={(e) => set('kcal', e.target.value)} />
       <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--text)' }}>
         <input type="checkbox" checked={form.is_available === 1} onChange={(e) => set('is_available', e.target.checked ? 1 : 0)} />
         Menüde görünür (aktif)

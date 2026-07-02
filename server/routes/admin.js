@@ -9,7 +9,7 @@ const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en'];
 const PRODUCT_FIELDS = [
   'category_id', 'name_tr', 'name_en', 'desc_tr', 'desc_en', 'price',
   'is_market_price', 'is_available', 'popular', 'chef',
-  'diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'sort',
+  'diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'sort', 'kcal',
 ];
 
 function hydrate(row) {
@@ -67,10 +67,10 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       db.prepare(
         `INSERT INTO products
           (id, category_id, name_tr, name_en, desc_tr, desc_en, price, is_market_price,
-           image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort)
+           image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort, kcal)
          VALUES
           (@id, @category_id, @name_tr, @name_en, @desc_tr, @desc_en, @price, @is_market_price,
-           NULL, @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort)`
+           NULL, @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort, @kcal)`
       ).run({
         id,
         category_id: b.category_id,
@@ -89,6 +89,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         alg_tr: JSON.stringify(b.alg_tr ?? []),
         alg_en: JSON.stringify(b.alg_en ?? []),
         sort: b.sort ?? 0,
+        kcal: b.kcal ?? null,
       });
     } catch {
       return res.status(400).json({ error: 'Geçersiz veri (örn. kategori bulunamadı)' });

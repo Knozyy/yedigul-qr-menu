@@ -110,6 +110,17 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
               {sheet.desc}
             </p>
 
+            {sheet.kcal != null && (
+              <div className="flex items-center gap-2 mt-3">
+                <span className="yg-overline text-[10px]" style={{ color: 'var(--gold)' }}>
+                  {ui.energy}
+                </span>
+                <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>
+                  {sheet.kcal} kcal
+                </span>
+              </div>
+            )}
+
             <div className="mt-[22px]">
               <span className="yg-overline text-[10.5px]" style={{ color: 'var(--gold)' }}>
                 {ui.ingredients}

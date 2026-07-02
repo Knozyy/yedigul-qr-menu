@@ -6,6 +6,7 @@ export function rowToPublicItem(row) {
     cat: row.category_id,
     thumb: row.name_en.toUpperCase(),
     price: row.is_market_price ? null : row.price,
+    kcal: row.kcal ?? null,
     image_url: row.image_url,
     diet: JSON.parse(row.diet),
     popular: !!row.popular,

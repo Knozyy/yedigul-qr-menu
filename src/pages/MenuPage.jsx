@@ -28,6 +28,7 @@ const mapItem = (it, lang, ui) => ({
   image: it.image_url || null,
   isMarket: it.price == null,
   priceText: it.price == null ? ui.market : `${it.price} TL`,
+  kcal: it.kcal ?? null,
   badges: it.diet.map((d) => (d === 'gf' ? ui.gfShort : ui.vegShort)),
   tags: buildTags(it, ui),
 });
@@ -133,6 +134,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       category: localize(selCat, lang),
       isMarket: sel.price == null,
       priceText: sel.price == null ? ui.market : `${sel.price} TL`,
+      kcal: sel.kcal ?? null,
       ingredients: localize(sel.ing, lang),
       allergens: allergens && allergens.length ? allergens.join(' · ') : ui.noAlg,
       tags: buildTags(sel, ui),

@@ -111,6 +111,25 @@ test('PATCH turning market price off restores a numeric price', async () => {
   assert.equal(body.price, 300);
 });
 
+test('PATCH sets and clears kcal', async () => {
+  // is_available: 1 — an earlier test leaves fava hidden from the public menu
+  let res = await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH', headers: auth(), body: JSON.stringify({ kcal: 310, is_available: 1 }),
+  });
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).kcal, 310);
+
+  // public menu exposes it
+  const pub = await (await fetch(`${base}/api/menu`)).json();
+  assert.equal(pub.products.find((p) => p.id === 'fava').kcal, 310);
+
+  // clearing works
+  res = await fetch(`${base}/api/admin/products/fava`, {
+    method: 'PATCH', headers: auth(), body: JSON.stringify({ kcal: null }),
+  });
+  assert.equal((await res.json()).kcal, null);
+});
+
 test('PATCH to a non-existent category returns 400 not 500', async () => {
   const res = await fetch(`${base}/api/admin/products/fava`, {
     method: 'PATCH',
