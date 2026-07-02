@@ -85,22 +85,22 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
 
             <div className="flex items-start justify-between gap-3.5 mt-4">
               <div className="flex-1 min-w-0">
-                <span className="block font-inter text-[10px] uppercase tracking-[.2em] font-semibold" style={{ color: 'var(--gold)' }}>
+                <span className="yg-overline block text-[10px]" style={{ color: 'var(--gold)' }}>
                   {sheet.category}
                 </span>
-                <span className="block font-outfit text-[23px] font-semibold leading-[1.15] mt-[5px]" style={{ color: 'var(--text)' }}>
+                <span className="block font-outfit text-[30px] font-semibold leading-[1.05] mt-[6px]" style={{ color: 'var(--text)' }}>
                   {sheet.name}
                 </span>
               </div>
               {sheet.isMarket ? (
                 <span
-                  className="flex-none font-inter text-[11px] font-semibold uppercase tracking-[.06em] px-3 py-1.5 rounded-full border whitespace-nowrap text-right"
+                  className="flex-none font-inter text-[10px] font-semibold uppercase tracking-[.1em] px-3 py-1.5 rounded-full border whitespace-nowrap text-right"
                   style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
                 >
                   {sheet.priceText}
                 </span>
               ) : (
-                <span className="flex-none font-outfit text-[22px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
+                <span className="flex-none font-outfit text-[29px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
                   {sheet.priceText}
                 </span>
               )}
@@ -111,7 +111,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
             </p>
 
             <div className="mt-[22px]">
-              <span className="font-outfit text-[13px] font-semibold uppercase tracking-[.04em]" style={{ color: 'var(--text)' }}>
+              <span className="yg-overline text-[10.5px]" style={{ color: 'var(--gold)' }}>
                 {ui.ingredients}
               </span>
               <div className="flex flex-wrap gap-2 mt-[11px]">
@@ -147,7 +147,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
                 <path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.42 0Z" />
               </svg>
               <div className="flex-1">
-                <span className="block font-outfit text-[12.5px] font-semibold tracking-[.02em]" style={{ color: 'var(--text)' }}>
+                <span className="yg-overline block text-[10px]" style={{ color: 'var(--gold)' }}>
                   {ui.allergens}
                 </span>
                 <span className="block font-inter text-[12.5px] leading-[1.5] mt-[3px]" style={{ color: 'var(--muted)' }}>

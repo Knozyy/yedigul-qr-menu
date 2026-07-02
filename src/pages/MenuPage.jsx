@@ -242,12 +242,22 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
             />
           )}
 
-          <div className="px-5 pb-[30px] text-center">
+          <div className="px-5 pb-[30px] flex flex-col items-center gap-2">
             <span
-              className="font-inter text-[10.5px] uppercase tracking-[.18em] opacity-70"
+              className="flex-none w-8 h-px"
+              style={{ background: 'var(--gold-soft)' }}
+            />
+            <span
+              className="font-outfit italic text-[19px] font-medium leading-none"
+              style={{ color: 'var(--gold)' }}
+            >
+              Yedigül
+            </span>
+            <span
+              className="yg-overline text-[9px] opacity-80"
               style={{ color: 'var(--muted)' }}
             >
-              Yedigül · {ui.tagline}
+              {ui.tagline}
             </span>
           </div>
 

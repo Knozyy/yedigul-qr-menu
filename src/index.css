@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --font-outfit: "Outfit", sans-serif;
-  --font-inter: "Inter", sans-serif;
+  /* Shared "Boğaz'da akşam" type system (mirrors public_html/css/site.css).
+     Utility names kept as font-outfit (display) / font-inter (body) so every
+     component + admin page inherits the new families with no churn. */
+  --font-outfit: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-inter: "Jost", "Segoe UI", system-ui, sans-serif;
 }
 
 * {
@@ -17,7 +20,24 @@ body {
 
 body {
   background: #0b1422;
+  font-family: "Jost", "Segoe UI", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Cormorant is a high-contrast display serif — enable discretionary polish
+   and lean on heavier weights so hierarchy stays crisp at menu sizes. */
+.font-outfit {
+  font-feature-settings: "liga" 1, "kern" 1;
+}
+
+/* Editorial gold overline: small-caps letterspaced label with a hairline rule,
+   echoing the homepage .eyebrow / section labels. */
+.yg-overline {
+  font-family: "Jost", "Segoe UI", system-ui, sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
 }
 
 .yg-scroll::-webkit-scrollbar {

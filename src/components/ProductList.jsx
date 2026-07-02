@@ -12,13 +12,13 @@ export default function ProductList({
   return (
     <main className="flex-1 px-5 pt-1 pb-9 flex flex-col gap-[13px]">
       {title && items.length > 0 && (
-        <div className="flex items-center gap-3 my-1.5">
-          <span className="font-outfit text-[17px] font-semibold tracking-[.01em]" style={{ color: 'var(--text)' }}>
+        <div className="flex items-baseline gap-3 my-1.5">
+          <span className="font-outfit text-[23px] font-semibold leading-none tracking-[.01em]" style={{ color: 'var(--text)' }}>
             {title}
           </span>
-          <span className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+          <span className="flex-1 h-px self-center" style={{ background: 'var(--border)' }} />
           {countLabel && (
-            <span className="font-inter text-[11px]" style={{ color: 'var(--muted)' }}>
+            <span className="yg-overline text-[9.5px]" style={{ color: 'var(--gold)' }}>
               {countLabel}
             </span>
           )}
@@ -40,7 +40,7 @@ export default function ProductList({
       )}
 
       {items.length === 0 && (
-        <div className="text-center py-12 px-5 font-inter text-sm" style={{ color: 'var(--muted)' }}>
+        <div className="text-center py-12 px-5 font-inter text-[13.5px] tracking-[.02em]" style={{ color: 'var(--muted)' }}>
           {emptyLabel}
         </div>
       )}

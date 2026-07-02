@@ -67,24 +67,24 @@ export default function ProductCard({ item, onClick, isFav, onToggleFav }) {
 
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="flex items-baseline justify-between gap-2.5">
-          <span className="font-outfit text-[15.5px] font-semibold tracking-[.005em]" style={{ color: 'var(--text)' }}>
+          <span className="font-outfit text-[19px] font-semibold leading-[1.1] tracking-[.005em]" style={{ color: 'var(--text)' }}>
             {item.name}
           </span>
           {item.isMarket ? (
             <span
-              className="flex-none font-inter text-[9.5px] font-semibold uppercase tracking-[.06em] px-[9px] py-1 rounded-full border whitespace-nowrap text-right"
+              className="flex-none font-inter text-[9px] font-semibold uppercase tracking-[.1em] px-[9px] py-1 rounded-full border whitespace-nowrap text-right"
               style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
             >
               {item.priceText}
             </span>
           ) : (
-            <span className="flex-none font-outfit text-[15px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
+            <span className="flex-none font-outfit text-[20px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
               {item.priceText}
             </span>
           )}
         </div>
 
-        <span className="font-inter text-[12.5px] leading-[1.45] mt-1" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>
+        <span className="font-inter text-[12.5px] leading-[1.5] mt-[3px]" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>
           {item.desc}
         </span>
 

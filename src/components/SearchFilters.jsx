@@ -2,7 +2,7 @@ function FilterChip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className="flex-1 cursor-pointer font-inter text-[12.5px] font-semibold px-2.5 py-[9px] rounded-xl flex items-center justify-center gap-1.5 border"
+      className="flex-1 cursor-pointer font-inter text-[12px] font-semibold tracking-[.04em] px-2.5 py-[9px] rounded-xl flex items-center justify-center gap-1.5 border"
       style={
         active
           ? {

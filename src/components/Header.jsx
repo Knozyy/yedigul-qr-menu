@@ -18,18 +18,18 @@ export default function Header({
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-[3px]">
           <span
-            className="font-inter text-[9.5px] font-semibold uppercase tracking-[.32em]"
+            className="yg-overline text-[9.5px]"
             style={{ color: 'var(--gold)' }}
           >
             Bosphorus · İstanbul
           </span>
           <span
-            className="font-outfit text-[25px] font-semibold leading-none tracking-[.01em]"
+            className="font-outfit text-[32px] font-semibold leading-[0.95] tracking-[.005em] mt-[3px]"
             style={{ color: 'var(--text)' }}
           >
             Yedigül
           </span>
-          <span className="font-inter text-[11px] mt-[1px]" style={{ color: 'var(--muted)' }}>
+          <span className="font-inter text-[11.5px] mt-[3px]" style={{ color: 'var(--muted)' }}>
             {ui.tagline}
           </span>
         </div>
@@ -89,7 +89,7 @@ export default function Header({
               <button
                 key={code}
                 onClick={() => onSetLang(code)}
-                className="border-none cursor-pointer font-outfit text-[12.5px] font-semibold tracking-[.04em] px-3.5 py-1.5 rounded-full"
+                className="border-none cursor-pointer font-inter text-[12px] font-semibold tracking-[.06em] px-3.5 py-1.5 rounded-full"
                 style={
                   active
                     ? { background: 'var(--navy-2)', color: '#fff' }

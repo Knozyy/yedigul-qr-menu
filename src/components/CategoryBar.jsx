@@ -27,7 +27,7 @@ export default function CategoryBar({ categories, activeCat, onSelect }) {
               if (el) btnRefs.current[cat.id] = el;
             }}
             onClick={() => onSelect(cat.id)}
-            className="flex-none cursor-pointer font-outfit text-[13.5px] tracking-[.01em] px-[17px] py-[9px] rounded-full border"
+            className="flex-none cursor-pointer font-inter text-[12.5px] tracking-[.05em] px-[17px] py-[9px] rounded-full border"
             style={
               active
                 ? {

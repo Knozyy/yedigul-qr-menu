@@ -13,7 +13,7 @@ export default function MenuSections({
   if (sections.length === 0) {
     return (
       <main className="flex-1 px-5 pt-1 pb-9">
-        <div className="text-center py-12 px-5 font-inter text-sm" style={{ color: 'var(--muted)' }}>
+        <div className="text-center py-12 px-5 font-inter text-[13.5px] tracking-[.02em]" style={{ color: 'var(--muted)' }}>
           {emptyLabel}
         </div>
       </main>
@@ -29,12 +29,12 @@ export default function MenuSections({
           style={{ scrollMarginTop: `${scrollMargin}px` }}
           className="flex flex-col gap-[13px]"
         >
-          <div className="flex items-center gap-3 my-1.5">
-            <span className="font-outfit text-[17px] font-semibold tracking-[.01em]" style={{ color: 'var(--text)' }}>
+          <div className="flex items-baseline gap-3 my-1.5">
+            <span className="font-outfit text-[23px] font-semibold leading-none tracking-[.01em]" style={{ color: 'var(--text)' }}>
               {section.title}
             </span>
-            <span className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-            <span className="font-inter text-[11px]" style={{ color: 'var(--muted)' }}>
+            <span className="flex-1 h-px self-center" style={{ background: 'var(--border)' }} />
+            <span className="yg-overline text-[9.5px]" style={{ color: 'var(--gold)' }}>
               {section.items.length} {countWord}
             </span>
           </div>
