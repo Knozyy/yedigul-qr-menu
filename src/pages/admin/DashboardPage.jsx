@@ -83,6 +83,9 @@ export default function DashboardPage() {
         <header className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h1 className="font-outfit text-lg font-semibold">Yönetim Paneli</h1>
           <div className="flex gap-2">
+            <a href="/" className="text-sm px-3 py-1.5 rounded-lg border no-underline" style={{ borderColor: 'var(--border-strong)', color: 'var(--text)' }}>
+              Ana Sayfa
+            </a>
             <button onClick={() => setShowCategories((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
               Kategoriler
             </button>

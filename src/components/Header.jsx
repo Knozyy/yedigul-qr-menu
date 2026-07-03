@@ -78,7 +78,15 @@ export default function Header({
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3 mt-3.5">
+      <div className="flex items-center justify-between gap-3 mt-3.5">
+        <a
+          href="/"
+          className="font-inter text-[12px] font-semibold tracking-[.06em] no-underline flex items-center gap-1.5"
+          style={{ color: 'var(--gold)' }}
+        >
+          <span aria-hidden="true">←</span>
+          {ui.home}
+        </a>
         <div
           className="inline-flex p-[3px] rounded-full border"
           style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}
