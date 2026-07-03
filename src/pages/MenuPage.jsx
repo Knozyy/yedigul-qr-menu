@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { UI } from '../data/menu';
+import { UI } from '../data/ui';
 import { useMenu } from '../context/MenuContext';
 import { getThemeVars } from '../lib/theme';
 import { readStorage, writeStorage } from '../lib/storage';

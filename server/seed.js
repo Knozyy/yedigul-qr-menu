@@ -1,4 +1,4 @@
-import { CATEGORIES, ITEMS } from '../src/data/menu.js';
+import { CATEGORIES, ITEMS } from './seed-data.js';
 
 export function seed(db) {
   const existing = db.prepare('SELECT COUNT(*) n FROM categories').get().n;

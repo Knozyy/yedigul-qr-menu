@@ -1,3 +1,12 @@
+// ============================================================================
+// DİKKAT — BU DOSYA SADECE İLK KURULUM TOHUM (SEED) VERİSİDİR.
+//
+// Veritabanı (server/data.db) bir kez oluşturulduktan sonra menünün tek
+// gerçek kaynağı veritabanıdır; ürün/fiyat/kalori değişiklikleri YÖNETİM
+// PANELİNDEN yapılır. Bu dosyayı düzenlemek mevcut kurulumu ETKİLEMEZ —
+// yalnızca sıfırdan (boş data.db ile) kurulan sunucularda kullanılır.
+// ============================================================================
+
 export const CATEGORIES = [
   { id: 'cold', tr: 'Soğuk Mezeler', en: 'Cold Appetizers' },
   { id: 'hot', tr: 'Ara Sıcaklar', en: 'Hot Starters' },
@@ -156,20 +165,3 @@ export const ITEMS = [
     alg: { tr: ['Süt'], en: ['Dairy'] },
   },
 ];
-
-export const UI = {
-  tr: {
-    tagline: 'Boğaz Balık Restoranı', search: 'Menüde ara…', gf: 'Glütensiz', veg: 'Vejetaryen',
-    market: 'Piyasa Fiyatı', ingredients: 'İçindekiler', allergens: 'Alerjenler', energy: 'Enerji',
-    empty: 'Eşleşen yemek bulunamadı.', items: 'çeşit', gfShort: 'GLÜTENSİZ', vegShort: 'VEJETARYEN', noAlg: 'Bilinen alerjen yok.',
-    favorites: 'Favoriler', noFav: 'Henüz favori eklemediniz.', popular: 'POPÜLER', chef: 'ŞEFİN ÖNERİSİ',
-    loading: 'Menü yükleniyor…',
-  },
-  en: {
-    tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…', gf: 'Gluten-Free', veg: 'Vegetarian',
-    market: 'Market Price', ingredients: 'Ingredients', allergens: 'Allergens', energy: 'Energy',
-    empty: 'No dishes match your search.', items: 'dishes', gfShort: 'GLUTEN-FREE', vegShort: 'VEGETARIAN', noAlg: 'No known allergens.',
-    favorites: 'Favorites', noFav: 'No favorites yet.', popular: 'POPULAR', chef: "CHEF'S CHOICE",
-    loading: 'Loading menu…',
-  },
-};
