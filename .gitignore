@@ -34,3 +34,6 @@ server/uploads/
 /blob-report/
 /playwright/.cache/
 dist-menu
+
+# arşiv artıfaktları repoya girmesin
+*.zip
