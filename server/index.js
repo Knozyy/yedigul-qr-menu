@@ -33,11 +33,23 @@ seed(db);
 const auth = createAuth({ secret: SECRET, password: PASSWORD });
 const app = createApp({ db, uploadsDir: UPLOADS_DIR, auth });
 
-// production: serve built frontend
+// Tek domain düzeni (tek port):
+//   /            → ana site (public_html)
+//   /menu/…      → canlı menü + yönetim paneli (React build)
+//   /menu/admin  → panel (/admin oraya yönlenir)
+//   /api, /uploads → API (createApp içinde)
 const distDir = resolve(__dirname, '..', 'dist');
+const siteDir = resolve(__dirname, '..', 'public_html');
+
 if (existsSync(distDir)) {
-  app.use(express.static(distDir));
-  app.get(/^(?!\/api|\/uploads).*/, (req, res) => res.sendFile(join(distDir, 'index.html')));
+  app.use('/menu', express.static(distDir));
+  app.get(/^\/menu(\/.*)?$/, (req, res) => res.sendFile(join(distDir, 'index.html')));
+}
+
+app.get(/^\/admin(\/.*)?$/, (req, res) => res.redirect('/menu' + req.originalUrl));
+
+if (existsSync(siteDir)) {
+  app.use(express.static(siteDir));
 }
 
 app.listen(PORT, () => {

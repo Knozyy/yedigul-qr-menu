@@ -11,12 +11,13 @@ cp .env.example .env   # ADMIN_PASSWORD ve JWT_SECRET'ı doldur
 ./run.sh               # Windows: run.bat — her şeyi tek seferde başlatır
 ```
 
-Açılanlar:
+Her şey tek port üzerinden çalışır:
 
 | Adres | Ne |
 |-------|----|
-| `http://localhost:3001` | QR menü + yönetim paneli (`/admin`) |
-| `http://localhost:8090` | Ana sitenin (`public_html/`) önizlemesi |
+| `http://localhost:3001` | Ana site |
+| `http://localhost:3001/menu/` | QR menü |
+| `http://localhost:3001/menu/admin` | Yönetim paneli |
 
 ## Mimari (kısaca)
 

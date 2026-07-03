@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Yedigül — tek komutla HER ŞEY: ana sayfa + QR menü + yönetim paneli
+# Yedigül — tek komut, tek port: ana sayfa + QR menü + yönetim paneli (:3001)
 cd "$(dirname "$0")" || exit 1
 
 # çıkışta (Ctrl+C) tüm alt süreçleri durdur
@@ -17,28 +17,23 @@ if [ ! -f .env ]; then
   echo "UYARI: .env dosyası oluşturuldu. ADMIN_PASSWORD ve JWT_SECRET değerlerini düzenleyin!"
 fi
 
-# Ana sayfa + statik menü sunucusu (8090) — arka planda
-node scripts/serve-static.mjs &
-
-# Sunucular ayağa kalkınca tarayıcıda ikisini de aç
+# Sunucu ayağa kalkınca tarayıcıda aç
 (
   sleep 7
-  for url in "http://localhost:8090" "http://localhost:3001/admin"; do
-    if command -v start >/dev/null 2>&1; then start "$url"        # Git Bash (Windows)
-    elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$url"  # Linux
-    elif command -v open >/dev/null 2>&1; then open "$url"        # macOS
-    fi
-  done
+  url="http://localhost:3001"
+  if command -v start >/dev/null 2>&1; then start "$url"        # Git Bash (Windows)
+  elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$url"  # Linux
+  elif command -v open >/dev/null 2>&1; then open "$url"        # macOS
+  fi
 ) &
 
 echo ""
-echo "  Ana sayfa (site):  http://localhost:8090"
-echo "  QR menü (statik):  http://localhost:8090/menu/"
-echo "  Canlı menü:        http://localhost:3001"
-echo "  Yönetim paneli:    http://localhost:3001/admin"
+echo "  Ana sayfa:       http://localhost:3001"
+echo "  QR menü:         http://localhost:3001/menu/"
+echo "  Yönetim paneli:  http://localhost:3001/menu/admin"
 echo ""
 echo "  Durdurmak için: Ctrl+C"
 echo ""
 
-# Panel + canlı menü + API (3001) — ön planda
+# Site + menü + panel + API — hepsi tek süreç (3001)
 npm run panel

@@ -19,14 +19,23 @@
 - **Linux/Mac:** `./run.sh`   (gerekirse önce: `chmod +x run.sh`)
 - **Windows:**   `run.bat`
 
-Açılan adresler:
+Her şey **tek port** üzerinden çalışır:
 | Adres | Ne |
 |---|---|
-| `http://SUNUCU_IP:3001` | Canlı menü |
-| `http://SUNUCU_IP:3001/admin` | Yönetim paneli |
-| `http://SUNUCU_IP:8090` | Ana sayfa (site önizlemesi) |
+| `http://SUNUCU_IP:3001` | Ana sayfa (site) |
+| `http://SUNUCU_IP:3001/menu/` | QR menü |
+| `http://SUNUCU_IP:3001/menu/admin` | Yönetim paneli (`/admin` da buraya yönlenir) |
 
-Güvenlik duvarında portları aç: `sudo ufw allow 3001` (ve istersen 8090).
+Güvenlik duvarında portu aç: `sudo ufw allow 3001`
+
+Alan adını bağlarken 80/443 → 3001 yönlendirmesi için nginx örneği:
+```
+server {
+  listen 80;
+  server_name yedigul.example.com;
+  location / { proxy_pass http://127.0.0.1:3001; proxy_set_header Host $host; }
+}
+```
 
 ## Kapanmadan sürekli çalışsın (Linux)
 ```

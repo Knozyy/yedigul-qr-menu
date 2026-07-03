@@ -32,12 +32,16 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 *   **Kalori:** Ürünlerde `kcal` alanı vardır (yasal zorunluluk); panelde düzenlenir, menüde ve detayda gösterilir.
 *   UI bileşenlerinde atomik yapı (`src/components/`), state için React Context (`src/context/`).
 
-## Portlar
-| Port | Ne | Ne zaman |
-|------|----|----------|
-| 5173 | Vite dev (menü) | sadece geliştirme |
-| 3001 | Panel + API + build edilmiş menü | panel kullanımı / kendi sunucu |
-| 8090 | `public_html` statik önizleme | yerel test / kendi sunucuda site |
+## Adresler (tek domain, tek port: 3001)
+| Yol | Ne |
+|-----|----|
+| `/` | Ana site (`public_html/`) |
+| `/menu/` | QR menü (canlı, API'den) |
+| `/menu/admin` | Yönetim paneli (`/admin` buraya yönlenir) |
+| `/api`, `/uploads` | API + ürün görselleri |
+
+Uygulama her ortamda `/menu/` base'i ile build edilir (`vite.config.js`).
+Geliştirmede Vite dev adresi: `http://localhost:5173/menu/`.
 
 ## Dokümanlar
 *   Sunucu kurulumu: `SUNUCU-KURULUM.md`

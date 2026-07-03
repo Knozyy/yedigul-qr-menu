@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 async function adminLogin(page) {
-  await page.goto('/admin/login');
+  await page.goto('/menu/admin/login');
   await page.getByPlaceholder('Şifre').fill('e2e-pass');
   await page.getByRole('button', { name: 'Giriş' }).click();
   await expect(page.getByText('Yönetim Paneli')).toBeVisible();
@@ -31,7 +31,7 @@ test('admin can change a price and customer sees it', async ({ page }) => {
   await page.getByRole('button', { name: 'Kaydet' }).click();
 
   // customer menu shows new price
-  await page.goto('/');
+  await page.goto('/menu/');
   await expect(page.getByText('1234 TL')).toBeVisible({ timeout: 7000 });
 });
 
@@ -43,6 +43,6 @@ test('admin can deactivate a product and it disappears from menu', async ({ page
   await row.getByRole('button', { name: 'Aktif' }).click();
   await expect(row.getByRole('button', { name: 'Pasif' })).toBeVisible();
 
-  await page.goto('/');
+  await page.goto('/menu/');
   await expect(page.getByText('Ahtapot Salatası')).toHaveCount(0);
 });

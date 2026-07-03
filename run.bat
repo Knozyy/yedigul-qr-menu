@@ -1,5 +1,5 @@
 @echo off
-rem Yedigul - tek tikla HER SEY: ana sayfa + QR menu + yonetim paneli
+rem Yedigul - tek komut, tek port: ana sayfa + QR menu + yonetim paneli (:3001)
 cd /d "%~dp0"
 
 rem Bagimliliklar kurulu degilse kur
@@ -14,20 +14,16 @@ if not exist .env (
   echo UYARI: .env dosyasi olusturuldu. ADMIN_PASSWORD ve JWT_SECRET degerlerini duzenleyin!
 )
 
-rem Ana sayfa + statik menu sunucusu (8090) - ayni pencerede arka planda
-start "" /b node scripts\serve-static.mjs
-
-rem 7 saniye sonra tarayicida ikisini de ac
-start "" /b cmd /c "timeout /t 7 /nobreak >nul & start http://localhost:8090 & start http://localhost:3001/admin"
+rem 7 saniye sonra tarayicida ac
+start "" /b cmd /c "timeout /t 7 /nobreak >nul & start http://localhost:3001"
 
 echo.
-echo   Ana sayfa (site):  http://localhost:8090
-echo   QR menu (statik):  http://localhost:8090/menu/
-echo   Canli menu:        http://localhost:3001
-echo   Yonetim paneli:    http://localhost:3001/admin
+echo   Ana sayfa:       http://localhost:3001
+echo   QR menu:         http://localhost:3001/menu/
+echo   Yonetim paneli:  http://localhost:3001/menu/admin
 echo.
 echo   Durdurmak icin: Ctrl+C (veya pencereyi kapat)
 echo.
 
-rem Panel + canli menu + API (3001) - on planda
+rem Site + menu + panel + API - hepsi tek surec (3001)
 call npm run panel
