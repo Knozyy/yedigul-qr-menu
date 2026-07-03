@@ -70,18 +70,25 @@ export default function ProductCard({ item, onClick, isFav, onToggleFav }) {
           <span className="font-outfit text-[19px] font-semibold leading-[1.1] tracking-[.005em]" style={{ color: 'var(--text)' }}>
             {item.name}
           </span>
-          {item.isMarket ? (
-            <span
-              className="flex-none font-inter text-[9px] font-semibold uppercase tracking-[.1em] px-[9px] py-1 rounded-full border whitespace-nowrap text-right"
-              style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
-            >
-              {item.priceText}
-            </span>
-          ) : (
-            <span className="flex-none font-outfit text-[20px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
-              {item.priceText}
-            </span>
-          )}
+          <span className="flex-none flex flex-col items-end gap-[2px]">
+            {item.isMarket ? (
+              <span
+                className="font-inter text-[9px] font-semibold uppercase tracking-[.1em] px-[9px] py-1 rounded-full border whitespace-nowrap text-right"
+                style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
+              >
+                {item.priceText}
+              </span>
+            ) : (
+              <span className="font-outfit text-[20px] font-semibold whitespace-nowrap leading-none" style={{ color: 'var(--gold)' }}>
+                {item.priceText}
+              </span>
+            )}
+            {item.portion && (
+              <span className="font-inter text-[10.5px] font-medium whitespace-nowrap" style={{ color: 'var(--muted)' }}>
+                {item.portion}
+              </span>
+            )}
+          </span>
         </div>
 
         <span className="font-inter text-[12.5px] leading-[1.5] mt-[3px]" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>

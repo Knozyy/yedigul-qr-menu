@@ -11,10 +11,10 @@ export function seed(db) {
   const insertProd = db.prepare(
     `INSERT INTO products
       (id, category_id, name_tr, name_en, desc_tr, desc_en, price, is_market_price,
-       image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort, kcal)
+       image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort, kcal, portion)
      VALUES
       (@id, @category_id, @name_tr, @name_en, @desc_tr, @desc_en, @price, @is_market_price,
-       NULL, 1, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort, @kcal)`
+       NULL, 1, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort, @kcal, @portion)`
   );
 
   const tx = db.transaction(() => {
@@ -40,6 +40,7 @@ export function seed(db) {
         alg_en: JSON.stringify(it.alg?.en ?? []),
         sort: i,
         kcal: it.kcal ?? null,
+        portion: it.portion ?? null,
       });
     });
   });

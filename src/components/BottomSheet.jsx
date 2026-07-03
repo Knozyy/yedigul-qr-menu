@@ -92,18 +92,25 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
                   {sheet.name}
                 </span>
               </div>
-              {sheet.isMarket ? (
-                <span
-                  className="flex-none font-inter text-[10px] font-semibold uppercase tracking-[.1em] px-3 py-1.5 rounded-full border whitespace-nowrap text-right"
-                  style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
-                >
-                  {sheet.priceText}
-                </span>
-              ) : (
-                <span className="flex-none font-outfit text-[29px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
-                  {sheet.priceText}
-                </span>
-              )}
+              <span className="flex-none flex flex-col items-end gap-[3px]">
+                {sheet.isMarket ? (
+                  <span
+                    className="font-inter text-[10px] font-semibold uppercase tracking-[.1em] px-3 py-1.5 rounded-full border whitespace-nowrap text-right"
+                    style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
+                  >
+                    {sheet.priceText}
+                  </span>
+                ) : (
+                  <span className="font-outfit text-[29px] font-semibold whitespace-nowrap leading-none" style={{ color: 'var(--gold)' }}>
+                    {sheet.priceText}
+                  </span>
+                )}
+                {sheet.portion && (
+                  <span className="font-inter text-[12px] font-medium whitespace-nowrap" style={{ color: 'var(--muted)' }}>
+                    {sheet.portion}
+                  </span>
+                )}
+              </span>
             </div>
 
             <p className="font-inter text-sm leading-[1.6] mt-3.5" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>

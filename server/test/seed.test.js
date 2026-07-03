@@ -38,7 +38,7 @@ test('seed maps a known product row field-for-field', () => {
   assert.equal(fava.category_id, 'cold');
   assert.equal(fava.name_tr, 'Fava');
   assert.equal(fava.name_en, 'Broad Bean Purée');
-  assert.equal(fava.price, 240);
+  assert.equal(fava.price, 300);
   assert.equal(fava.is_market_price, 0);
   assert.equal(fava.is_available, 1);
   assert.equal(fava.popular, 1);

@@ -31,7 +31,8 @@ export function openDb(path) {
       alg_tr          TEXT NOT NULL DEFAULT '[]',
       alg_en          TEXT NOT NULL DEFAULT '[]',
       sort            INTEGER NOT NULL DEFAULT 0,
-      kcal            INTEGER
+      kcal            INTEGER,
+      portion         TEXT
     );
   `);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
@@ -39,6 +40,9 @@ export function openDb(path) {
   const cols = db.prepare('PRAGMA table_info(products)').all().map((c) => c.name);
   if (!cols.includes('kcal')) {
     db.exec('ALTER TABLE products ADD COLUMN kcal INTEGER');
+  }
+  if (!cols.includes('portion')) {
+    db.exec('ALTER TABLE products ADD COLUMN portion TEXT');
   }
   return db;
 }
