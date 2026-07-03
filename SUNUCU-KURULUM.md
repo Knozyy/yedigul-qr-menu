@@ -33,9 +33,25 @@ Alan adını bağlarken 80/443 → 3001 yönlendirmesi için nginx örneği:
 server {
   listen 80;
   server_name yedigul.example.com;
-  location / { proxy_pass http://127.0.0.1:3001; proxy_set_header Host $host; }
+  location / {
+    proxy_pass http://127.0.0.1:3001;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
 }
 ```
+> **Önemli:** nginx (veya herhangi bir ters vekil) arkasındaysan `.env` içinde
+> `TRUST_PROXY=1` ayarla. Aksi halde tüm istekler `127.0.0.1`'den geliyormuş gibi
+> görünür ve giriş hız-sınırı yanlış çalışır (bir ziyaretçi 5 hatalı denemeyle
+> admin girişini herkese kapatabilir). Node'u doğrudan internete açıyorsan
+> `TRUST_PROXY`'yi BOŞ bırak.
+
+## E-posta (bülten formu) — sadece paylaşımlı hosting
+Ana sitedeki bülten formu `mgonder2.asp` ile çalışır ve SMTP bilgilerini
+`mail-config.asp` dosyasından okur. Bu dosya git'e girmez (parola korumak için):
+1. `public_html/mail-config.example.asp`'yi `mail-config.asp` olarak kopyala.
+2. İçine gerçek e-posta parolasını yaz (eski parola sızdıysa önce YENİLE).
+3. FTP ile `public_html/`'e yükle. Node sunucusunda ASP çalışmaz; bu yalnız hosting içindir.
 
 ## Kapanmadan sürekli çalışsın (Linux)
 ```

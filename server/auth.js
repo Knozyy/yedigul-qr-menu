@@ -1,7 +1,17 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
+import { timingSafeEqual } from 'node:crypto';
 
 const COOKIE = 'token';
+const JWT_ALG = 'HS256';
+
+// sabit-zamanlı şifre karşılaştırması — uzunluk sızar ama içerik sızmaz
+function safeEqual(a, b) {
+  const ba = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  if (ba.length !== bb.length) return false;
+  return timingSafeEqual(ba, bb);
+}
 const cookieOpts = {
   httpOnly: true,
   sameSite: 'lax',
@@ -35,7 +45,7 @@ export function createAuth({ secret, password, maxAttempts = MAX_ATTEMPTS, locko
     const token = req.cookies?.[COOKIE];
     if (!token) return res.status(401).json({ error: 'Yetkisiz' });
     try {
-      jwt.verify(token, secret);
+      jwt.verify(token, secret, { algorithms: [JWT_ALG] });
       next();
     } catch {
       res.status(401).json({ error: 'Oturum geçersiz' });
@@ -48,12 +58,12 @@ export function createAuth({ secret, password, maxAttempts = MAX_ATTEMPTS, locko
     if (isLocked(ip)) {
       return res.status(429).json({ error: 'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.' });
     }
-    if (!password || req.body?.password !== password) {
+    if (!password || !safeEqual(req.body?.password ?? '', password)) {
       recordFailure(ip);
       return res.status(401).json({ error: 'Hatalı şifre' });
     }
     attempts.delete(ip);
-    const token = jwt.sign({ role: 'admin' }, secret, { expiresIn: '7d' });
+    const token = jwt.sign({ role: 'admin' }, secret, { expiresIn: '7d', algorithm: JWT_ALG });
     res.cookie(COOKIE, token, cookieOpts);
     res.json({ authenticated: true });
   });

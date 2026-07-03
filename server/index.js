@@ -33,6 +33,15 @@ seed(db);
 const auth = createAuth({ secret: SECRET, password: PASSWORD });
 const app = createApp({ db, uploadsDir: UPLOADS_DIR, auth });
 
+// Ters vekil (nginx) arkasındaysa gerçek istemci IP'sini X-Forwarded-For'dan al,
+// böylece giriş hız-sınırı gerçek IP başına çalışır. Varsayılan KAPALI: doğrudan
+// internete açık çalıştırıldığında istemci başlığı sahteleyip limiti aşamasın.
+// nginx arkasında: .env içinde TRUST_PROXY=1 (tek hop) ayarla.
+if (process.env.TRUST_PROXY) {
+  const tp = process.env.TRUST_PROXY;
+  app.set('trust proxy', /^\d+$/.test(tp) ? Number(tp) : tp);
+}
+
 // Tek domain düzeni (tek port):
 //   /            → ana site (public_html)
 //   /menu/…      → canlı menü + yönetim paneli (React build)

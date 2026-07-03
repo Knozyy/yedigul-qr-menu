@@ -58,6 +58,16 @@ test('rejects non-image file type', async () => {
   assert.equal(res.status, 400);
 });
 
+test('rejects non-image content masquerading as image/png', async () => {
+  // istemci mimetype'ı image/png der ama içerik HTML — magic-byte reddetmeli
+  const form = new FormData();
+  form.append('image', new Blob(['<script>alert(1)</script>'], { type: 'image/png' }), 'evil.png');
+  const res = await fetch(`${base}/api/admin/products/fava/image`, {
+    method: 'POST', headers: { cookie }, body: form,
+  });
+  assert.equal(res.status, 400);
+});
+
 test('DELETE image clears image_url', async () => {
   const res = await fetch(`${base}/api/admin/products/fava/image`, {
     method: 'DELETE', headers: { cookie },

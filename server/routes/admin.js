@@ -2,7 +2,19 @@ import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
 import multer from 'multer';
 import { resolve, sep } from 'node:path';
-import { existsSync, unlinkSync } from 'node:fs';
+import { existsSync, unlinkSync, readFileSync } from 'node:fs';
+
+// Yüklenen dosyanın gerçekten resim olduğunu magic-byte ile doğrula —
+// multer'ın fileFilter'ı yalnız istemci Content-Type'ına bakar, o sahtelenebilir.
+function sniffImage(path) {
+  let b;
+  try { b = readFileSync(path); } catch { return false; }
+  if (b.length < 12) return false;
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return true;               // JPEG
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return true; // PNG
+  if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') return true; // WEBP
+  return false;
+}
 
 const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en'];
 // image_url intentionally excluded: only the dedicated image routes may set it
@@ -181,6 +193,11 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     upload.single('image')(req, res, (err) => {
       if (err) return res.status(400).json({ error: 'Yükleme hatası: ' + err.message });
       if (!req.file) return res.status(400).json({ error: 'Geçersiz dosya (jpg/png/webp, ≤5MB)' });
+      // içerik gerçekten resim mi? (uzantı/başlık sahteciliğine karşı)
+      if (!sniffImage(req.file.path)) {
+        try { unlinkSync(req.file.path); } catch { /* yok say */ }
+        return res.status(400).json({ error: 'Geçersiz görsel içeriği (jpg/png/webp)' });
+      }
       removeImageFile(existing.image_url);
       const url = `/uploads/${req.file.filename}`;
       db.prepare('UPDATE products SET image_url = ? WHERE id = ?').run(url, req.params.id);

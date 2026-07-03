@@ -106,11 +106,9 @@ Dim CDOM
 /////ALTTAKi KULLANICI ADI ve SiFRENiZi DOLDURUNUZ/////////
 ///////////////////////////////////////////////////////////
 
-  SMTPKullaniciAdi	= "mail@yedigul.com"
-  SMTPSifre		= "PAROLA_KALDIRILDI_ROTATE_EDILDI"
-  Gidecek_Mail_adresi	= "mail@yedigul.com"
-  SMTPSunucuAdresi	= "smtp.yedigul.com"
-  DomainAdi		= "yedigul.com"	//www olmadan yaziniz.
+%>
+<!--#include file="mail-config.asp"-->
+<%
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
