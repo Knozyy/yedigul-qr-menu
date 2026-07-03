@@ -1,16 +1,47 @@
-# React + Vite
+# Yedigül — QR Menü & Yönetim Paneli
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Anadolukavağı'ndaki **Yedigül Balık Lokantası** için tek statik QR menü, TR/EN dil desteği
+ve ürün/fiyat/kalori yönetimi yapılan bir admin paneli.
 
-Currently, two official plugins are available:
+## Hızlı Başlangıç
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+cp .env.example .env   # ADMIN_PASSWORD ve JWT_SECRET'ı doldur
+./run.sh               # Windows: run.bat — her şeyi tek seferde başlatır
+```
 
-## React Compiler
+Açılanlar:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Adres | Ne |
+|-------|----|
+| `http://localhost:3001` | QR menü + yönetim paneli (`/admin`) |
+| `http://localhost:8090` | Ana sitenin (`public_html/`) önizlemesi |
 
-## Expanding the Oxlint configuration
+## Mimari (kısaca)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+*   **Menü / Panel:** React 19 + Vite + Tailwind v4 (`src/`)
+*   **API:** Node + Express 5 + SQLite (`server/`, veri: `server/data.db`, görseller: `server/uploads/`)
+*   **Canlı site:** Classic ASP/IIS paylaşımlı hosting (`public_html/` kopyası). Node çalıştıramadığı için
+    menü statik export edilir:
+
+```bash
+npm run export:menu    # public_html/menu/ güncellenir → 'menu' klasörünü FTP ile yükle
+```
+
+Menünün tek gerçek kaynağı veritabanıdır; ürünler **yönetim panelinden** düzenlenir.
+`server/seed-data.js` yalnızca ilk kurulumda boş veritabanını doldurur.
+
+## Testler
+
+```bash
+npm run test:server    # backend (node --test)
+npm run test:e2e       # Playwright, iPhone 12 viewport
+```
+
+## Sunucu Kurulumu
+
+Kendi sunucusuna (Linux + Node 20+) kurulum, pm2 ile kalıcı çalıştırma ve güncelleme
+akışı için: **[SUNUCU-KURULUM.md](SUNUCU-KURULUM.md)**
+
+Proje kuralları ve ayrıntılı mimari notları: **[CLAUDE.md](CLAUDE.md)**

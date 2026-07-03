@@ -1,39 +1,44 @@
-# Yedigül Restaurant QR Menu Project
+# Yedigül Restaurant QR Menü Projesi
 
-This project is a mobile-only QR Menu system designed for Yedigül Restaurant in Anadolukavağı, Istanbul.
+Anadolukavağı'ndaki Yedigül Balık Lokantası için QR menü + yönetim paneli.
+Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özelliği YOKTUR ve eklenmeyecektir.
 
-## Build and Development Commands
-*   **Install Dependencies:** `npm install`
-*   **Run Development Server:** `npm run dev`
-*   **Build Production Bundle:** `npm run build`
-*   **Lint Code:** `npm run lint`
+## Komutlar
+*   **Bağımlılıklar:** `npm install`
+*   **Menü geliştirme sunucusu:** `npm run dev` (Vite, :5173)
+*   **Panel + API (build dahil):** `npm run panel` (:3001)
+*   **Backend testleri:** `npm run test:server` — **E2E:** `npm run test:e2e`
+*   **Statik menü export'u:** `npm run export:menu` → `public_html/menu/` güncellenir
+*   **Hepsini tek seferde başlat:** `run.bat` (Windows) / `run.sh` (Linux)
+*   **Lint:** `npm run lint`
 
-## Core Project Rules
+## Teknoloji Yığını (güncel — 2026-07)
+*   **Frontend:** React 19 + Vite + TailwindCSS v4 (Marin/Boğaz paleti: lacivert, krem, altın)
+*   **Backend & DB:** Node.js + Express 5 + better-sqlite3 (`server/`). Firebase KULLANILMIYOR — eski plandı, vazgeçildi.
+*   **Auth:** Tek şifre (`.env` → `ADMIN_PASSWORD`) + httpOnly cookie'de JWT; IP başına giriş kilidi.
+*   **Görseller:** multer ile sunucuya yüklenir (`server/uploads/`).
 
-> [!IMPORTANT]
-> **1. Mobile and Tablet Only (Strict Rule)**
-> *   This project is designed **exclusively** for mobile phones and tablets. Desktop responsiveness is out of scope.
-> *   Every single feature or UI component **MUST** be verified and tested on mobile dimensions before being marked as done. No desktop styling is required.
+## Veri Akışı (önemli)
+*   Menünün tek gerçek kaynağı `server/data.db`; değişiklikler YÖNETİM PANELİNDEN yapılır.
+*   `server/seed-data.js` yalnızca ilk kurulum tohumudur — sonradan düzenlemek hiçbir şeyi değiştirmez.
+*   Canlı hosting (Classic ASP/IIS, `public_html/` kopyası repoda) Node çalıştıramaz; menü `npm run export:menu`
+    ile statik dosyaya dökülür (`menu-data.json` + görseller) ve `menu/` klasörü FTP ile yüklenir.
 
-> [!IMPORTANT]
-> **2. Technology Stack**
-> *   **Frontend:** React (Vite-powered, client-side rendering)
-> *   **Styling:** TailwindCSS (Custom Marin/Bosphorus palette: dark blue, white, gold accent)
-> *   **Backend & DB:** Firebase (Authentication, Firestore NoSQL DB, Firebase Hosting)
+## Kurallar
+*   **Mobil öncelikli:** Tasarım önce telefonda doğrulanır; menü ve ana site masaüstünde de düzgün görünmelidir
+    (menüde ≥1024px iki sütun). "Sadece mobil" kuralı kaldırıldı.
+*   **Çok dillilik:** Menüdeki tüm içerik TR/EN destekler (kategori, ürün adı, açıklama, rozetler).
+*   **Fiyatlandırma:** `is_market_price` işaretli ürünlerde fiyat yerine "Piyasa Fiyatı / Market Price" gösterilir.
+*   **Kalori:** Ürünlerde `kcal` alanı vardır (yasal zorunluluk); panelde düzenlenir, menüde ve detayda gösterilir.
+*   UI bileşenlerinde atomik yapı (`src/components/`), state için React Context (`src/context/`).
 
-> [!IMPORTANT]
-> **3. Multi-language (i18n)**
-> *   All public menus must support Turkish (TR) and English (EN) dynamically.
-> *   Ensure translations cover category names, item names, descriptions, and dynamic badges (e.g., "Market Price" / "Piyasa Fiyatı").
+## Portlar
+| Port | Ne | Ne zaman |
+|------|----|----------|
+| 5173 | Vite dev (menü) | sadece geliştirme |
+| 3001 | Panel + API + build edilmiş menü | panel kullanımı / kendi sunucu |
+| 8090 | `public_html` statik önizleme | yerel test / kendi sunucuda site |
 
-> [!IMPORTANT]
-> **4. Dynamic QR & Routing**
-> *   URLs must accept table identifiers (e.g., `/masa/:id` or query params `?masa=X`) so that future waiter calling or ordering services can be mapped directly to the table.
-
-## Pricing System
-*   Items in Firestore must support both numeric price values and a boolean flag `is_market_price` (Piyasa Fiyatı). When `is_market_price` is active, display the localization for "Piyasa Fiyatı / Market Price" instead of a currency figure.
-
-## Guidelines & Architecture
-*   Refer to `.planning/implementation_plan.md` for the database schema, folder structure, and detailed phases.
-*   Follow clean atomic design principles for UI components under `src/components/ui/`.
-*   Maintain clean state separation using React Context for Auth and Menu details.
+## Dokümanlar
+*   Sunucu kurulumu: `SUNUCU-KURULUM.md`
+*   Tasarım/plan geçmişi: `docs/superpowers/` (`.planning/` klasörü tarihseldir, güncel değildir)

@@ -1,3 +1,7 @@
+> [!WARNING]
+> **BU BELGE GÜNCEL DEĞİLDİR (2026-07-03).** Firebase, "sadece mobil" ve masa bazlı QR varsayımları terk edildi.
+> Güncel mimari, kurallar ve komutlar için kök dizindeki `CLAUDE.md` dosyasına bakın.
+
 # Yedigül Restaurant QR Menü Projesi - Yapılacaklar (TODO)
 
 ## Faz 1: Analiz, Tasarım ve Hazırlık

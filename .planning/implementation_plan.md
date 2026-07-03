@@ -1,3 +1,7 @@
+> [!WARNING]
+> **BU BELGE GÜNCEL DEĞİLDİR (2026-07-03).** Firebase, "sadece mobil" ve masa bazlı QR varsayımları terk edildi.
+> Güncel mimari, kurallar ve komutlar için kök dizindeki `CLAUDE.md` dosyasına bakın.
+
 # Yedigül Restaurant QR Menü Sistemi Uygulama Planı
 
 Bu plan, Anadolukavağı Yedigül Restaurant için tasarlanacak QR menü sisteminin mimari yapısını, seçilen teknoloji yığını ve mobil odaklı geliştirme esaslarını içerir.
