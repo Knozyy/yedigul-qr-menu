@@ -34,6 +34,10 @@ export function openDb(path) {
       kcal            INTEGER,
       portion         TEXT
     );
+    CREATE TABLE IF NOT EXISTS settings (
+      key   TEXT PRIMARY KEY,
+      value TEXT
+    );
   `);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
   // eski data.db'lere eksik kolonları veri kaybı olmadan ekle
@@ -45,4 +49,17 @@ export function openDb(path) {
     db.exec('ALTER TABLE products ADD COLUMN portion TEXT');
   }
   return db;
+}
+
+// Basit key/value ayar deposu (QR yönlendirmesi, genel adres vb.)
+export function getSetting(db, key, fallback = null) {
+  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key);
+  return row ? row.value : fallback;
+}
+
+export function setSetting(db, key, value) {
+  db.prepare(
+    `INSERT INTO settings (key, value) VALUES (@key, @value)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`
+  ).run({ key, value: value == null ? null : String(value) });
 }

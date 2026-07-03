@@ -7,7 +7,7 @@
 //
 // Kullanım: node scripts/import-menu.mjs   (DB_PATH ile başka db verilebilir)
 import { fileURLToPath } from 'node:url';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { openDb } from '../server/db.js';
 import { CATEGORIES, ITEMS } from '../server/seed-data.js';
 

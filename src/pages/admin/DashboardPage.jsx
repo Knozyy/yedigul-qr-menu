@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getThemeVars } from '../../lib/theme';
@@ -7,6 +7,13 @@ import ProductRow from '../../components/admin/ProductRow';
 import ProductForm from '../../components/admin/ProductForm';
 import CategoryForm from '../../components/admin/CategoryForm';
 import Toast from '../../components/Toast';
+
+// qrcode kütüphanesini yalnız QR bölümü açıldığında yükle (ayrı parça).
+// Statik export'ta (VITE_STATIC=1) bu dal derleme zamanında elenir; böylece
+// QrPanel + qrcode parçası müşteriye giden pakete HİÇ üretilmez.
+const QrPanel = import.meta.env.VITE_STATIC === '1'
+  ? null
+  : lazy(() => import('../../components/admin/QrPanel'));
 
 export default function DashboardPage() {
   const { logout } = useAuth();
@@ -18,6 +25,7 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null); // ürün objesi | 'new' | null
   const [showCategories, setShowCategories] = useState(false);
+  const [showQr, setShowQr] = useState(false);
   const [toast, setToast] = useState('');
   const toastTimer = useRef(null);
 
@@ -89,6 +97,9 @@ export default function DashboardPage() {
             <button onClick={() => setShowCategories((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
               Kategoriler
             </button>
+            <button onClick={() => setShowQr((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
+              QR Kod
+            </button>
             <button onClick={onLogout} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
               Çıkış
             </button>
@@ -112,6 +123,12 @@ export default function DashboardPage() {
           >
             + Yeni ürün
           </button>
+        )}
+
+        {showQr && !editing && QrPanel && (
+          <Suspense fallback={<p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>QR yükleniyor…</p>}>
+            <QrPanel />
+          </Suspense>
         )}
 
         {showCategories && !editing && (

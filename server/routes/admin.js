@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import multer from 'multer';
 import { resolve, sep } from 'node:path';
 import { existsSync, unlinkSync, readFileSync } from 'node:fs';
+import { getSetting, setSetting } from '../db.js';
 
 // Yüklenen dosyanın gerçekten resim olduğunu magic-byte ile doğrula —
 // multer'ın fileFilter'ı yalnız istemci Content-Type'ına bakar, o sahtelenebilir.
@@ -65,6 +66,31 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort').all();
     const products = db.prepare('SELECT * FROM products ORDER BY sort').all().map(hydrate);
     res.json({ categories, products });
+  });
+
+  // QR / genel adres ayarları
+  router.get('/settings', (req, res) => {
+    res.json({
+      public_base_url: getSetting(db, 'public_base_url', ''),
+      menu_path: getSetting(db, 'menu_path', '/menu/'),
+    });
+  });
+
+  router.put('/settings', (req, res) => {
+    const b = req.body ?? {};
+    if ('menu_path' in b) {
+      const p = String(b.menu_path || '').trim();
+      if (!p.startsWith('/')) return res.status(400).json({ error: "menu_path '/' ile başlamalı" });
+      setSetting(db, 'menu_path', p);
+    }
+    if ('public_base_url' in b) {
+      // sondaki '/' temizle; boş bırakılabilir (o zaman istek origin'i kullanılır)
+      setSetting(db, 'public_base_url', String(b.public_base_url || '').trim().replace(/\/+$/, ''));
+    }
+    res.json({
+      public_base_url: getSetting(db, 'public_base_url', ''),
+      menu_path: getSetting(db, 'menu_path', '/menu/'),
+    });
   });
 
   router.post('/products', (req, res) => {

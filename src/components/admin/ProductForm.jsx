@@ -4,11 +4,26 @@ import ImageUploader from './ImageUploader';
 
 const empty = {
   category_id: '', name_tr: '', name_en: '', desc_tr: '', desc_en: '',
-  price: '', kcal: '', portion: '', is_market_price: 0, is_available: 1, popular: 0, chef: 0, diet: [],
+  price: '', kcal: '', is_market_price: 0, is_available: 1, popular: 0, chef: 0, diet: [],
 };
 
 const listToText = (a) => (Array.isArray(a) ? a.join(', ') : '');
 const textToList = (s) => s.split(',').map((x) => x.trim()).filter(Boolean);
+
+// porsiyon serbest metin olarak saklanır ("350 gr", "6 adet", "35 cl").
+// Formda miktar + birim olarak düzenlenir.
+const PORTION_UNITS = ['gr', 'adet', 'cl', 'porsiyon'];
+const parsePortion = (p) => {
+  if (!p) return { amount: '', unit: 'gr' };
+  const m = String(p).match(/^\s*([\d.,]+)\s*(.*)$/);
+  if (m && PORTION_UNITS.includes(m[2].trim())) return { amount: m[1], unit: m[2].trim() };
+  if (m && m[2].trim() === '') return { amount: m[1], unit: 'gr' };
+  return { amount: String(p), unit: 'gr' }; // beklenmedik biçim: ham değeri koru
+};
+const composePortion = (amount, unit) => {
+  const a = String(amount ?? '').trim();
+  return a ? `${a} ${unit}` : null;
+};
 
 export default function ProductForm({ product, categories, onSaved, onCancel, onDeleted }) {
   const [form, setForm] = useState(() => ({
@@ -24,6 +39,7 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
   const [saved, setSaved] = useState(product ?? null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [portion, setPortion] = useState(() => parsePortion(product?.portion));
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleDiet = (d) =>
@@ -36,7 +52,7 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
       ...form,
       price: form.is_market_price ? null : (form.price === '' ? null : Number(form.price)),
       kcal: form.kcal === '' || form.kcal == null ? null : Number(form.kcal),
-      portion: form.portion === '' || form.portion == null ? null : String(form.portion).trim(),
+      portion: composePortion(portion.amount, portion.unit),
       ing_tr: textToList(form.ing_tr),
       ing_en: textToList(form.ing_en),
       alg_tr: textToList(form.alg_tr),
@@ -106,7 +122,15 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
         <input className={field} style={fieldStyle} type="number" placeholder="Fiyat (TL)" value={form.price ?? ''} onChange={(e) => set('price', e.target.value)} />
       )}
       <input className={field} style={fieldStyle} type="number" min="0" placeholder="Kalori (kcal) — porsiyon başı enerji" value={form.kcal ?? ''} onChange={(e) => set('kcal', e.target.value)} />
-      <input className={field} style={fieldStyle} placeholder="Porsiyon / gram (örn. 300 gr) — boş bırakılabilir" value={form.portion ?? ''} onChange={(e) => set('portion', e.target.value)} />
+      <div className="flex flex-col gap-1">
+        <span className="text-[12px]" style={{ color: 'var(--muted)' }}>Porsiyon — miktar + birim (boş bırakılabilir)</span>
+        <div className="flex gap-2">
+          <input className={field} style={fieldStyle} type="number" min="0" step="any" placeholder="örn. 300" value={portion.amount} onChange={(e) => setPortion((p) => ({ ...p, amount: e.target.value }))} />
+          <select className="px-3 py-2 rounded-lg border outline-none" style={selectStyle} value={portion.unit} onChange={(e) => setPortion((p) => ({ ...p, unit: e.target.value }))}>
+            {PORTION_UNITS.map((u) => <option key={u} value={u} style={optionStyle}>{u}</option>)}
+          </select>
+        </div>
+      </div>
       <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--text)' }}>
         <input type="checkbox" checked={form.is_available === 1} onChange={(e) => set('is_available', e.target.checked ? 1 : 0)} />
         Menüde görünür (aktif)
