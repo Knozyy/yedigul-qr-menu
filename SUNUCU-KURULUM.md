@@ -69,6 +69,14 @@ pm2 save && pm2 startup
 
 Repoda `render.yaml` (Render Blueprint) ve `Procfile` (Railway/Heroku tarzı) hazır.
 
+**Netlify (yalnız statik site + menü — panel YOK):**
+Repodaki `netlify.toml` her şeyi ayarlar: yayın klasörü `www/`, build komutu yok
+(menü verisi repoda hazır), `/q` QR yönlendirmesi tanımlı. Netlify panelinde build
+komutu girmene gerek yok — `netlify.toml` panel ayarını ezer. Menü güncelleme:
+panelde düzenle → `npm run export:menu` → `git push` → Netlify otomatik yayınlar.
+`npm run panel` gibi sunucu başlatan komutları Netlify'a VERME; build sonsuza
+kadar "in progress" kalır (sunucu süreci hiç bitmez).
+
 **Render (Blueprint):**
 1. Render → **New → Blueprint**, bu GitHub reposunu seç. `render.yaml` otomatik okunur.
 2. `ADMIN_PASSWORD`'ü panoda **Environment** altında elle gir (gizli; repoya yazılmaz).
