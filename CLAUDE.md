@@ -5,7 +5,7 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 
 ## Komutlar
 *   **Bağımlılıklar:** `npm install`
-*   **Menü geliştirme sunucusu:** `npm run dev` (Vite, :5173)
+*   **Geliştirme (tek komut, API dahil):** `npm run dev` → tarayıcı `:5173/menu/`te açılır; API :3001'de birlikte kalkar
 *   **Panel + API (build dahil):** `npm run panel` (:3001)
 *   **Backend testleri:** `npm run test:server` — **E2E:** `npm run test:e2e`
 *   **Statik menü export'u:** `npm run export:menu` → `www/menu/` güncellenir

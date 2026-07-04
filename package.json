@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n api,vite -c blue,green \"npm:dev:server\" \"vite --open /menu/\"",
+    "dev:vite": "vite",
     "dev:server": "node --watch server/index.js",
     "build": "vite build",
     "start": "node server/index.js",
@@ -35,6 +36,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "autoprefixer": "^10.5.2",
+    "concurrently": "^10.0.3",
     "oxlint": "^1.69.0",
     "playwright": "^1.61.1",
     "postcss": "^8.5.16",
