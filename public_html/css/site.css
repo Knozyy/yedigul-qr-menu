@@ -819,6 +819,15 @@ body.nav-open .nav__panel-links a {
   width: 1px; height: 1px;
   overflow: hidden;
 }
+.newsletter__success {
+  color: var(--gold-soft);
+  font-size: .92rem;
+  font-weight: 500;
+  min-height: 1.4em;
+  transition: opacity .4s var(--ease);
+}
+.newsletter__success:empty { display: none; }
+.newsletter__success.is-visible { animation: rise .5s var(--ease); }
 
 .footer-bar {
   border-top: 1px solid var(--line-ink);
@@ -880,9 +889,70 @@ body.nav-open .nav__panel-links a {
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
+
+/* ---- Mobilde yatay kaydırma (< 620px) ---- */
+@media (max-width: 619px) {
+  .specials__grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: .85rem;
+    padding-bottom: 1.2rem;
+    scrollbar-width: none;              /* Firefox */
+  }
+  .specials__grid::-webkit-scrollbar { display: none; }  /* Chrome/Safari */
+  .specials__grid > .dish {
+    flex: 0 0 72vw;
+    max-width: 72vw;
+    scroll-snap-align: start;
+    aspect-ratio: 3 / 4;
+  }
+  /* Scroll indicator dots */
+  .specials__grid + .scroll-hint,
+  .gallery__grid + .scroll-hint {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    padding-top: .6rem;
+  }
+  .scroll-hint__dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--line-ink);
+    transition: background .3s var(--ease), transform .3s var(--ease);
+  }
+  .scroll-hint__dot.is-active {
+    background: var(--gold);
+    transform: scale(1.4);
+  }
+
+  .gallery__grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: .75rem;
+    padding-bottom: 1.2rem;
+    scrollbar-width: none;
+  }
+  .gallery__grid::-webkit-scrollbar { display: none; }
+  .gallery__grid > .gcell {
+    flex: 0 0 68vw;
+    max-width: 68vw;
+    scroll-snap-align: start;
+    aspect-ratio: 1;
+  }
+  .gallery__grid > .gcell--tall {
+    grid-row: unset;
+    aspect-ratio: 1;
+  }
+}
+
 @media (min-width: 620px) {
   .specials__grid { grid-template-columns: repeat(2, 1fr); }
   .gallery__grid  { grid-template-columns: repeat(3, 1fr); }
+  .scroll-hint { display: none !important; }
 }
 
 @media (min-width: 900px) {

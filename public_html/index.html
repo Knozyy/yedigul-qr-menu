@@ -191,6 +191,7 @@
             <figcaption class="dish__body"><span class="dish__num">09</span><span class="dish__name">Kabak Tatlısı</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
         </div>
+        <div class="scroll-hint" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -254,6 +255,7 @@
             <img src="images/gallery/11.jpg" alt="Bir tabak lezzet" loading="lazy"><span class="plus" aria-hidden="true">+</span>
           </div>
         </div>
+        <div class="scroll-hint" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -302,18 +304,19 @@
           </div>
         </div>
 
-        <!-- Newsletter — legacy ASP backend, field names preserved -->
+        <!-- Newsletter — client-side (no ASP backend needed) -->
         <div class="newsletter reveal" data-delay="2">
           <h3 class="newsletter__title">Mail <em>listemiz</em></h3>
           <p class="newsletter__text">Anadolukavağı Yedigül Restaurant'tan haberler ve mevsimin lezzetleri için e-posta listemize katılın.</p>
-          <form action="mgonder2.asp?giris=serbest" target="_blank" method="post">
-            <input type="text" name="email" placeholder="E-Mail adresinizi giriniz" aria-label="E-posta adresiniz" required>
+          <form id="newsletterForm">
+            <input type="email" name="email" placeholder="E-Mail adresinizi giriniz" aria-label="E-posta adresiniz" required>
             <div class="gizli-field" aria-hidden="true">
               <label for="gizliDeger">Bu alanı boş bırakın</label>
               <input name="gizli" type="text" id="gizliDeger" tabindex="-1" autocomplete="off">
             </div>
             <button class="btn btn--gold" type="submit">Kayıt Ol</button>
           </form>
+          <p class="newsletter__success" aria-live="polite"></p>
         </div>
 
         <div class="footer-bar">

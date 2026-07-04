@@ -106,4 +106,72 @@
   /* ---- Footer year ---- */
   var y = document.getElementById("yr");
   if (y) y.textContent = new Date().getFullYear();
+
+  /* ---- Newsletter (client-side — no ASP backend) ---- */
+  var nlForm = document.getElementById("newsletterForm");
+  if (nlForm) {
+    nlForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      // Honeypot check
+      var gizli = nlForm.querySelector('[name="gizli"]');
+      if (gizli && gizli.value) return;
+
+      var emailInput = nlForm.querySelector('[name="email"]');
+      var email = (emailInput.value || "").trim();
+      if (!email) return;
+
+      // Show success message
+      var msg = nlForm.parentElement.querySelector(".newsletter__success");
+      if (msg) {
+        msg.textContent = "✓ Teşekkürler! Kaydınız alınmıştır.";
+        msg.classList.add("is-visible");
+      }
+      emailInput.value = "";
+    });
+  }
+
+  /* ---- Mobile scroll indicator dots ---- */
+  function initScrollDots(gridSelector, hintSelector) {
+    var grid = document.querySelector(gridSelector);
+    var hint = document.querySelector(gridSelector + " + " + hintSelector);
+    if (!grid || !hint) return;
+
+    var items = Array.prototype.slice.call(grid.children);
+    if (items.length < 2) return;
+
+    // Only activate on mobile
+    var mq = window.matchMedia("(max-width: 619px)");
+
+    function setup() {
+      if (!mq.matches) { hint.innerHTML = ""; return; }
+
+      // Create dots
+      hint.innerHTML = "";
+      items.forEach(function (_, i) {
+        var dot = document.createElement("span");
+        dot.className = "scroll-hint__dot" + (i === 0 ? " is-active" : "");
+        hint.appendChild(dot);
+      });
+
+      var dots = Array.prototype.slice.call(hint.querySelectorAll(".scroll-hint__dot"));
+
+      // Track which item is most visible
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var idx = items.indexOf(entry.target);
+            dots.forEach(function (d, di) { d.classList.toggle("is-active", di === idx); });
+          }
+        });
+      }, { root: grid, threshold: 0.6 });
+
+      items.forEach(function (item) { observer.observe(item); });
+    }
+
+    setup();
+    mq.addEventListener("change", setup);
+  }
+
+  initScrollDots(".specials__grid", ".scroll-hint");
+  initScrollDots(".gallery__grid", ".scroll-hint");
 })();
