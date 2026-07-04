@@ -49,9 +49,9 @@ server {
 ## E-posta (bülten formu) — sadece paylaşımlı hosting
 Ana sitedeki bülten formu `mgonder2.asp` ile çalışır ve SMTP bilgilerini
 `mail-config.asp` dosyasından okur. Bu dosya git'e girmez (parola korumak için):
-1. `public_html/mail-config.example.asp`'yi `mail-config.asp` olarak kopyala.
+1. `www/mail-config.example.asp`'yi `mail-config.asp` olarak kopyala.
 2. İçine gerçek e-posta parolasını yaz (eski parola sızdıysa önce YENİLE).
-3. FTP ile `public_html/`'e yükle. Node sunucusunda ASP çalışmaz; bu yalnız hosting içindir.
+3. FTP ile `www/`'e yükle. Node sunucusunda ASP çalışmaz; bu yalnız hosting içindir.
 
 ## Kapanmadan sürekli çalışsın (Linux)
 ```
@@ -65,7 +65,7 @@ pm2 save && pm2 startup
 > **Netlify/Vercel/paylaşımlı ASP hosting BU SUNUCUYU çalıştıramaz.** Bu kalıcı bir
 > Node/Express + SQLite servisidir; kalıcı disk ve ayakta kalan bir süreç ister.
 > Statik site platformları yalnızca menünün **statik export**'unu barındırabilir
-> (`npm run export:menu` → `public_html/menu/`), paneli değil.
+> (`npm run export:menu` → `www/menu/`), paneli değil.
 
 Repoda `render.yaml` (Render Blueprint) ve `Procfile` (Railway/Heroku tarzı) hazır.
 
@@ -97,7 +97,7 @@ Panelde değişiklik yaptıktan sonra:
 ```
 npm run export:menu
 ```
-Sonra `public_html/` içindekileri FTP ile hosting'e yükle
+Sonra `www/` içindekileri FTP ile hosting'e yükle
 (ana sayfa: `index.html`, `css/site.css`, `js/site.js`; menü: `menu/` klasörü).
 
 ## Notlar

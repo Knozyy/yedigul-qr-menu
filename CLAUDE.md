@@ -8,7 +8,7 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 *   **Menü geliştirme sunucusu:** `npm run dev` (Vite, :5173)
 *   **Panel + API (build dahil):** `npm run panel` (:3001)
 *   **Backend testleri:** `npm run test:server` — **E2E:** `npm run test:e2e`
-*   **Statik menü export'u:** `npm run export:menu` → `public_html/menu/` güncellenir
+*   **Statik menü export'u:** `npm run export:menu` → `www/menu/` güncellenir
 *   **Hepsini tek seferde başlat:** `run.bat` (Windows) / `run.sh` (Linux)
 *   **Lint:** `npm run lint`
 
@@ -21,7 +21,7 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 ## Veri Akışı (önemli)
 *   Menünün tek gerçek kaynağı `server/data.db`; değişiklikler YÖNETİM PANELİNDEN yapılır.
 *   `server/seed-data.js` yalnızca ilk kurulum tohumudur — sonradan düzenlemek hiçbir şeyi değiştirmez.
-*   Canlı hosting (Classic ASP/IIS, `public_html/` kopyası repoda) Node çalıştıramaz; menü `npm run export:menu`
+*   Canlı hosting (Classic ASP/IIS, `www/` kopyası repoda) Node çalıştıramaz; menü `npm run export:menu`
     ile statik dosyaya dökülür (`menu-data.json` + görseller) ve `menu/` klasörü FTP ile yüklenir.
 
 ## Kurallar
@@ -35,7 +35,7 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 ## Adresler (tek domain, tek port: 3001)
 | Yol | Ne |
 |-----|----|
-| `/` | Ana site (`public_html/`) |
+| `/` | Ana site (`www/`) |
 | `/menu/` | QR menü (canlı, API'den) |
 | `/menu/admin` | Yönetim paneli (`/admin` buraya yönlenir) |
 | `/api`, `/uploads` | API + ürün görselleri |

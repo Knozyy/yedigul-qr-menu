@@ -1,6 +1,6 @@
 // Statik menü dışa aktarımı: SQLite'taki menüyü dist-menu/ içine
 // menu-data.json + uploads/ olarak yazar. `npm run export:menu` bunu
-// vite build'den sonra çalıştırır; çıkan klasör public_html/menu/ olur.
+// vite build'den sonra çalıştırır; çıkan klasör www/menu/ olur.
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { mkdirSync, writeFileSync, existsSync, readdirSync, copyFileSync, statSync, rmSync } from 'node:fs';
@@ -57,11 +57,11 @@ if (existsSync(UPLOADS_DIR)) {
 console.log(`menu-data.json yazıldı: ${categories.length} kategori, ${products.length} ürün`);
 
 // canlı site kopyası projede duruyorsa menüyü doğrudan içine senkronla
-const SITE_MENU = join(root, 'public_html', 'menu');
-if (existsSync(join(root, 'public_html'))) {
+const SITE_MENU = join(root, 'www', 'menu');
+if (existsSync(join(root, 'www'))) {
   rmSync(SITE_MENU, { recursive: true, force: true }); // eski hash'li asset'ler birikmesin
   copyDir(OUT_DIR, SITE_MENU);
-  console.log(`public_html/menu güncellendi — FTP ile 'menu' klasörünü yüklemen yeterli.`);
+  console.log(`www/menu güncellendi — FTP ile 'menu' klasörünü yüklemen yeterli.`);
 } else {
   console.log(`Çıktı klasörü: ${OUT_DIR}`);
 }

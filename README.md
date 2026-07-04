@@ -23,11 +23,11 @@ Her şey tek port üzerinden çalışır:
 
 *   **Menü / Panel:** React 19 + Vite + Tailwind v4 (`src/`)
 *   **API:** Node + Express 5 + SQLite (`server/`, veri: `server/data.db`, görseller: `server/uploads/`)
-*   **Canlı site:** Classic ASP/IIS paylaşımlı hosting (`public_html/` kopyası). Node çalıştıramadığı için
+*   **Canlı site:** Classic ASP/IIS paylaşımlı hosting (`www/` kopyası). Node çalıştıramadığı için
     menü statik export edilir:
 
 ```bash
-npm run export:menu    # public_html/menu/ güncellenir → 'menu' klasörünü FTP ile yükle
+npm run export:menu    # www/menu/ güncellenir → 'menu' klasörünü FTP ile yükle
 ```
 
 Menünün tek gerçek kaynağı veritabanıdır; ürünler **yönetim panelinden** düzenlenir.

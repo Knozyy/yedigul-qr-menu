@@ -29,7 +29,7 @@ server/uploads/
 .env
 
 # gerçek SMTP kimlik bilgileri (sadece sunucuda) — şablon: mail-config.example.asp
-public_html/mail-config.asp
+www/mail-config.asp
 
 # playwright
 /test-results/

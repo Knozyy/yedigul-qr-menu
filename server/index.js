@@ -43,12 +43,12 @@ if (process.env.TRUST_PROXY) {
 }
 
 // Tek domain düzeni (tek port):
-//   /            → ana site (public_html)
+//   /            → ana site (www/)
 //   /menu/…      → canlı menü + yönetim paneli (React build)
 //   /menu/admin  → panel (/admin oraya yönlenir)
 //   /api, /uploads → API (createApp içinde)
 const distDir = resolve(__dirname, '..', 'dist');
-const siteDir = resolve(__dirname, '..', 'public_html');
+const siteDir = resolve(__dirname, '..', 'www');
 
 if (existsSync(distDir)) {
   app.use('/menu', express.static(distDir));
