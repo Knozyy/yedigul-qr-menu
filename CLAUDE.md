@@ -44,5 +44,5 @@ Uygulama her ortamda `/menu/` base'i ile build edilir (`vite.config.js`).
 Geliştirmede Vite dev adresi: `http://localhost:5173/menu/`.
 
 ## Dokümanlar
-*   Sunucu kurulumu: `SUNUCU-KURULUM.md`
-*   Tasarım/plan geçmişi: `docs/superpowers/` (`.planning/` klasörü tarihseldir, güncel değildir)
+*   Sunucu kurulumu / deploy: `SUNUCU-KURULUM.md`
+*   Tasarım/spec geçmişi: `docs/superpowers/` (admin dashboard spec + plan; tarihsel kayıt)
