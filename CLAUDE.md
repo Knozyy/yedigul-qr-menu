@@ -45,4 +45,3 @@ Geliştirmede Vite dev adresi: `http://localhost:5173/menu/`.
 
 ## Dokümanlar
 *   Sunucu kurulumu / deploy: `SUNUCU-KURULUM.md`
-*   Tasarım/spec geçmişi: `docs/superpowers/` (admin dashboard spec + plan; tarihsel kayıt)
