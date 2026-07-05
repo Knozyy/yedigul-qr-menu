@@ -23,11 +23,11 @@ Her şey tek port üzerinden çalışır:
 
 *   **Menü / Panel:** React 19 + Vite + Tailwind v4 (`src/`)
 *   **API:** Node + Express 5 + SQLite (`server/`, veri: `server/data.db`, görseller: `server/uploads/`)
-*   **Canlı site:** Statik hosting — Netlify `www/` klasörünü yayınlar (`netlify.toml`).
-    Node çalıştıramadığı için menü statik export edilir:
+*   **Canlı site:** Statik paylaşımlı hosting (`www/` FTP ile yüklenir). Node çalıştıramadığı için
+    menü statik export edilir:
 
 ```bash
-npm run export:menu    # www/menu/ güncellenir → git push ile Netlify otomatik yayınlar
+npm run export:menu    # www/menu/ güncellenir → 'menu' klasörünü FTP ile yükle
 ```
 
 Menünün tek gerçek kaynağı veritabanıdır; ürünler **yönetim panelinden** düzenlenir.

@@ -61,40 +61,6 @@ pm2 start server/index.js --name yedigul
 pm2 save && pm2 startup
 ```
 
-## Bulut deploy (Render / Railway) — panel + API + menü
-> **Netlify/Vercel/paylaşımlı ASP hosting BU SUNUCUYU çalıştıramaz.** Bu kalıcı bir
-> Node/Express + SQLite servisidir; kalıcı disk ve ayakta kalan bir süreç ister.
-> Statik site platformları yalnızca menünün **statik export**'unu barındırabilir
-> (`npm run export:menu` → `www/menu/`), paneli değil.
-
-Repoda `render.yaml` (Render Blueprint) ve `Procfile` (Railway/Heroku tarzı) hazır.
-
-**Netlify (yalnız statik site + menü — panel YOK):**
-Repodaki `netlify.toml` her şeyi ayarlar: yayın klasörü `www/`, build komutu yok
-(menü verisi repoda hazır), `/q` QR yönlendirmesi tanımlı. Netlify panelinde build
-komutu girmene gerek yok — `netlify.toml` panel ayarını ezer. Menü güncelleme:
-panelde düzenle → `npm run export:menu` → `git push` → Netlify otomatik yayınlar.
-`npm run panel` gibi sunucu başlatan komutları Netlify'a VERME; build sonsuza
-kadar "in progress" kalır (sunucu süreci hiç bitmez).
-
-**Render (Blueprint):**
-1. Render → **New → Blueprint**, bu GitHub reposunu seç. `render.yaml` otomatik okunur.
-2. `ADMIN_PASSWORD`'ü panoda **Environment** altında elle gir (gizli; repoya yazılmaz).
-   `JWT_SECRET` otomatik üretilir.
-3. Deploy et. Tek URL'de her şey çalışır: `/` site, `/menu/` menü, `/menu/admin` panel.
-   - **Önemli:** kalıcı disk (`/data`) **ücretli** instance ister; free tier'da disk
-     yoktur ve `data.db` her deploy'da sıfırlanır (menü tohumdan yeniden kurulur,
-     panel düzenlemelerin kaybolur). Kalıcı panel için `plan: starter` (veya üstü).
-
-**Railway:**
-1. New Project → Deploy from GitHub repo. Nixpacks `npm run build` + `npm start` (Procfile) çalıştırır.
-2. Variables: `NODE_ENV=production`, `TRUST_PROXY=1`, `ADMIN_PASSWORD=…`, `JWT_SECRET=…`,
-   `DB_PATH=/data/data.db`, `UPLOADS_DIR=/data/uploads`.
-3. Bir **Volume** ekle, mount yolu `/data` (SQLite + görseller kalıcı olsun).
-
-Her iki platform da `PORT`'u kendi verir; sunucu `process.env.PORT`'u okur. Node
-kendi TLS/proxy'sinin arkasında olduğundan `TRUST_PROXY=1` gerekir (zaten ayarlı).
-
 ## Veri nerede?
 - Menü/fiyatlar: `server/data.db` (ilk açılışta örnek menüyle kendiliğinden oluşur)
 - Ürün görselleri: `server/uploads/`

@@ -107,44 +107,6 @@
   var y = document.getElementById("yr");
   if (y) y.textContent = new Date().getFullYear();
 
-  /* ---- Newsletter (Netlify Forms — kayıtlar Netlify panelinde birikir) ---- */
-  var nlForm = document.getElementById("newsletterForm");
-  if (nlForm) {
-    nlForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      // Honeypot check
-      var gizli = nlForm.querySelector('[name="gizli"]');
-      if (gizli && gizli.value) return;
-
-      var emailInput = nlForm.querySelector('[name="email"]');
-      var email = (emailInput.value || "").trim();
-      if (!email) return;
-
-      var msg = nlForm.parentElement.querySelector(".newsletter__success");
-      function show(text) {
-        if (msg) { msg.textContent = text; msg.classList.add("is-visible"); }
-      }
-
-      var body = new URLSearchParams();
-      body.append("form-name", nlForm.getAttribute("name") || "newsletter");
-      body.append("email", email);
-
-      fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: body.toString(),
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error("submit failed");
-          show("✓ Teşekkürler! Kaydınız alınmıştır.");
-          emailInput.value = "";
-        })
-        .catch(function () {
-          show("Kaydedilemedi. Lütfen daha sonra tekrar deneyin.");
-        });
-    });
-  }
-
   /* ---- Mobile scroll indicator dots ---- */
   function initScrollDots(gridSelector, hintSelector) {
     var grid = document.querySelector(gridSelector);

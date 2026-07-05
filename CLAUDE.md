@@ -21,9 +21,9 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 ## Veri Akışı (önemli)
 *   Menünün tek gerçek kaynağı `server/data.db`; değişiklikler YÖNETİM PANELİNDEN yapılır.
 *   `server/seed-data.js` yalnızca ilk kurulum tohumudur — sonradan düzenlemek hiçbir şeyi değiştirmez.
-*   Canlı hosting statiktir (Netlify `www/` klasörünü yayınlar, `netlify.toml`); Node çalıştıramaz.
-    Menü `npm run export:menu` ile statik dosyaya dökülür (`menu-data.json` + görseller → `www/menu/`),
-    `git push` sonrası Netlify otomatik yayınlar. (FTP'li statik host'ta aynı `www/` klasörü yüklenir.)
+*   Canlı hosting statik paylaşımlı hosting'tir (Node çalıştıramaz); `www/` klasörü FTP ile yüklenir.
+    Menü `npm run export:menu` ile statik dosyaya dökülür (`menu-data.json` + görseller → `www/menu/`)
+    ve `menu/` klasörü FTP ile karşıya atılır.
 
 ## Kurallar
 *   **Mobil öncelikli:** Tasarım önce telefonda doğrulanır; menü ve ana site masaüstünde de düzgün görünmelidir
