@@ -107,7 +107,7 @@
   var y = document.getElementById("yr");
   if (y) y.textContent = new Date().getFullYear();
 
-  /* ---- Newsletter (client-side — no ASP backend) ---- */
+  /* ---- Newsletter (Netlify Forms — kayıtlar Netlify panelinde birikir) ---- */
   var nlForm = document.getElementById("newsletterForm");
   if (nlForm) {
     nlForm.addEventListener("submit", function (e) {
@@ -120,13 +120,28 @@
       var email = (emailInput.value || "").trim();
       if (!email) return;
 
-      // Show success message
       var msg = nlForm.parentElement.querySelector(".newsletter__success");
-      if (msg) {
-        msg.textContent = "✓ Teşekkürler! Kaydınız alınmıştır.";
-        msg.classList.add("is-visible");
+      function show(text) {
+        if (msg) { msg.textContent = text; msg.classList.add("is-visible"); }
       }
-      emailInput.value = "";
+
+      var body = new URLSearchParams();
+      body.append("form-name", nlForm.getAttribute("name") || "newsletter");
+      body.append("email", email);
+
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body.toString(),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("submit failed");
+          show("✓ Teşekkürler! Kaydınız alınmıştır.");
+          emailInput.value = "";
+        })
+        .catch(function () {
+          show("Kaydedilemedi. Lütfen daha sonra tekrar deneyin.");
+        });
     });
   }
 

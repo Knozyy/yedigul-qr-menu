@@ -50,6 +50,5 @@ export function createApp({ db, uploadsDir, auth }) {
     app.use('/api/auth', auth.router);
     app.use('/api/admin', createAdminRouter({ db, uploadsDir, requireAuth: auth.requireAuth }));
   }
-  app.set('appDeps', { db, uploadsDir, auth });
   return app;
 }

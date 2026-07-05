@@ -304,11 +304,11 @@
           </div>
         </div>
 
-        <!-- Newsletter — client-side (no ASP backend needed) -->
+        <!-- Newsletter — Netlify Forms: kayıtlar Netlify panelinde (Forms sekmesi) birikir -->
         <div class="newsletter reveal" data-delay="2">
           <h3 class="newsletter__title">Mail <em>listemiz</em></h3>
           <p class="newsletter__text">Anadolukavağı Yedigül Restaurant'tan haberler ve mevsimin lezzetleri için e-posta listemize katılın.</p>
-          <form id="newsletterForm">
+          <form id="newsletterForm" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="gizli">
             <input type="email" name="email" placeholder="E-Mail adresinizi giriniz" aria-label="E-posta adresiniz" required>
             <div class="gizli-field" aria-hidden="true">
               <label for="gizliDeger">Bu alanı boş bırakın</label>

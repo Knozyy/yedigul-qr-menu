@@ -14,15 +14,16 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 
 ## Teknoloji Yığını (güncel — 2026-07)
 *   **Frontend:** React 19 + Vite + TailwindCSS v4 (Marin/Boğaz paleti: lacivert, krem, altın)
-*   **Backend & DB:** Node.js + Express 5 + better-sqlite3 (`server/`). Firebase KULLANILMIYOR — eski plandı, vazgeçildi.
+*   **Backend & DB:** Node.js + Express 5 + better-sqlite3 (`server/`).
 *   **Auth:** Tek şifre (`.env` → `ADMIN_PASSWORD`) + httpOnly cookie'de JWT; IP başına giriş kilidi.
 *   **Görseller:** multer ile sunucuya yüklenir (`server/uploads/`).
 
 ## Veri Akışı (önemli)
 *   Menünün tek gerçek kaynağı `server/data.db`; değişiklikler YÖNETİM PANELİNDEN yapılır.
 *   `server/seed-data.js` yalnızca ilk kurulum tohumudur — sonradan düzenlemek hiçbir şeyi değiştirmez.
-*   Canlı hosting (Classic ASP/IIS, `www/` kopyası repoda) Node çalıştıramaz; menü `npm run export:menu`
-    ile statik dosyaya dökülür (`menu-data.json` + görseller) ve `menu/` klasörü FTP ile yüklenir.
+*   Canlı hosting statiktir (Netlify `www/` klasörünü yayınlar, `netlify.toml`); Node çalıştıramaz.
+    Menü `npm run export:menu` ile statik dosyaya dökülür (`menu-data.json` + görseller → `www/menu/`),
+    `git push` sonrası Netlify otomatik yayınlar. (FTP'li statik host'ta aynı `www/` klasörü yüklenir.)
 
 ## Kurallar
 *   **Mobil öncelikli:** Tasarım önce telefonda doğrulanır; menü ve ana site masaüstünde de düzgün görünmelidir

@@ -28,7 +28,7 @@ server/data.db*
 server/uploads/
 .env
 
-# gerçek SMTP kimlik bilgileri (sadece sunucuda) — şablon: mail-config.example.asp
+# gerçek SMTP kimlik bilgileri (yalnız sunucuda) — repoya ASLA girmez
 www/mail-config.asp
 
 # playwright
@@ -40,6 +40,3 @@ dist-menu
 
 # arşiv artıfaktları repoya girmesin
 *.zip
-
-# kişisel yerel not
-sunucuçalıştırma.txt

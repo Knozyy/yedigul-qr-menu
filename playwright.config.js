@@ -9,6 +9,12 @@ export default defineConfig({
       name: 'chromium-iphone-12',
       use: { ...devices['iPhone 12'], browserName: 'chromium' },
     },
+    {
+      // CLAUDE.md: menü/panel masaüstünde de düzgün olmalı — aynı akışlar
+      // masaüstü viewport'unda da koşar
+      name: 'chromium-desktop',
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
   webServer: [
     {
