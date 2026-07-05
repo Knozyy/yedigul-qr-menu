@@ -295,12 +295,18 @@
           </div>
 
           <div class="contact__map reveal" data-delay="2">
+            <!-- OpenStreetMap embed: Google'ın output=embed iframe'i X-Frame-Options
+                 ile engelleniyor; OSM her zaman çerçevelenebilir. Kesin konum için
+                 alttaki buton Google Haritalar'ı açar. -->
             <iframe
               title="Yedigül Restaurant konumu — Anadolu Kavağı, Beykoz"
-              src="https://www.google.com/maps?q=Anadolu%20Kava%C4%9F%C4%B1%20Macar%20Tabya%20Caddesi%206%20Beykoz%20%C4%B0stanbul&output=embed"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=29.073102%2C41.163679%2C29.085102%2C41.169679&layer=mapnik&marker=41.166679%2C29.079102"
               loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              allowfullscreen></iframe>
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <a class="contact__map-link" target="_blank" rel="noopener"
+               href="https://www.google.com/maps/search/?api=1&query=Yedig%C3%BCl%20Restaurant%20Anadolu%20Kava%C4%9F%C4%B1%20Beykoz">
+              Google Haritalar'da Aç →
+            </a>
           </div>
         </div>
 
