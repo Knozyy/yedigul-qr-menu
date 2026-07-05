@@ -78,10 +78,15 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const q = search.trim();
   const mode = q ? 'search' : favView ? 'fav' : 'sections';
 
-  const categories = useMemo(
-    () => CATEGORIES.map((c) => ({ id: c.id, label: localize(c, lang) })),
-    [CATEGORIES, lang]
-  );
+  // yalnız (aktif diyet filtresinden geçen) ürünü olan kategoriler çip göstersin;
+  // aksi halde boş/filtrelenmiş kategorinin çipine tıklamak ölü tık olurdu
+  // (kayacak bölüm yok). Bu, çip listesini görünen bölümlerle tutarlı tutar.
+  const categories = useMemo(() => {
+    const withItems = new Set(
+      ITEMS.filter((it) => passesDiet(it, gf, veg)).map((it) => it.cat)
+    );
+    return CATEGORIES.filter((c) => withItems.has(c.id)).map((c) => ({ id: c.id, label: localize(c, lang) }));
+  }, [CATEGORIES, ITEMS, lang, gf, veg]);
 
   // stacked sections (normal browsing) — drops categories emptied by filters
   const sections = useMemo(() => {
