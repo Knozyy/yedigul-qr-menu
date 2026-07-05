@@ -15,6 +15,40 @@ export default function CategoryForm({ categories, onChanged }) {
   const [nameTr, setNameTr] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [error, setError] = useState('');
+  // satır içi yeniden adlandırma: düzenlenen kategori id'si + taslak adlar
+  const [editId, setEditId] = useState(null);
+  const [editTr, setEditTr] = useState('');
+  const [editEn, setEditEn] = useState('');
+
+  function startEdit(cat) {
+    setError('');
+    setEditId(cat.id);
+    setEditTr(cat.name_tr);
+    setEditEn(cat.name_en);
+  }
+
+  function cancelEdit() {
+    setEditId(null);
+    setEditTr('');
+    setEditEn('');
+  }
+
+  async function saveEdit(cat) {
+    const tr = editTr.trim();
+    const en = editEn.trim();
+    if (!tr || !en) {
+      setError('Kategori adı (TR ve EN) boş olamaz.');
+      return;
+    }
+    setError('');
+    try {
+      await api.patch(`/admin/categories/${cat.id}`, { name_tr: tr, name_en: en });
+      cancelEdit();
+      onChanged();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   const field = 'px-3 py-2 rounded-lg border bg-transparent outline-none';
   const fieldStyle = { borderColor: 'var(--border-strong)', color: 'var(--text)' };
@@ -94,6 +128,21 @@ export default function CategoryForm({ categories, onChanged }) {
         {categories.map((c, idx) => {
           const active = c.is_active === 1;
           const arrow = 'w-6 h-5 flex items-center justify-center text-[10px] leading-none disabled:opacity-25';
+          if (editId === c.id) {
+            return (
+              <li key={c.id} className="flex flex-col gap-2 py-1">
+                <div className="flex items-center gap-2">
+                  <input className={field} style={fieldStyle} placeholder="Ad (TR)" value={editTr} onChange={(e) => setEditTr(e.target.value)} autoFocus />
+                  <input className={field} style={fieldStyle} placeholder="Ad (EN)" value={editEn} onChange={(e) => setEditEn(e.target.value)} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => saveEdit(c)} className="text-[12px] px-3 py-1 rounded-lg font-semibold" style={{ background: 'var(--gold)', color: '#fff' }}>Kaydet</button>
+                  <button onClick={cancelEdit} className="text-[12px] px-3 py-1 rounded-lg border" style={{ borderColor: 'var(--border-strong)', color: 'var(--text)' }}>Vazgeç</button>
+                  <span className="text-[11px]" style={{ color: 'var(--muted)' }}>({c.id})</span>
+                </div>
+              </li>
+            );
+          }
           return (
             <li key={c.id} className="flex items-center justify-between gap-2 text-sm" style={{ color: 'var(--text)', opacity: active ? 1 : 0.55 }}>
               <span className="flex items-center gap-1 min-w-0">
@@ -104,6 +153,7 @@ export default function CategoryForm({ categories, onChanged }) {
                 <span className="truncate">{c.name_tr} <span style={{ color: 'var(--muted)' }}>({c.id})</span></span>
               </span>
               <span className="flex items-center gap-3">
+                <button onClick={() => startEdit(c)} className="text-[12px]" style={{ color: 'var(--text)' }}>Düzenle</button>
                 <button
                   onClick={() => onToggleActive(c, active ? 0 : 1)}
                   className="text-[11px] px-2.5 py-1 rounded-full border whitespace-nowrap"

@@ -35,6 +35,26 @@ test('admin can change a price and customer sees it', async ({ page }) => {
   await expect(page.getByText('1234 TL')).toBeVisible({ timeout: 7000 });
 });
 
+test('admin can rename a category and customer sees the new name', async ({ page }) => {
+  await adminLogin(page);
+
+  // open the category manager
+  await page.getByRole('button', { name: 'Kategoriler' }).click();
+
+  // start inline-editing the "Salatalar" category row
+  const catRow = page.locator('li').filter({ hasText: 'Salatalar' });
+  await catRow.getByRole('button', { name: 'Düzenle' }).click();
+
+  // the editing row is the only one with a "Kaydet" button
+  const editRow = page.locator('li').filter({ has: page.getByRole('button', { name: 'Kaydet' }) });
+  await editRow.getByPlaceholder('Ad (TR)').fill('Yeşillikler TEST');
+  await editRow.getByRole('button', { name: 'Kaydet' }).click();
+
+  // customer menu shows the renamed category label (category-bar button)
+  await page.goto('/menu/');
+  await expect(page.getByRole('button', { name: 'Yeşillikler TEST' })).toBeVisible({ timeout: 7000 });
+});
+
 test('admin can deactivate a product and it disappears from menu', async ({ page }) => {
   await adminLogin(page);
 
