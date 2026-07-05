@@ -7,13 +7,13 @@ export const UI = {
     market: 'Piyasa Fiyatı', ingredients: 'İçindekiler', allergens: 'Alerjenler', energy: 'Enerji',
     empty: 'Eşleşen yemek bulunamadı.', items: 'çeşit', gfShort: 'GLÜTENSİZ', vegShort: 'VEJETARYEN', noAlg: 'Bilinen alerjen yok.',
     favorites: 'Favoriler', noFav: 'Henüz favori eklemediniz.', popular: 'POPÜLER', chef: 'ŞEFİN ÖNERİSİ',
-    loading: 'Menü yükleniyor…', home: 'Ana Sayfa',
+    loading: 'Menü yükleniyor…', home: 'Ana Sayfa', close: 'Kapat',
   },
   en: {
     tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…', gf: 'Gluten-Free', veg: 'Vegetarian',
     market: 'Market Price', ingredients: 'Ingredients', allergens: 'Allergens', energy: 'Energy',
     empty: 'No dishes match your search.', items: 'dishes', gfShort: 'GLUTEN-FREE', vegShort: 'VEGETARIAN', noAlg: 'No known allergens.',
     favorites: 'Favorites', noFav: 'No favorites yet.', popular: 'POPULAR', chef: "CHEF'S CHOICE",
-    loading: 'Loading menu…', home: 'Home',
+    loading: 'Loading menu…', home: 'Home', close: 'Close',
   },
 };

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Heart from './Heart';
 
 function TagChip({ kind, label }) {
@@ -20,6 +21,19 @@ function TagChip({ kind, label }) {
 }
 
 export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) {
+  // Esc ile kapat + panel açıkken arka planı kaydırmayı kilitle.
+  useEffect(() => {
+    if (!sheet) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [sheet, onClose]);
+
   if (!sheet) return null;
 
   return (
@@ -37,8 +51,24 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
           className="yg-scroll max-h-[86vh] overflow-y-auto rounded-t-[26px]"
           style={{ background: 'var(--surface)' }}
         >
-          <div className="sticky top-0 flex justify-center pt-[11px] pb-1" style={{ background: 'var(--surface)' }}>
-            <span className="w-[42px] h-[5px] rounded-full" style={{ background: 'var(--border-strong)' }} />
+          <div className="sticky top-0 z-10 flex items-center justify-center pt-[11px] pb-1" style={{ background: 'var(--surface)' }}>
+            <button
+              onClick={onClose}
+              aria-label={ui.close || 'Kapat'}
+              className="absolute left-1/2 -translate-x-1/2 top-[9px] w-[52px] h-[9px] flex items-center justify-center cursor-pointer p-0 bg-transparent border-none"
+            >
+              <span className="w-[42px] h-[5px] rounded-full" style={{ background: 'var(--border-strong)' }} />
+            </button>
+            <button
+              onClick={onClose}
+              aria-label={ui.close || 'Kapat'}
+              className="absolute right-3 top-2 w-[32px] h-[32px] rounded-full flex items-center justify-center cursor-pointer p-0 border"
+              style={{ background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text)' }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
           <div className="px-[22px] pt-1.5 pb-[26px]">
