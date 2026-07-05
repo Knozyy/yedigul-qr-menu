@@ -4,7 +4,7 @@
 <link href="css/style.css" rel="stylesheet">
 
 <% @ Language = VBScript CodePage=1254 %>
- <title>Yedigül Restaurant Subscribe</title>
+ <title>Yedigï¿½l Restaurant Subscribe</title>
  <style type="text/css">
 body {
 	background-image: url(marka.jpg);
@@ -40,7 +40,7 @@ else
 <br />
 <br />
 
-<center><font face="verdana" size="+1" color="#000000"><b>Email Adresi Girmemiþsiniz.Lütfen Giriniz.</b></font></center>
+<center><font face="verdana" size="+1" color="#000000"><b>Email Adresi Girmemiï¿½siniz.Lï¿½tfen Giriniz.</b></font></center>
 <%response.End
 end if%>
 <%FUNCTION KONTROL(STR) 
@@ -74,7 +74,7 @@ if not KONTROL(email) then
 <br />
 <br />
 
-<center><font face="verdana" size="+1" color="#000000"><b>Geçerli Bir Email Adresi Giriniz.</b></font></center>
+<center><font face="verdana" size="+1" color="#000000"><b>Geï¿½erli Bir Email Adresi Giriniz.</b></font></center>
 <%response.End
 end if%>
 <% if request.form("email")="" then
@@ -85,7 +85,7 @@ end if%>
 <br />
 <br />
 
-<center><font face="verdana" size="+1" color="#000000"><b>Email Girmemiþsiniz.Lütfen Giriniz.</b></font></center>
+<center><font face="verdana" size="+1" color="#000000"><b>Email Girmemiï¿½siniz.Lï¿½tfen Giriniz.</b></font></center>
 <%response.End
 end if%>
 
@@ -119,7 +119,7 @@ GonderenAdSoyad		= SMTPKullaniciAdi
 GonderenKisi		= SMTPKullaniciAdi
 AliciKisi		= Gidecek_Mail_adresi
 MailKonusu		= "Subscribe"
-Mesaj			="<b>E-mail&nbsp;:&nbsp;</b>" +Request.Form("email")
+Mesaj			="<b>E-mail&nbsp;:&nbsp;</b>" +Server.HTMLEncode(Request.Form("email"))
 %>
 
 <!--
@@ -157,7 +157,8 @@ Set Alnlr	= Nothing
 Set MKonf	= Nothing
 
 if err Then
-		Response.write err.description
+		' SMTP hata detayÄ±nÄ± istemciye sÄ±zdÄ±rma (sunucu adÄ±/port ifÅŸasÄ±)
+		Response.write "Mail g&ouml;nderilemedi. L&uuml;tfen daha sonra tekrar deneyin."
 		Response.end
 		cdoSys = false
 	else
@@ -169,7 +170,7 @@ End If
 <br />
 <br />
 
-<center><font face="verdana" size="+1" color="#000000"><b>Mail Adresiniz Kaydedilmiþtir.Ýndirim, Kampanya ve Özel Koþullar Oldukça Bilgilendirileceksiniz.</b></font></center>
+<center><font face="verdana" size="+1" color="#000000"><b>Mail Adresiniz Kaydedilmiï¿½tir.ï¿½ndirim, Kampanya ve ï¿½zel Koï¿½ullar Oldukï¿½a Bilgilendirileceksiniz.</b></font></center>
 <script language="JavaScript" type="text/javascript">
  <!--
 window.opener = self;

@@ -69,9 +69,12 @@ export default function QrPanel() {
         <h2 style="margin:0 0 8px">Yedigül · Menü</h2>
         <p style="margin:0 0 24px;color:#555">Menüyü görmek için kodu okutun</p>
         <img src="${dataUrl}" style="width:320px;height:320px" />
-      </div>
-      <script>window.onload=()=>{window.print()}</script>`);
+      </div>`);
     w.document.close();
+    // inline script yok (CSP script-src 'self' ile uyumlu); görsel yüklenince yazdır.
+    const img = w.document.querySelector('img');
+    if (img) img.onload = () => w.print();
+    else w.print();
   }
 
   const field = 'px-3 py-2 rounded-lg border bg-transparent outline-none w-full';

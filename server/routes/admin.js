@@ -80,7 +80,10 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const b = req.body ?? {};
     if ('menu_path' in b) {
       const p = String(b.menu_path || '').trim();
-      if (!p.startsWith('/')) return res.status(400).json({ error: "menu_path '/' ile başlamalı" });
+      // '/' ile başlamalı ama '//host' / '/\host' (protokol-göreli dış yönlendirme) olmamalı
+      if (!p.startsWith('/') || p.startsWith('//') || p.startsWith('/\\')) {
+        return res.status(400).json({ error: "menu_path site-içi bir yol olmalı ('/' ile başlamalı, '//' değil)" });
+      }
       setSetting(db, 'menu_path', p);
     }
     if ('public_base_url' in b) {
@@ -101,6 +104,10 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const cat = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.category_id);
     if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
     const id = b.id || randomUUID().slice(0, 8);
+    // id yüklenen dosya adında kullanılıyor; path/kontrol karakterlerini engelle
+    if (!/^[A-Za-z0-9_-]{1,64}$/.test(id)) {
+      return res.status(400).json({ error: 'Geçersiz id (yalnızca harf, rakam, tire, alt çizgi)' });
+    }
     try {
       db.prepare(
         `INSERT INTO products
