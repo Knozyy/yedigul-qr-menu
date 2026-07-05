@@ -26,6 +26,23 @@ if (SECRET === DEFAULT_SECRET) {
   console.warn(`UYARI: ${msg}`);
 }
 
+// Zayıf JWT_SECRET, sızan bir token'ın çevrimdışı kaba-kuvvetle kırılmasını
+// kolaylaştırır → admin taklidi. Üretimde en az 32 karakter zorunlu.
+const MIN_SECRET_LEN = 32;
+if (SECRET !== DEFAULT_SECRET && SECRET.length < MIN_SECRET_LEN) {
+  const msg = `JWT_SECRET çok kısa (${SECRET.length} karakter; en az ${MIN_SECRET_LEN} önerilir).`;
+  if (IS_PROD) {
+    console.error(`HATA: ${msg} Üretimde başlatma iptal edildi. Güçlü bir değer üretin: node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`);
+    process.exit(1);
+  }
+  console.warn(`UYARI: ${msg}`);
+}
+
+// Boş/çok kısa admin parolası girişi savunmasız bırakır.
+if (PASSWORD && PASSWORD.length < 8) {
+  console.warn(`UYARI: ADMIN_PASSWORD çok kısa (${PASSWORD.length} karakter). En az 8+ karakter, tahmin edilmesi zor bir parola kullanın.`);
+}
+
 mkdirSync(UPLOADS_DIR, { recursive: true });
 
 const db = openDb(DB_PATH);
