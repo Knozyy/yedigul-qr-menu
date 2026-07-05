@@ -61,6 +61,17 @@ if (existsSync(siteDir)) {
   app.use(express.static(siteDir));
 }
 
+// Bilinmeyen yollar → ana menüye at (statik dosya da SPA rotası da değilse).
+// /api ve /uploads hariç: onlar kendi 404/401'ini döndürmeli, menüye gitmemeli.
+// Yalnız menü build'i mevcutsa; yoksa /menu/ servis edilmez ve döngü olur.
+if (existsSync(distDir)) {
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+    res.redirect(302, '/menu/');
+  });
+}
+
 app.listen(PORT, () => {
   if (!PASSWORD) console.warn('UYARI: ADMIN_PASSWORD boş — admin girişi devre dışı.');
   console.log(`Yedigül API http://localhost:${PORT}`);
