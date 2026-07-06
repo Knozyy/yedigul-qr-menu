@@ -64,7 +64,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   // measure sticky header height for scroll-spy offsets
   useLayoutEffect(() => {
     const measure = () => {
-      if (stickyRef.current) setStickyH(stickyRef.current.offsetHeight);
+      if (!stickyRef.current) return;
+      // Kısa ekranda (yatay telefon) .yg-sticky-head sabitlenmez; o durumda
+      // scroll-spy/scroll hedef offset'i de 0 olmalı.
+      const pinned = getComputedStyle(stickyRef.current).position === 'sticky';
+      setStickyH(pinned ? stickyRef.current.offsetHeight : 0);
     };
     measure();
     window.addEventListener('resize', measure);
@@ -181,12 +185,12 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   return (
     <div className="min-h-screen flex justify-center font-inter" style={{ background: '#0b1422' }}>
-      <div className="w-full max-w-[468px] lg:max-w-[1000px]" style={themeVars}>
+      <div className="w-full max-w-[468px] md:max-w-[1000px]" style={themeVars}>
         <div
-          className="w-full max-w-[468px] lg:max-w-[1000px] mx-auto min-h-screen flex flex-col relative"
+          className="w-full max-w-[468px] md:max-w-[1000px] mx-auto min-h-screen flex flex-col relative"
           style={{ background: 'var(--bg)', color: 'var(--text)', boxShadow: '0 0 90px rgba(0,0,0,.55)' }}
         >
-          <div ref={stickyRef} className="sticky top-0 z-30">
+          <div ref={stickyRef} className="yg-sticky-head sticky top-0 z-30">
             <Header
               ui={ui}
               dark={dark}

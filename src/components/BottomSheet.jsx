@@ -44,7 +44,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
         style={{ background: 'rgba(8,16,30,.5)', backdropFilter: 'blur(2px)' }}
       />
       <div
-        className="yg-anim-sheet fixed left-1/2 bottom-0 w-full max-w-[468px] lg:max-w-[560px] z-[60] rounded-t-[26px]"
+        className="yg-anim-sheet fixed left-1/2 bottom-0 w-full max-w-[468px] md:max-w-[560px] z-[60] rounded-t-[26px]"
         style={{ boxShadow: '0 -16px 50px rgba(0,0,0,.32)' }}
       >
         <div
