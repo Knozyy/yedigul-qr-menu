@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /menu/admin
 
-Sitemap: https://yedigulrestaurant.com/sitemap.xml
+Sitemap: https://www.yedigulrestorant.com/sitemap.xml
