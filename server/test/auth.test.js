@@ -46,3 +46,26 @@ test('/me without cookie returns 401', async () => {
   const me = await fetch(`${base}/api/auth/me`);
   assert.equal(me.status, 401);
 });
+
+test('login returns token in body and Bearer auth works (mobile client)', async () => {
+  const login = await fetch(`${base}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ password: 'hunter2' }),
+  });
+  assert.equal(login.status, 200);
+  const { token } = await login.json();
+  assert.ok(token, 'token gövdede dönmeli');
+
+  const me = await fetch(`${base}/api/auth/me`, {
+    headers: { authorization: `Bearer ${token}` },
+  });
+  assert.equal(me.status, 200);
+});
+
+test('Bearer with invalid token returns 401', async () => {
+  const me = await fetch(`${base}/api/auth/me`, {
+    headers: { authorization: 'Bearer gecersiz.token.degeri' },
+  });
+  assert.equal(me.status, 401);
+});

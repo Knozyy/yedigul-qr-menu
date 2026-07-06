@@ -42,7 +42,10 @@ export function createAuth({ secret, password, maxAttempts = MAX_ATTEMPTS, locko
   }
 
   function requireAuth(req, res, next) {
-    const token = req.cookies?.[COOKIE];
+    // panel cookie ile, mobil uygulama Authorization: Bearer ile gelir
+    const header = req.headers.authorization;
+    const bearer = header?.startsWith('Bearer ') ? header.slice(7) : null;
+    const token = req.cookies?.[COOKIE] || bearer;
     if (!token) return res.status(401).json({ error: 'Yetkisiz' });
     try {
       jwt.verify(token, secret, { algorithms: [JWT_ALG] });
@@ -65,7 +68,9 @@ export function createAuth({ secret, password, maxAttempts = MAX_ATTEMPTS, locko
     attempts.delete(ip);
     const token = jwt.sign({ role: 'admin' }, secret, { expiresIn: '7d', algorithm: JWT_ALG });
     res.cookie(COOKIE, token, cookieOpts);
-    res.json({ authenticated: true });
+    // token gövdede de döner: mobil uygulama cookie yerine bunu saklayıp
+    // Authorization: Bearer başlığıyla gönderir
+    res.json({ authenticated: true, token });
   });
   router.post('/logout', (req, res) => {
     res.clearCookie(COOKIE, cookieOpts);
