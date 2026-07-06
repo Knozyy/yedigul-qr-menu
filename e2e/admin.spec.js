@@ -50,9 +50,10 @@ test('admin can rename a category and customer sees the new name', async ({ page
   await editRow.getByPlaceholder('Ad (TR)').fill('Yeşillikler TEST');
   await editRow.getByRole('button', { name: 'Kaydet' }).click();
 
-  // customer menu shows the renamed category label (category-bar button)
+  // customer menu shows the renamed category label (category-bar button).
+  // exact: true — bölüm başlığı da bir buton ve adı "… N çeşit" içeriyor.
   await page.goto('/menu/');
-  await expect(page.getByRole('button', { name: 'Yeşillikler TEST' })).toBeVisible({ timeout: 7000 });
+  await expect(page.getByRole('button', { name: 'Yeşillikler TEST', exact: true })).toBeVisible({ timeout: 7000 });
 });
 
 test('admin can deactivate a product and it disappears from menu', async ({ page }) => {

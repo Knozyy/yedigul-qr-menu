@@ -9,6 +9,8 @@ export default function MenuSections({
   onItemClick,
   favorites,
   onToggleFav,
+  collapsedIds,
+  onToggleSection,
 }) {
   if (sections.length === 0) {
     return (
@@ -22,36 +24,60 @@ export default function MenuSections({
 
   return (
     <main className="flex-1 px-5 pt-1 pb-9 flex flex-col gap-7">
-      {sections.map((section) => (
-        <section
-          key={section.id}
-          ref={register(section.id)}
-          style={{ scrollMarginTop: `${scrollMargin}px` }}
-          className="flex flex-col gap-[13px]"
-        >
-          <div className="flex items-baseline gap-3 my-1.5">
-            <span className="font-outfit text-[23px] font-semibold leading-none tracking-[.01em]" style={{ color: 'var(--text)' }}>
-              {section.title}
-            </span>
-            <span className="flex-1 h-px self-center" style={{ background: 'var(--border)' }} />
-            <span className="yg-overline text-[9.5px]" style={{ color: 'var(--gold)' }}>
-              {section.items.length} {countWord}
-            </span>
-          </div>
+      {sections.map((section) => {
+        const isCollapsed = collapsedIds.has(section.id);
+        return (
+          <section
+            key={section.id}
+            ref={register(section.id)}
+            style={{ scrollMarginTop: `${scrollMargin}px` }}
+            className="flex flex-col gap-[13px]"
+          >
+            <button
+              type="button"
+              onClick={() => onToggleSection(section.id)}
+              aria-expanded={!isCollapsed}
+              className="flex items-baseline gap-3 my-1.5 w-full text-left cursor-pointer bg-transparent border-none p-0"
+            >
+              <span className="font-outfit text-[23px] font-semibold leading-none tracking-[.01em]" style={{ color: 'var(--text)' }}>
+                {section.title}
+              </span>
+              <span className="flex-1 h-px self-center" style={{ background: 'var(--border)' }} />
+              <span className="yg-overline text-[9.5px]" style={{ color: 'var(--gold)' }}>
+                {section.items.length} {countWord}
+              </span>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--muted)"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className={`flex-none self-center transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
 
-          <div className="flex flex-col gap-[13px] md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-4">
-            {section.items.map((item) => (
-              <ProductCard
-                key={item.id}
-                item={item}
-                onClick={() => onItemClick(item.id)}
-                isFav={favorites.includes(item.id)}
-                onToggleFav={onToggleFav}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+            {!isCollapsed && (
+              <div className="flex flex-col gap-[13px] md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-4">
+                {section.items.map((item) => (
+                  <ProductCard
+                    key={item.id}
+                    item={item}
+                    onClick={() => onItemClick(item.id)}
+                    isFav={favorites.includes(item.id)}
+                    onToggleFav={onToggleFav}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      })}
     </main>
   );
 }

@@ -51,9 +51,12 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [favView, setFavView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [stickyH, setStickyH] = useState(220);
+  const [headTop, setHeadTop] = useState(0);
   const [pendingScroll, setPendingScroll] = useState(null);
+  const [collapsedIds, setCollapsedIds] = useState(() => new Set());
 
   const stickyRef = useRef(null);
+  const headerRef = useRef(null);
   const ui = UI[lang];
 
   // persist preferences
@@ -63,20 +66,51 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   // measure sticky header height for scroll-spy offsets
   useLayoutEffect(() => {
+    const mq = window.matchMedia('(max-height: 480px)');
     const measure = () => {
-      if (!stickyRef.current) return;
-      // Kısa ekranda (yatay telefon) .yg-sticky-head sabitlenmez; o durumda
-      // scroll-spy/scroll hedef offset'i de 0 olmalı.
-      const pinned = getComputedStyle(stickyRef.current).position === 'sticky';
-      setStickyH(pinned ? stickyRef.current.offsetHeight : 0);
+      if (!stickyRef.current || !headerRef.current) return;
+      const total = stickyRef.current.offsetHeight;
+      const header = headerRef.current.offsetHeight;
+      // Kısa ekranda (yatay telefon) sticky bloğa negatif top verilir: büyük
+      // başlık kaydırınca ekrandan çıkar, kategori çipleri üstte asılı kalır.
+      // Scroll-spy/scroll-margin ofseti de asılı kalan kısma göre hesaplanır.
+      if (mq.matches) {
+        setHeadTop(-header);
+        setStickyH(total - header);
+      } else {
+        setHeadTop(0);
+        setStickyH(total);
+      }
     };
     measure();
     window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    mq.addEventListener('change', measure);
+    return () => {
+      window.removeEventListener('resize', measure);
+      mq.removeEventListener('change', measure);
+    };
   }, []);
 
   const toggleFav = useCallback((id) => {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }, []);
+
+  const toggleSection = useCallback((id) => {
+    setCollapsedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const expandSection = useCallback((id) => {
+    setCollapsedIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
   }, []);
 
   const q = search.trim();
@@ -155,6 +189,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   // category chip click — leave search/fav mode then scroll to the section
   const onSelectCategory = useCallback(
     (id) => {
+      expandSection(id); // kapalı bölüme kaydırılıyorsa önce aç
       if (q || favView) {
         setSearch('');
         setFavView(false);
@@ -163,7 +198,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         scrollTo(id);
       }
     },
-    [q, favView, scrollTo]
+    [q, favView, scrollTo, expandSection]
   );
 
   useEffect(() => {
@@ -190,17 +225,19 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
           className="w-full max-w-[468px] md:max-w-[1000px] mx-auto min-h-screen flex flex-col relative"
           style={{ background: 'var(--bg)', color: 'var(--text)', boxShadow: '0 0 90px rgba(0,0,0,.55)' }}
         >
-          <div ref={stickyRef} className="yg-sticky-head sticky top-0 z-30">
-            <Header
-              ui={ui}
-              dark={dark}
-              onToggleTheme={() => setDark((d) => !d)}
-              lang={lang}
-              onSetLang={setLang}
-              favView={favView}
-              favCount={favorites.length}
-              onToggleFavView={() => setFavView((v) => !v)}
-            />
+          <div ref={stickyRef} className="sticky z-30" style={{ top: headTop }}>
+            <div ref={headerRef}>
+              <Header
+                ui={ui}
+                dark={dark}
+                onToggleTheme={() => setDark((d) => !d)}
+                lang={lang}
+                onSetLang={setLang}
+                favView={favView}
+                favCount={favorites.length}
+                onToggleFavView={() => setFavView((v) => !v)}
+              />
+            </div>
             <CategoryBar
               categories={categories}
               activeCat={mode === 'sections' ? activeCat : null}
@@ -252,6 +289,8 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
               onItemClick={setSelectedId}
               favorites={favorites}
               onToggleFav={toggleFav}
+              collapsedIds={collapsedIds}
+              onToggleSection={toggleSection}
             />
           )}
 

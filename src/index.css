@@ -40,15 +40,6 @@ body {
   letter-spacing: 0.28em;
 }
 
-/* Yatay telefon (kısa ekran): büyük başlık + kategori çipleri bloğu sabit
-   kalırsa ~390px'lik ekranın yarısından fazlasını kaplayıp menüyü işlevsiz
-   bırakıyor. Kısa ekranda blok normal akışta kalır, kaydırınca yukarı çıkar. */
-@media (max-height: 480px) {
-  .yg-sticky-head {
-    position: static;
-  }
-}
-
 .yg-scroll::-webkit-scrollbar {
   display: none;
 }
