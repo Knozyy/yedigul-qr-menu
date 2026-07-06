@@ -27,7 +27,7 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 
 ## Kurallar
 *   **Mobil öncelikli:** Tasarım önce telefonda doğrulanır; menü ve ana site masaüstünde de düzgün görünmelidir
-    (menüde ≥1024px iki sütun). "Sadece mobil" kuralı kaldırıldı.
+    (menüde ≥768px iki sütun — yatay telefonu da kapsar; kısa ekranda başlık sabitlenmez). "Sadece mobil" kuralı kaldırıldı.
 *   **Çok dillilik:** Menüdeki tüm içerik TR/EN destekler (kategori, ürün adı, açıklama, rozetler).
 *   **Fiyatlandırma:** `is_market_price` işaretli ürünlerde fiyat yerine "Piyasa Fiyatı / Market Price" gösterilir.
 *   **Kalori:** Ürünlerde `kcal` alanı vardır (yasal zorunluluk); panelde düzenlenir, menüde ve detayda gösterilir.
