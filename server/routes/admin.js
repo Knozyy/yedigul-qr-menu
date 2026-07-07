@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import multer from 'multer';
 import { resolve, sep } from 'node:path';
 import { existsSync, unlinkSync, readFileSync } from 'node:fs';
-import { getSetting, setSetting } from '../db.js';
+import { getSetting, setSetting, logChange, localDay } from '../db.js';
 
 // Yüklenen dosyanın gerçekten resim olduğunu magic-byte ile doğrula —
 // multer'ın fileFilter'ı yalnız istemci Content-Type'ına bakar, o sahtelenebilir.
@@ -17,23 +17,67 @@ function sniffImage(path) {
   return false;
 }
 
-const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en'];
-// image_url intentionally excluded: only the dedicated image routes may set it
+const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'variants', 'images'];
+// image_url/images intentionally excluded: only the dedicated image routes may set them
 const PRODUCT_FIELDS = [
   'category_id', 'name_tr', 'name_en', 'desc_tr', 'desc_en', 'price',
   'is_market_price', 'is_available', 'popular', 'chef',
-  'diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'sort', 'kcal', 'portion',
+  'diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'sort', 'kcal', 'portion', 'variants',
 ];
+
+const MAX_IMAGES = 6;
+const MAX_VARIANTS = 8;
+
+// Varyant doğrulama: [{name_tr, name_en, price}] — geçersizse null döner.
+function normalizeVariants(v) {
+  if (v == null) return [];
+  if (!Array.isArray(v) || v.length > MAX_VARIANTS) return null;
+  const out = [];
+  for (const it of v) {
+    if (!it || typeof it !== 'object') return null;
+    const name_tr = String(it.name_tr ?? '').trim();
+    const name_en = String(it.name_en ?? '').trim();
+    const price = Number(it.price);
+    if (!name_tr || !name_en || !Number.isFinite(price) || price < 0) return null;
+    out.push({ name_tr, name_en, price });
+  }
+  return out;
+}
 
 function hydrate(row) {
   if (!row) return row;
   const out = { ...row };
-  for (const f of JSON_FIELDS) out[f] = JSON.parse(row[f]);
+  for (const f of JSON_FIELDS) out[f] = JSON.parse(row[f] ?? '[]');
   return out;
 }
 
 function getProduct(db, id) {
   return hydrate(db.prepare('SELECT * FROM products WHERE id = ?').get(id));
+}
+
+// Geçmiş kayıtları için alan etiketi + insan-okur değişim özeti
+const FIELD_LABELS = {
+  category_id: 'kategori', name_tr: 'ad (TR)', name_en: 'ad (EN)',
+  desc_tr: 'açıklama (TR)', desc_en: 'açıklama (EN)', price: 'fiyat',
+  is_market_price: 'piyasa fiyatı', is_available: 'stok', popular: 'popüler',
+  chef: 'şef önerisi', sort: 'sıra', kcal: 'kalori', portion: 'porsiyon',
+  diet: 'diyet', ing_tr: 'içindekiler (TR)', ing_en: 'içindekiler (EN)',
+  alg_tr: 'alerjenler (TR)', alg_en: 'alerjenler (EN)', variants: 'varyantlar',
+};
+
+function diffSummary(before, after, fields) {
+  const parts = [];
+  for (const f of fields) {
+    const a = before[f];
+    const b = after[f];
+    if (JSON.stringify(a) === JSON.stringify(b)) continue;
+    const label = FIELD_LABELS[f] || f;
+    if (f === 'is_available') parts.push(b ? 'stokta' : 'tükendi');
+    else if (['is_market_price', 'popular', 'chef'].includes(f)) parts.push(`${label}: ${b ? 'açık' : 'kapalı'}`);
+    else if (Array.isArray(a) || Array.isArray(b)) parts.push(`${label} güncellendi`);
+    else parts.push(`${label}: ${a ?? '—'} → ${b ?? '—'}`);
+  }
+  return parts.join(', ');
 }
 
 export function createAdminRouter({ db, uploadsDir, requireAuth }) {
@@ -52,7 +96,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   });
 
   function removeImageFile(url) {
-    if (!url) return;
+    if (!url || !uploadsDir) return;
     const root = resolve(uploadsDir);
     const target = resolve(uploadsDir, url.replace('/uploads/', ''));
     // refuse to touch anything outside uploadsDir (path-traversal guard)
@@ -62,22 +106,44 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     }
   }
 
+  function log(action, entity, entityId, detail = '') {
+    logChange(db, { action, entity, entityId, detail });
+  }
+
+  // Görsel listesi güncellemesini tek yerden yap: images + kapak (image_url) senkron
+  function saveImages(id, images) {
+    db.prepare('UPDATE products SET images = ?, image_url = ? WHERE id = ?')
+      .run(JSON.stringify(images), images[0] ?? null, id);
+  }
+
   router.get('/menu', (req, res) => {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort').all();
     const products = db.prepare('SELECT * FROM products ORDER BY sort').all().map(hydrate);
     res.json({ categories, products });
   });
 
-  // QR / genel adres ayarları
-  router.get('/settings', (req, res) => {
-    res.json({
+  // ---- Ayarlar: QR / adres + duyuru + restoran bilgileri ----
+  const TEXT_SETTINGS = [
+    'announcement_tr', 'announcement_en',
+    'info_phone', 'info_hours', 'info_wifi', 'info_instagram',
+  ];
+
+  function settingsPayload() {
+    const out = {
       public_base_url: getSetting(db, 'public_base_url', ''),
       menu_path: getSetting(db, 'menu_path', '/menu/'),
-    });
+    };
+    for (const k of TEXT_SETTINGS) out[k] = getSetting(db, k, '') || '';
+    return out;
+  }
+
+  router.get('/settings', (req, res) => {
+    res.json(settingsPayload());
   });
 
   router.put('/settings', (req, res) => {
     const b = req.body ?? {};
+    const changed = [];
     if ('menu_path' in b) {
       const p = String(b.menu_path || '').trim();
       // '/' ile başlamalı ama '//host' / '/\host' (protokol-göreli dış yönlendirme) olmamalı
@@ -85,17 +151,25 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         return res.status(400).json({ error: "menu_path site-içi bir yol olmalı ('/' ile başlamalı, '//' değil)" });
       }
       setSetting(db, 'menu_path', p);
+      changed.push('menü yolu');
     }
     if ('public_base_url' in b) {
       // sondaki '/' temizle; boş bırakılabilir (o zaman istek origin'i kullanılır)
       setSetting(db, 'public_base_url', String(b.public_base_url || '').trim().replace(/\/+$/, ''));
+      changed.push('site adresi');
     }
-    res.json({
-      public_base_url: getSetting(db, 'public_base_url', ''),
-      menu_path: getSetting(db, 'menu_path', '/menu/'),
-    });
+    for (const k of TEXT_SETTINGS) {
+      if (!(k in b)) continue;
+      setSetting(db, k, String(b[k] ?? '').trim());
+      changed.push(
+        k.startsWith('announcement') ? 'duyuru' : k.replace('info_', 'bilgi: ')
+      );
+    }
+    if (changed.length) log('update', 'settings', null, [...new Set(changed)].join(', '));
+    res.json(settingsPayload());
   });
 
+  // ---- Ürünler ----
   router.post('/products', (req, res) => {
     const b = req.body ?? {};
     if (!b.category_id || !b.name_tr || !b.name_en) {
@@ -103,6 +177,10 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     }
     const cat = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.category_id);
     if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
+    const variants = normalizeVariants(b.variants);
+    if (variants === null) {
+      return res.status(400).json({ error: 'Geçersiz varyantlar (name_tr, name_en, price ≥ 0 zorunlu, en çok 8)' });
+    }
     const id = b.id || randomUUID().slice(0, 8);
     // id yüklenen dosya adında kullanılıyor; path/kontrol karakterlerini engelle
     if (!/^[A-Za-z0-9_-]{1,64}$/.test(id)) {
@@ -112,10 +190,12 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       db.prepare(
         `INSERT INTO products
           (id, category_id, name_tr, name_en, desc_tr, desc_en, price, is_market_price,
-           image_url, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en, sort, kcal, portion)
+           image_url, images, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en,
+           sort, kcal, portion, variants)
          VALUES
           (@id, @category_id, @name_tr, @name_en, @desc_tr, @desc_en, @price, @is_market_price,
-           NULL, @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en, @sort, @kcal, @portion)`
+           NULL, '[]', @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en,
+           @sort, @kcal, @portion, @variants)`
       ).run({
         id,
         category_id: b.category_id,
@@ -136,17 +216,26 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         sort: b.sort ?? 0,
         kcal: b.kcal ?? null,
         portion: b.portion ?? null,
+        variants: JSON.stringify(variants),
       });
     } catch {
       return res.status(400).json({ error: 'Geçersiz veri (örn. kategori bulunamadı)' });
     }
+    log('create', 'product', id, String(b.name_tr));
     res.status(201).json(getProduct(db, id));
   });
 
   router.patch('/products/:id', (req, res) => {
-    const existing = db.prepare('SELECT id FROM products WHERE id = ?').get(req.params.id);
-    if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    const before = getProduct(db, req.params.id);
+    if (!before) return res.status(404).json({ error: 'Ürün bulunamadı' });
     const b = req.body ?? {};
+    if ('variants' in b) {
+      const v = normalizeVariants(b.variants);
+      if (v === null) {
+        return res.status(400).json({ error: 'Geçersiz varyantlar (name_tr, name_en, price ≥ 0 zorunlu, en çok 8)' });
+      }
+      b.variants = v;
+    }
     const sets = [];
     const params = { id: req.params.id };
     for (const f of PRODUCT_FIELDS) {
@@ -169,15 +258,22 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         return res.status(400).json({ error: 'Geçersiz veri (örn. kategori bulunamadı)' });
       }
     }
-    res.json(getProduct(db, req.params.id));
+    const after = getProduct(db, req.params.id);
+    const summary = diffSummary(before, after, PRODUCT_FIELDS);
+    if (summary) log('update', 'product', req.params.id, `${after.name_tr}: ${summary}`);
+    res.json(after);
   });
 
   router.delete('/products/:id', (req, res) => {
-    const info = db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
-    if (info.changes === 0) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    const existing = getProduct(db, req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    for (const url of existing.images) removeImageFile(url);
+    db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
+    log('delete', 'product', req.params.id, existing.name_tr);
     res.status(204).end();
   });
 
+  // ---- Kategoriler ----
   router.post('/categories', (req, res) => {
     const b = req.body ?? {};
     if (!b.id || !b.name_tr || !b.name_en) {
@@ -192,12 +288,13 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       id: b.id, name_tr: b.name_tr, name_en: b.name_en,
       sort: b.sort ?? 0, is_active: b.is_active === 0 ? 0 : 1,
     });
+    log('create', 'category', b.id, String(b.name_tr));
     res.status(201).json(db.prepare('SELECT * FROM categories WHERE id = ?').get(b.id));
   });
 
   router.patch('/categories/:id', (req, res) => {
-    const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
-    if (!existing) return res.status(404).json({ error: 'Kategori bulunamadı' });
+    const before = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
+    if (!before) return res.status(404).json({ error: 'Kategori bulunamadı' });
     const b = req.body ?? {};
     const sets = [];
     const params = { id: req.params.id };
@@ -209,20 +306,26 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     if (sets.length) {
       db.prepare(`UPDATE categories SET ${sets.join(', ')} WHERE id = @id`).run(params);
     }
-    res.json(db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id));
+    const after = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
+    const summary = diffSummary(before, after, ['name_tr', 'name_en', 'sort', 'is_active']);
+    if (summary) log('update', 'category', req.params.id, `${after.name_tr}: ${summary}`);
+    res.json(after);
   });
 
   router.delete('/categories/:id', (req, res) => {
-    const existing = db.prepare('SELECT id FROM categories WHERE id = ?').get(req.params.id);
+    const existing = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Kategori bulunamadı' });
     const count = db.prepare('SELECT COUNT(*) n FROM products WHERE category_id = ?').get(req.params.id).n;
     if (count > 0) return res.status(409).json({ error: 'Kategoride ürün var, önce ürünleri taşı/sil' });
     db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
+    log('delete', 'category', req.params.id, existing.name_tr);
     res.status(204).end();
   });
 
+  // ---- Görseller ----
+  // Kapak değiştir (eski tek-görsel davranışıyla uyumlu): images[0] yenisiyle değişir.
   router.post('/products/:id/image', (req, res) => {
-    const existing = db.prepare('SELECT image_url FROM products WHERE id = ?').get(req.params.id);
+    const existing = getProduct(db, req.params.id);
     if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
     upload.single('image')(req, res, (err) => {
       if (err) return res.status(400).json({ error: 'Yükleme hatası: ' + err.message });
@@ -232,19 +335,102 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         try { unlinkSync(req.file.path); } catch { /* yok say */ }
         return res.status(400).json({ error: 'Geçersiz görsel içeriği (jpg/png/webp)' });
       }
-      removeImageFile(existing.image_url);
-      const url = `/uploads/${req.file.filename}`;
-      db.prepare('UPDATE products SET image_url = ? WHERE id = ?').run(url, req.params.id);
+      const images = [...existing.images];
+      if (images[0]) removeImageFile(images[0]);
+      images[0] = `/uploads/${req.file.filename}`;
+      saveImages(req.params.id, images);
+      log('image', 'product', req.params.id, `${existing.name_tr}: kapak görseli değişti`);
       res.json(getProduct(db, req.params.id));
     });
   });
 
-  router.delete('/products/:id/image', (req, res) => {
-    const existing = db.prepare('SELECT image_url FROM products WHERE id = ?').get(req.params.id);
+  // Yeni görsel ekle (listeye eklenir; ilk görsel kapak olur)
+  router.post('/products/:id/images', (req, res) => {
+    const existing = getProduct(db, req.params.id);
     if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
-    removeImageFile(existing.image_url);
-    db.prepare('UPDATE products SET image_url = NULL WHERE id = ?').run(req.params.id);
+    if (existing.images.length >= MAX_IMAGES) {
+      return res.status(400).json({ error: `En çok ${MAX_IMAGES} görsel eklenebilir` });
+    }
+    upload.single('image')(req, res, (err) => {
+      if (err) return res.status(400).json({ error: 'Yükleme hatası: ' + err.message });
+      if (!req.file) return res.status(400).json({ error: 'Geçersiz dosya (jpg/png/webp, ≤5MB)' });
+      if (!sniffImage(req.file.path)) {
+        try { unlinkSync(req.file.path); } catch { /* yok say */ }
+        return res.status(400).json({ error: 'Geçersiz görsel içeriği (jpg/png/webp)' });
+      }
+      const images = [...existing.images, `/uploads/${req.file.filename}`];
+      saveImages(req.params.id, images);
+      log('image', 'product', req.params.id, `${existing.name_tr}: görsel eklendi (${images.length}.)`);
+      res.json(getProduct(db, req.params.id));
+    });
+  });
+
+  // Görselleri yeniden sırala / bazılarını çıkar: gövde {images:[...]} mevcut
+  // listenin alt kümesi olmalı; listeden çıkanların dosyaları silinir.
+  router.put('/products/:id/images', (req, res) => {
+    const existing = getProduct(db, req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    const next = req.body?.images;
+    if (!Array.isArray(next) || next.some((u) => typeof u !== 'string')) {
+      return res.status(400).json({ error: 'images bir URL dizisi olmalı' });
+    }
+    const current = new Set(existing.images);
+    if (new Set(next).size !== next.length || next.some((u) => !current.has(u))) {
+      return res.status(400).json({ error: 'images yalnızca mevcut görselleri içerebilir (tekrarsız)' });
+    }
+    for (const url of existing.images) {
+      if (!next.includes(url)) removeImageFile(url);
+    }
+    saveImages(req.params.id, next);
+    log('image', 'product', req.params.id, `${existing.name_tr}: görseller düzenlendi (${next.length} görsel)`);
     res.json(getProduct(db, req.params.id));
+  });
+
+  // Kapak görselini kaldır (kalan ilk görsel kapak olur) — eski davranışla uyumlu
+  router.delete('/products/:id/image', (req, res) => {
+    const existing = getProduct(db, req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    const images = [...existing.images];
+    const removed = images.shift();
+    if (removed) removeImageFile(removed);
+    saveImages(req.params.id, images);
+    if (removed) log('image', 'product', req.params.id, `${existing.name_tr}: kapak görseli kaldırıldı`);
+    res.json(getProduct(db, req.params.id));
+  });
+
+  // ---- Değişiklik geçmişi ----
+  router.get('/history', (req, res) => {
+    const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 500);
+    const entries = db
+      .prepare('SELECT * FROM audit_log ORDER BY id DESC LIMIT ?')
+      .all(limit);
+    res.json({ entries });
+  });
+
+  // ---- İstatistik: günlük menü görüntülenme + QR tarama ----
+  router.get('/stats', (req, res) => {
+    const rows = db
+      .prepare("SELECT day, key, n FROM stats_daily WHERE day >= date('now', 'localtime', '-29 days') ORDER BY day")
+      .all();
+    const byDay = new Map();
+    for (const r of rows) {
+      if (!byDay.has(r.day)) byDay.set(r.day, { day: r.day, menu_view: 0, qr_scan: 0 });
+      byDay.get(r.day)[r.key] = r.n;
+    }
+    const days = [...byDay.values()];
+    const today = localDay();
+    const sum = (from, key) => days.filter((d) => d.day >= from).reduce((a, d) => a + d[key], 0);
+    const ago = (n) => {
+      const d = new Date();
+      d.setDate(d.getDate() - n);
+      return localDay(d);
+    };
+    res.json({
+      today: byDay.get(today) || { day: today, menu_view: 0, qr_scan: 0 },
+      week: { menu_view: sum(ago(6), 'menu_view'), qr_scan: sum(ago(6), 'qr_scan') },
+      month: { menu_view: sum(ago(29), 'menu_view'), qr_scan: sum(ago(29), 'qr_scan') },
+      days,
+    });
   });
 
   return router;

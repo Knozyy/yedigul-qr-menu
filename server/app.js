@@ -1,6 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import { getSetting } from './db.js';
+import { getSetting, bumpStat } from './db.js';
 import { createMenuRouter } from './routes/menu.js';
 import { createAdminRouter } from './routes/admin.js';
 
@@ -36,6 +36,7 @@ export function createApp({ db, uploadsDir, auth }) {
   // gider. Menü yolu değişse (ör. /menu/ -> /) sadece bu ayar güncellenir,
   // basılı QR aynı kalır. Domain değişiminde bile aynı QR yeni domainde çalışır.
   const qrRedirect = (req, res) => {
+    bumpStat(db, 'qr_scan');
     let path = getSetting(db, 'menu_path', '/menu/') || '/menu/';
     // açık yönlendirme koruması: yalnızca site-içi yollara izin ver.
     // '//host' veya '/\host' protokol-göreli dış yönlendirme olabilir.

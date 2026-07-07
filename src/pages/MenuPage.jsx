@@ -20,14 +20,28 @@ const buildTags = (item, ui) => {
   return tags;
 };
 
+// Varyantlı ürünlerde kart fiyatı aralık olarak gösterilir (120–180 TL);
+// varyantı da fiyatı da olmayan ürün "Piyasa Fiyatı" sayılır.
+const hasVariants = (it) => (it.variants || []).length > 0;
+
+const priceLabel = (it, ui) => {
+  if (hasVariants(it)) {
+    const ps = it.variants.map((v) => v.price);
+    const min = Math.min(...ps);
+    const max = Math.max(...ps);
+    return min === max ? `${min} TL` : `${min}–${max} TL`;
+  }
+  return it.price == null ? ui.market : `${it.price} TL`;
+};
+
 const mapItem = (it, lang, ui) => ({
   id: it.id,
   name: localize(it.name, lang),
   desc: localize(it.desc, lang),
   thumb: it.thumb,
   image: it.image_url || null,
-  isMarket: it.price == null,
-  priceText: it.price == null ? ui.market : `${it.price} TL`,
+  isMarket: it.price == null && !hasVariants(it),
+  priceText: priceLabel(it, ui),
   kcal: it.kcal ?? null,
   portion: it.portion ?? null,
   badges: it.diet.map((d) => (d === 'gf' ? ui.gfShort : ui.vegShort)),
@@ -41,7 +55,7 @@ const passesDiet = (it, gf, veg) => {
 };
 
 export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
-  const { categories: CATEGORIES, items: ITEMS, loading } = useMenu();
+  const { categories: CATEGORIES, items: ITEMS, meta, loading } = useMenu();
   const [lang, setLang] = useState(() => readStorage('lang', defaultLang === 'en' ? 'en' : 'tr'));
   const [dark, setDark] = useState(() => readStorage('dark', !!defaultDark));
   const [favorites, setFavorites] = useState(() => readStorage('favorites', []));
@@ -175,9 +189,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       desc: localize(sel.desc, lang),
       thumb: sel.thumb,
       image: sel.image_url || null,
+      images: sel.images || [],
+      variants: (sel.variants || []).map((v) => ({ name: localize(v.name, lang), price: v.price })),
       category: localize(selCat, lang),
-      isMarket: sel.price == null,
-      priceText: sel.price == null ? ui.market : `${sel.price} TL`,
+      isMarket: sel.price == null && !hasVariants(sel),
+      priceText: priceLabel(sel, ui),
       kcal: sel.kcal ?? null,
       portion: sel.portion ?? null,
       ingredients: localize(sel.ing, lang),
@@ -245,6 +261,24 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
             />
           </div>
 
+          {(meta.announcement[lang] || '').trim() !== '' && (
+            <div
+              className="mx-5 mt-3 flex items-start gap-2.5 px-4 py-3 rounded-2xl border"
+              style={{ background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
+            >
+              <svg
+                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none mt-[2px]"
+              >
+                <path d="m3 11 18-5v12L3 14v-3z" />
+                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+              </svg>
+              <span className="font-inter text-[13px] leading-[1.5] font-medium" style={{ color: 'var(--text)' }}>
+                {meta.announcement[lang]}
+              </span>
+            </div>
+          )}
+
           <SearchFilters
             search={search}
             onSearchChange={setSearch}
@@ -292,6 +326,44 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
               collapsedIds={collapsedIds}
               onToggleSection={toggleSection}
             />
+          )}
+
+          {(meta.info.phone || meta.info.hours || meta.info.wifi || meta.info.instagram) && (
+            <div
+              className="mx-5 mb-5 px-4 py-3.5 rounded-2xl border grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2.5"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+            >
+              {meta.info.hours && (
+                <div>
+                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.hours}</span>
+                  <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>{meta.info.hours}</span>
+                </div>
+              )}
+              {meta.info.phone && (
+                <div>
+                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.phone}</span>
+                  <a
+                    href={`tel:${meta.info.phone.replace(/\s/g, '')}`}
+                    className="font-inter text-[13px] font-medium no-underline"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    {meta.info.phone}
+                  </a>
+                </div>
+              )}
+              {meta.info.wifi && (
+                <div>
+                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.wifi}</span>
+                  <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>{meta.info.wifi}</span>
+                </div>
+              )}
+              {meta.info.instagram && (
+                <div>
+                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>Instagram</span>
+                  <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>{meta.info.instagram}</span>
+                </div>
+              )}
+            </div>
           )}
 
           <div className="px-5 pb-[30px] flex flex-col items-center gap-2">

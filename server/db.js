@@ -38,6 +38,20 @@ export function openDb(path) {
       key   TEXT PRIMARY KEY,
       value TEXT
     );
+    CREATE TABLE IF NOT EXISTS audit_log (
+      id        INTEGER PRIMARY KEY AUTOINCREMENT,
+      ts        INTEGER NOT NULL,
+      action    TEXT NOT NULL,
+      entity    TEXT NOT NULL,
+      entity_id TEXT,
+      detail    TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE IF NOT EXISTS stats_daily (
+      day TEXT NOT NULL,
+      key TEXT NOT NULL,
+      n   INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (day, key)
+    );
   `);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
   // eski data.db'lere eksik kolonları veri kaybı olmadan ekle
@@ -48,7 +62,43 @@ export function openDb(path) {
   if (!cols.includes('portion')) {
     db.exec('ALTER TABLE products ADD COLUMN portion TEXT');
   }
+  if (!cols.includes('variants')) {
+    db.exec("ALTER TABLE products ADD COLUMN variants TEXT NOT NULL DEFAULT '[]'");
+  }
+  if (!cols.includes('images')) {
+    db.exec("ALTER TABLE products ADD COLUMN images TEXT NOT NULL DEFAULT '[]'");
+    // tek görselli eski kayıtlar: kapak görselini listeye taşı
+    db.exec(`UPDATE products SET images = json_array(image_url) WHERE image_url IS NOT NULL`);
+  }
   return db;
+}
+
+// ---------------------------------------------------------------------------
+// Denetim kaydı: yönetim mutasyonlarının kısa geçmişi (tek kullanıcılı sistem,
+// "ne, ne zaman, neydi → ne oldu" sorusuna yanıt). Tablo son 500 kayıtla sınırlı.
+// ---------------------------------------------------------------------------
+export function logChange(db, { action, entity, entityId = null, detail = '' }) {
+  db.prepare(
+    'INSERT INTO audit_log (ts, action, entity, entity_id, detail) VALUES (?, ?, ?, ?, ?)'
+  ).run(Date.now(), action, entity, entityId, detail);
+  db.prepare(
+    'DELETE FROM audit_log WHERE id NOT IN (SELECT id FROM audit_log ORDER BY id DESC LIMIT 500)'
+  ).run();
+}
+
+// ---------------------------------------------------------------------------
+// Günlük sayaçlar (menü görüntülenme, QR tarama). Gün sunucu yerel saatine göre.
+// ---------------------------------------------------------------------------
+export function localDay(d = new Date()) {
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+export function bumpStat(db, key) {
+  db.prepare(
+    `INSERT INTO stats_daily (day, key, n) VALUES (?, ?, 1)
+     ON CONFLICT(day, key) DO UPDATE SET n = n + 1`
+  ).run(localDay(), key);
 }
 
 // Basit key/value ayar deposu (QR yönlendirmesi, genel adres vb.)

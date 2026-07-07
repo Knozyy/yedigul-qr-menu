@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Heart from './Heart';
 
 function TagChip({ kind, label }) {
@@ -21,6 +21,10 @@ function TagChip({ kind, label }) {
 }
 
 export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) {
+  // Çoklu görselde seçili kare; ürün değişince kapağa dön.
+  const [imgIdx, setImgIdx] = useState(0);
+  useEffect(() => setImgIdx(0), [sheet?.id]);
+
   // Esc ile kapat + panel açıkken arka planı kaydırmayı kilitle.
   useEffect(() => {
     if (!sheet) return undefined;
@@ -35,6 +39,9 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
   }, [sheet, onClose]);
 
   if (!sheet) return null;
+
+  const gallery = sheet.images && sheet.images.length ? sheet.images : (sheet.image ? [sheet.image] : []);
+  const mainImage = gallery[Math.min(imgIdx, gallery.length - 1)] || null;
 
   return (
     <>
@@ -73,9 +80,9 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
 
           <div className="px-[22px] pt-1.5 pb-[26px]">
             <div className="relative">
-              {sheet.image ? (
+              {mainImage ? (
                 <img
-                  src={sheet.image}
+                  src={mainImage}
                   alt={sheet.name}
                   className="w-full h-[170px] rounded-[18px] object-cover border"
                   style={{ borderColor: 'var(--border)' }}
@@ -104,6 +111,22 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
                 <Heart filled={isFav} size={19} color={isFav ? 'var(--gold)' : 'var(--muted)'} />
               </button>
             </div>
+
+            {gallery.length > 1 && (
+              <div className="flex gap-2 mt-2.5 overflow-x-auto yg-scroll pb-1">
+                {gallery.map((url, i) => (
+                  <button
+                    key={url}
+                    onClick={() => setImgIdx(i)}
+                    aria-label={`${sheet.name} ${i + 1}`}
+                    className="flex-none w-[56px] h-[56px] rounded-[12px] overflow-hidden border-2 cursor-pointer p-0"
+                    style={{ borderColor: i === Math.min(imgIdx, gallery.length - 1) ? 'var(--gold)' : 'var(--border)' }}
+                  >
+                    <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {sheet.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-4">
@@ -146,6 +169,30 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
             <p className="font-inter text-sm leading-[1.6] mt-3.5" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>
               {sheet.desc}
             </p>
+
+            {sheet.variants && sheet.variants.length > 0 && (
+              <div className="mt-4">
+                <span className="yg-overline text-[10.5px]" style={{ color: 'var(--gold)' }}>
+                  {ui.options}
+                </span>
+                <div className="mt-2 rounded-2xl border divide-y" style={{ borderColor: 'var(--border)' }}>
+                  {sheet.variants.map((v) => (
+                    <div
+                      key={v.name}
+                      className="flex items-center justify-between px-4 py-2.5"
+                      style={{ borderColor: 'var(--border)' }}
+                    >
+                      <span className="font-inter text-[13.5px] font-medium" style={{ color: 'var(--text)' }}>
+                        {v.name}
+                      </span>
+                      <span className="font-outfit text-[16px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
+                        {v.price} TL
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {sheet.kcal != null && (
               <div className="flex items-center gap-2 mt-3">

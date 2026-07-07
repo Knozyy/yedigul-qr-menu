@@ -18,7 +18,7 @@ function copyDir(src, dest) {
 }
 import { openDb } from '../server/db.js';
 import { seed } from '../server/seed.js';
-import { rowToPublicItem } from '../server/routes/menu.js';
+import { rowToPublicItem, publicMeta } from '../server/routes/menu.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -42,13 +42,18 @@ const rows = db
   .all();
 
 // /uploads/x.jpg -> uploads/x.jpg (paket içi göreli yol; /menu/ altında çözülür)
+const stripSlash = (u) => (u ? u.replace(/^\//, '') : u);
 const products = rows.map(rowToPublicItem).map((p) => ({
   ...p,
-  image_url: p.image_url ? p.image_url.replace(/^\//, '') : null,
+  image_url: p.image_url ? stripSlash(p.image_url) : null,
+  images: p.images.map(stripSlash),
 }));
 
 mkdirSync(OUT_DIR, { recursive: true });
-writeFileSync(join(OUT_DIR, 'menu-data.json'), JSON.stringify({ categories, products }));
+writeFileSync(
+  join(OUT_DIR, 'menu-data.json'),
+  JSON.stringify({ categories, products, meta: publicMeta(db) })
+);
 
 if (existsSync(UPLOADS_DIR)) {
   copyDir(UPLOADS_DIR, join(OUT_DIR, 'uploads'));

@@ -8,6 +8,7 @@ export const UI = {
     empty: 'Eşleşen yemek bulunamadı.', items: 'çeşit', gfShort: 'GLÜTENSİZ', vegShort: 'VEJETARYEN', noAlg: 'Bilinen alerjen yok.',
     favorites: 'Favoriler', noFav: 'Henüz favori eklemediniz.', popular: 'POPÜLER', chef: 'ŞEFİN ÖNERİSİ',
     loading: 'Menü yükleniyor…', home: 'Ana Sayfa', close: 'Kapat',
+    options: 'Porsiyonlar', hours: 'Çalışma Saatleri', phone: 'Telefon', wifi: 'Wi-Fi Şifresi',
   },
   en: {
     tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…', gf: 'Gluten-Free', veg: 'Vegetarian',
@@ -15,5 +16,6 @@ export const UI = {
     empty: 'No dishes match your search.', items: 'dishes', gfShort: 'GLUTEN-FREE', vegShort: 'VEGETARIAN', noAlg: 'No known allergens.',
     favorites: 'Favorites', noFav: 'No favorites yet.', popular: 'POPULAR', chef: "CHEF'S CHOICE",
     loading: 'Loading menu…', home: 'Home', close: 'Close',
+    options: 'Portions', hours: 'Opening Hours', phone: 'Phone', wifi: 'Wi-Fi Password',
   },
 };

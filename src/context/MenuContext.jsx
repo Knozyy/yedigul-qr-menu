@@ -7,9 +7,12 @@ const POLL_MS = 30000;
 // (no backend on the shared host), so there is nothing to poll
 const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 
+const EMPTY_META = { announcement: { tr: '', en: '' }, info: { phone: '', hours: '', wifi: '', instagram: '' } };
+
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
+  const [meta, setMeta] = useState(EMPTY_META);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const firstLoad = useRef(true);
@@ -26,6 +29,7 @@ export function MenuProvider({ children }) {
       }
       setCategories(data.categories);
       setItems(data.products);
+      setMeta(data.meta || EMPTY_META);
       setError(null);
     } catch (e) {
       setError(e.message);
@@ -45,7 +49,7 @@ export function MenuProvider({ children }) {
   }, [reload]);
 
   return (
-    <MenuContext.Provider value={{ categories, items, loading, error, reload }}>
+    <MenuContext.Provider value={{ categories, items, meta, loading, error, reload }}>
       {children}
     </MenuContext.Provider>
   );
