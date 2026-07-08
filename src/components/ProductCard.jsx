@@ -93,8 +93,8 @@ export default function ProductCard({ item, onClick, isFav, onToggleFav }) {
 
         <span className="font-inter text-[12.5px] leading-[1.5] mt-[3px]" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>
           {item.desc}
-          {item.kcal != null && (
-            <span className="whitespace-nowrap"> · {item.kcal} kcal</span>
+          {item.kcalText && (
+            <span className="whitespace-nowrap"> · {item.kcalText}</span>
           )}
         </span>
 

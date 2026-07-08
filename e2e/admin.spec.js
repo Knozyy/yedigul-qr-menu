@@ -105,6 +105,10 @@ test('admin can add portion variants and the customer sees a price range', async
   await page.goto('/menu/');
   await expect(page.getByText('90–150 TL')).toBeVisible({ timeout: 7000 });
 
+  // para birimi dile göre: Rusça'ya geçince ₺ ile görünür
+  await page.getByRole('button', { name: 'RU', exact: true }).click();
+  await expect(page.getByText('90–150 ₺')).toBeVisible({ timeout: 7000 });
+
   // geri al: varyantları kaldır, tekil fiyatı 300 TL'ye döndür (paylaşılan DB)
   await page.goto('/menu/admin');
   await rowFor(page, 'Pancar').getByRole('button', { name: 'Düzenle' }).click();

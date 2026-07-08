@@ -24,14 +24,15 @@ const buildTags = (item, ui) => {
 // varyantı da fiyatı da olmayan ürün "Piyasa Fiyatı" sayılır.
 const hasVariants = (it) => (it.variants || []).length > 0;
 
+// para birimi seçili dile göre (TL / ل.ت / ₺)
 const priceLabel = (it, ui) => {
   if (hasVariants(it)) {
     const ps = it.variants.map((v) => v.price);
     const min = Math.min(...ps);
     const max = Math.max(...ps);
-    return min === max ? `${min} TL` : `${min}–${max} TL`;
+    return min === max ? `${min} ${ui.currency}` : `${min}–${max} ${ui.currency}`;
   }
-  return it.price == null ? ui.market : `${it.price} TL`;
+  return it.price == null ? ui.market : `${it.price} ${ui.currency}`;
 };
 
 const mapItem = (it, lang, ui) => ({
@@ -45,6 +46,7 @@ const mapItem = (it, lang, ui) => ({
   isMarket: it.price == null && !hasVariants(it),
   priceText: priceLabel(it, ui),
   kcal: it.kcal ?? null,
+  kcalText: it.kcal != null ? `${it.kcal} ${ui.kcalUnit}` : null,
   portion: it.portion ?? null,
   badges: it.diet.map((d) => (d === 'gf' ? ui.gfShort : ui.vegShort)),
   tags: buildTags(it, ui),

@@ -186,7 +186,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
                         {v.name}
                       </span>
                       <span className="font-outfit text-[16px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
-                        {v.price} TL
+                        {v.price} {ui.currency}
                       </span>
                     </div>
                   ))}
@@ -200,7 +200,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
                   {ui.energy}
                 </span>
                 <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>
-                  {sheet.kcal} kcal
+                  {sheet.kcal} {ui.kcalUnit}
                 </span>
               </div>
             )}
