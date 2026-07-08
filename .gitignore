@@ -24,7 +24,9 @@ dist-ssr
 *.sw?
 
 # backend
-server/data.db*
+# data.db repoya dahil (menü sunucuya git ile taşınır); yalnız WAL/SHM hariç
+server/data.db-wal
+server/data.db-shm
 server/uploads/
 .env
 
