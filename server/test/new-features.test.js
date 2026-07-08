@@ -91,12 +91,61 @@ test('public menu exposes variants with localized names', async () => {
   const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
   const created = await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Porsiyonlu', name_en: 'Portioned',
-    variants: [{ name_tr: 'Tek', name_en: 'Single', price: 90 }],
+    variants: [{ name_tr: 'Tek', name_en: 'Single', name_ar: 'فردي', price: 90 }],
   });
   const menu = await (await fetch(`${base}/api/menu`)).json();
   const item = menu.products.find((p) => p.id === created.data.id);
-  assert.deepEqual(item.variants, [{ name: { tr: 'Tek', en: 'Single' }, price: 90 }]);
+  // RU boş bırakıldı → EN'e düşer
+  assert.deepEqual(item.variants, [
+    { name: { tr: 'Tek', en: 'Single', ar: 'فردي', ru: 'Single' }, price: 90 },
+  ]);
   await req('DELETE', `/api/admin/products/${created.data.id}`);
+});
+
+// ---- AR/RU çevirileri ----
+
+test('AR/RU fields persist and public menu falls back empty → EN → TR', async () => {
+  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const created = await req('POST', '/api/admin/products', {
+    category_id: cat.id,
+    name_tr: 'Çevirili', name_en: 'Translated',
+    name_ar: 'مترجم', name_ru: '',
+    desc_tr: 'Sadece TR', desc_en: '',
+    ing_tr: ['domates'], ing_en: ['tomato'], ing_ar: [], ing_ru: ['помидор'],
+  });
+  assert.equal(created.status, 201);
+  assert.equal(created.data.name_ar, 'مترجم');
+  assert.deepEqual(created.data.ing_ru, ['помидор']);
+
+  const catAr = await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: 'فئة' });
+  assert.equal(catAr.data.name_ar, 'فئة');
+
+  const menu = await (await fetch(`${base}/api/menu`)).json();
+  const item = menu.products.find((p) => p.id === created.data.id);
+  assert.equal(item.name.ar, 'مترجم');
+  assert.equal(item.name.ru, 'Translated'); // boş RU → EN
+  assert.equal(item.desc.ar, 'Sadece TR'); // boş AR, boş EN → TR
+  assert.deepEqual(item.ing.ar, ['tomato']); // boş AR listesi → EN
+  assert.deepEqual(item.ing.ru, ['помидор']);
+  const pubCat = menu.categories.find((x) => x.id === cat.id);
+  assert.equal(pubCat.ar, 'فئة');
+  assert.equal(pubCat.ru, pubCat.en); // boş RU → EN
+
+  await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: '' });
+  await req('DELETE', `/api/admin/products/${created.data.id}`);
+});
+
+test('announcement AR/RU exposed in public meta with EN fallback', async () => {
+  await req('PUT', '/api/admin/settings', {
+    announcement_tr: 'Duyuru', announcement_en: 'Notice',
+    announcement_ar: 'إعلان', announcement_ru: '',
+  });
+  const menu = await (await fetch(`${base}/api/menu`)).json();
+  assert.equal(menu.meta.announcement.ar, 'إعلان');
+  assert.equal(menu.meta.announcement.ru, 'Notice');
+  await req('PUT', '/api/admin/settings', {
+    announcement_tr: '', announcement_en: '', announcement_ar: '', announcement_ru: '',
+  });
 });
 
 // ---- çoklu görsel ----

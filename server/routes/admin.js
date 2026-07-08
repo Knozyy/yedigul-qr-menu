@@ -17,12 +17,17 @@ function sniffImage(path) {
   return false;
 }
 
-const JSON_FIELDS = ['diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'variants', 'images'];
+const JSON_FIELDS = [
+  'diet', 'ing_tr', 'ing_en', 'ing_ar', 'ing_ru',
+  'alg_tr', 'alg_en', 'alg_ar', 'alg_ru', 'variants', 'images',
+];
 // image_url/images intentionally excluded: only the dedicated image routes may set them
 const PRODUCT_FIELDS = [
-  'category_id', 'name_tr', 'name_en', 'desc_tr', 'desc_en', 'price',
+  'category_id', 'name_tr', 'name_en', 'name_ar', 'name_ru',
+  'desc_tr', 'desc_en', 'desc_ar', 'desc_ru', 'price',
   'is_market_price', 'is_available', 'popular', 'chef',
-  'diet', 'ing_tr', 'ing_en', 'alg_tr', 'alg_en', 'sort', 'kcal', 'portion', 'variants',
+  'diet', 'ing_tr', 'ing_en', 'ing_ar', 'ing_ru',
+  'alg_tr', 'alg_en', 'alg_ar', 'alg_ru', 'sort', 'kcal', 'portion', 'variants',
 ];
 
 const MAX_IMAGES = 6;
@@ -39,7 +44,12 @@ function normalizeVariants(v) {
     const name_en = String(it.name_en ?? '').trim();
     const price = Number(it.price);
     if (!name_tr || !name_en || !Number.isFinite(price) || price < 0) return null;
-    out.push({ name_tr, name_en, price });
+    out.push({
+      name_tr, name_en, price,
+      // isteğe bağlı çeviriler; boşsa menü EN'e düşer
+      name_ar: String(it.name_ar ?? '').trim(),
+      name_ru: String(it.name_ru ?? '').trim(),
+    });
   }
   return out;
 }
@@ -58,11 +68,15 @@ function getProduct(db, id) {
 // Geçmiş kayıtları için alan etiketi + insan-okur değişim özeti
 const FIELD_LABELS = {
   category_id: 'kategori', name_tr: 'ad (TR)', name_en: 'ad (EN)',
-  desc_tr: 'açıklama (TR)', desc_en: 'açıklama (EN)', price: 'fiyat',
+  name_ar: 'ad (AR)', name_ru: 'ad (RU)',
+  desc_tr: 'açıklama (TR)', desc_en: 'açıklama (EN)',
+  desc_ar: 'açıklama (AR)', desc_ru: 'açıklama (RU)', price: 'fiyat',
   is_market_price: 'piyasa fiyatı', is_available: 'stok', popular: 'popüler',
   chef: 'şef önerisi', sort: 'sıra', kcal: 'kalori', portion: 'porsiyon',
   diet: 'diyet', ing_tr: 'içindekiler (TR)', ing_en: 'içindekiler (EN)',
-  alg_tr: 'alerjenler (TR)', alg_en: 'alerjenler (EN)', variants: 'varyantlar',
+  ing_ar: 'içindekiler (AR)', ing_ru: 'içindekiler (RU)',
+  alg_tr: 'alerjenler (TR)', alg_en: 'alerjenler (EN)',
+  alg_ar: 'alerjenler (AR)', alg_ru: 'alerjenler (RU)', variants: 'varyantlar',
 };
 
 function diffSummary(before, after, fields) {
@@ -124,7 +138,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
 
   // ---- Ayarlar: QR / adres + duyuru + restoran bilgileri ----
   const TEXT_SETTINGS = [
-    'announcement_tr', 'announcement_en',
+    'announcement_tr', 'announcement_en', 'announcement_ar', 'announcement_ru',
     'info_phone', 'info_hours', 'info_wifi', 'info_instagram',
   ];
 
@@ -189,20 +203,28 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     try {
       db.prepare(
         `INSERT INTO products
-          (id, category_id, name_tr, name_en, desc_tr, desc_en, price, is_market_price,
-           image_url, images, is_available, popular, chef, diet, ing_tr, ing_en, alg_tr, alg_en,
+          (id, category_id, name_tr, name_en, name_ar, name_ru,
+           desc_tr, desc_en, desc_ar, desc_ru, price, is_market_price,
+           image_url, images, is_available, popular, chef, diet,
+           ing_tr, ing_en, ing_ar, ing_ru, alg_tr, alg_en, alg_ar, alg_ru,
            sort, kcal, portion, variants)
          VALUES
-          (@id, @category_id, @name_tr, @name_en, @desc_tr, @desc_en, @price, @is_market_price,
-           NULL, '[]', @is_available, @popular, @chef, @diet, @ing_tr, @ing_en, @alg_tr, @alg_en,
+          (@id, @category_id, @name_tr, @name_en, @name_ar, @name_ru,
+           @desc_tr, @desc_en, @desc_ar, @desc_ru, @price, @is_market_price,
+           NULL, '[]', @is_available, @popular, @chef, @diet,
+           @ing_tr, @ing_en, @ing_ar, @ing_ru, @alg_tr, @alg_en, @alg_ar, @alg_ru,
            @sort, @kcal, @portion, @variants)`
       ).run({
         id,
         category_id: b.category_id,
         name_tr: b.name_tr,
         name_en: b.name_en,
+        name_ar: b.name_ar ?? '',
+        name_ru: b.name_ru ?? '',
         desc_tr: b.desc_tr ?? '',
         desc_en: b.desc_en ?? '',
+        desc_ar: b.desc_ar ?? '',
+        desc_ru: b.desc_ru ?? '',
         price: b.is_market_price ? null : (b.price ?? null),
         is_market_price: b.is_market_price ? 1 : 0,
         is_available: b.is_available === 0 ? 0 : 1,
@@ -211,8 +233,12 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         diet: JSON.stringify(b.diet ?? []),
         ing_tr: JSON.stringify(b.ing_tr ?? []),
         ing_en: JSON.stringify(b.ing_en ?? []),
+        ing_ar: JSON.stringify(b.ing_ar ?? []),
+        ing_ru: JSON.stringify(b.ing_ru ?? []),
         alg_tr: JSON.stringify(b.alg_tr ?? []),
         alg_en: JSON.stringify(b.alg_en ?? []),
+        alg_ar: JSON.stringify(b.alg_ar ?? []),
+        alg_ru: JSON.stringify(b.alg_ru ?? []),
         sort: b.sort ?? 0,
         kcal: b.kcal ?? null,
         portion: b.portion ?? null,
@@ -282,10 +308,11 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const exists = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.id);
     if (exists) return res.status(409).json({ error: 'Bu id zaten var' });
     db.prepare(
-      `INSERT INTO categories (id, name_tr, name_en, sort, is_active)
-       VALUES (@id, @name_tr, @name_en, @sort, @is_active)`
+      `INSERT INTO categories (id, name_tr, name_en, name_ar, name_ru, sort, is_active)
+       VALUES (@id, @name_tr, @name_en, @name_ar, @name_ru, @sort, @is_active)`
     ).run({
       id: b.id, name_tr: b.name_tr, name_en: b.name_en,
+      name_ar: String(b.name_ar ?? ''), name_ru: String(b.name_ru ?? ''),
       sort: b.sort ?? 0, is_active: b.is_active === 0 ? 0 : 1,
     });
     log('create', 'category', b.id, String(b.name_tr));
@@ -298,7 +325,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const b = req.body ?? {};
     const sets = [];
     const params = { id: req.params.id };
-    for (const f of ['name_tr', 'name_en', 'sort', 'is_active']) {
+    for (const f of ['name_tr', 'name_en', 'name_ar', 'name_ru', 'sort', 'is_active']) {
       if (!(f in b)) continue;
       sets.push(`${f} = @${f}`);
       params[f] = f === 'is_active' ? (b[f] ? 1 : 0) : b[f];
@@ -307,7 +334,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       db.prepare(`UPDATE categories SET ${sets.join(', ')} WHERE id = @id`).run(params);
     }
     const after = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
-    const summary = diffSummary(before, after, ['name_tr', 'name_en', 'sort', 'is_active']);
+    const summary = diffSummary(before, after, ['name_tr', 'name_en', 'name_ar', 'name_ru', 'sort', 'is_active']);
     if (summary) log('update', 'category', req.params.id, `${after.name_tr}: ${summary}`);
     res.json(after);
   });

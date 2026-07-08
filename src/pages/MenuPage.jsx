@@ -56,7 +56,11 @@ const passesDiet = (it, gf, veg) => {
 
 export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
   const { categories: CATEGORIES, items: ITEMS, meta, loading } = useMenu();
-  const [lang, setLang] = useState(() => readStorage('lang', defaultLang === 'en' ? 'en' : 'tr'));
+  const LANGS = ['tr', 'en', 'ar', 'ru'];
+  const [lang, setLang] = useState(() => {
+    const stored = readStorage('lang', LANGS.includes(defaultLang) ? defaultLang : 'tr');
+    return LANGS.includes(stored) ? stored : 'tr';
+  });
   const [dark, setDark] = useState(() => readStorage('dark', !!defaultDark));
   const [favorites, setFavorites] = useState(() => readStorage('favorites', []));
   const [search, setSearch] = useState('');
@@ -239,6 +243,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       <div className="w-full max-w-[468px] md:max-w-[1000px]" style={themeVars}>
         <div
           className="w-full max-w-[468px] md:max-w-[1000px] mx-auto min-h-screen flex flex-col relative"
+          dir={lang === 'ar' ? 'rtl' : 'ltr'}
           style={{ background: 'var(--bg)', color: 'var(--text)', boxShadow: '0 0 90px rgba(0,0,0,.55)' }}
         >
           <div ref={stickyRef} className="sticky z-30" style={{ top: headTop }}>

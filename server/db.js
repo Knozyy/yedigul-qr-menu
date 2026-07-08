@@ -70,6 +70,26 @@ export function openDb(path) {
     // tek görselli eski kayıtlar: kapak görselini listeye taşı
     db.exec(`UPDATE products SET images = json_array(image_url) WHERE image_url IS NOT NULL`);
   }
+  // Arapça/Rusça çeviriler: boş bırakılan alan menüde EN→TR sırasıyla geri düşer
+  if (!cols.includes('name_ar')) {
+    db.exec(`
+      ALTER TABLE products ADD COLUMN name_ar TEXT NOT NULL DEFAULT '';
+      ALTER TABLE products ADD COLUMN name_ru TEXT NOT NULL DEFAULT '';
+      ALTER TABLE products ADD COLUMN desc_ar TEXT NOT NULL DEFAULT '';
+      ALTER TABLE products ADD COLUMN desc_ru TEXT NOT NULL DEFAULT '';
+      ALTER TABLE products ADD COLUMN ing_ar TEXT NOT NULL DEFAULT '[]';
+      ALTER TABLE products ADD COLUMN ing_ru TEXT NOT NULL DEFAULT '[]';
+      ALTER TABLE products ADD COLUMN alg_ar TEXT NOT NULL DEFAULT '[]';
+      ALTER TABLE products ADD COLUMN alg_ru TEXT NOT NULL DEFAULT '[]';
+    `);
+  }
+  const catCols = db.prepare('PRAGMA table_info(categories)').all().map((c) => c.name);
+  if (!catCols.includes('name_ar')) {
+    db.exec(`
+      ALTER TABLE categories ADD COLUMN name_ar TEXT NOT NULL DEFAULT '';
+      ALTER TABLE categories ADD COLUMN name_ru TEXT NOT NULL DEFAULT '';
+    `);
+  }
   return db;
 }
 

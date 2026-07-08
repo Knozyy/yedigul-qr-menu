@@ -91,13 +91,13 @@ export default function Header({
           className="inline-flex p-[3px] rounded-full border"
           style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}
         >
-          {['tr', 'en'].map((code) => {
+          {['tr', 'en', 'ar', 'ru'].map((code) => {
             const active = lang === code;
             return (
               <button
                 key={code}
                 onClick={() => onSetLang(code)}
-                className="border-none cursor-pointer font-inter text-[12px] font-semibold tracking-[.06em] px-3.5 py-1.5 rounded-full"
+                className="border-none cursor-pointer font-inter text-[12px] font-semibold tracking-[.06em] px-2.5 py-1.5 rounded-full"
                 style={
                   active
                     ? { background: 'var(--navy-2)', color: '#fff' }
