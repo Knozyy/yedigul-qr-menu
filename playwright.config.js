@@ -3,6 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
   timeout: 30000,
+  // Tek paylaşılan (in-memory) backend'e iki proje (masaüstü + iPhone) vurur;
+  // testler global veriyi değiştirdiğinden paralel koşumda aynı satırı iki proje
+  // aynı anda değiştirip yarışır. Seri koş + her test kendi durumunu geri alsın.
+  workers: 1,
   use: { baseURL: 'http://localhost:5173' },
   projects: [
     {

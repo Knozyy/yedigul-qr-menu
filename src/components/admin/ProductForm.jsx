@@ -3,7 +3,8 @@ import { api } from '../../lib/api';
 import ImageUploader from './ImageUploader';
 
 const empty = {
-  category_id: '', name_tr: '', name_en: '', desc_tr: '', desc_en: '',
+  category_id: '', name_tr: '', name_en: '', name_ar: '', name_ru: '',
+  desc_tr: '', desc_en: '', desc_ar: '', desc_ru: '',
   price: '', kcal: '', is_market_price: 0, is_available: 1, popular: 0, chef: 0, diet: [],
 };
 
@@ -33,8 +34,12 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
     // ingredient/allergen lists edited as comma-separated text
     ing_tr: listToText(product?.ing_tr),
     ing_en: listToText(product?.ing_en),
+    ing_ar: listToText(product?.ing_ar),
+    ing_ru: listToText(product?.ing_ru),
     alg_tr: listToText(product?.alg_tr),
     alg_en: listToText(product?.alg_en),
+    alg_ar: listToText(product?.alg_ar),
+    alg_ru: listToText(product?.alg_ru),
   }));
   const [saved, setSaved] = useState(product ?? null);
   const [busy, setBusy] = useState(false);
@@ -55,8 +60,12 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
       portion: composePortion(portion.amount, portion.unit),
       ing_tr: textToList(form.ing_tr),
       ing_en: textToList(form.ing_en),
+      ing_ar: textToList(form.ing_ar),
+      ing_ru: textToList(form.ing_ru),
       alg_tr: textToList(form.alg_tr),
       alg_en: textToList(form.alg_en),
+      alg_ar: textToList(form.alg_ar),
+      alg_ru: textToList(form.alg_ru),
     };
     try {
       const wasExisting = !!saved?.id;
@@ -114,6 +123,24 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
         <input className={field} style={fieldStyle} placeholder="Alerjenler (TR)" value={form.alg_tr} onChange={(e) => set('alg_tr', e.target.value)} />
         <input className={field} style={fieldStyle} placeholder="Allergens (EN)" value={form.alg_en} onChange={(e) => set('alg_en', e.target.value)} />
       </div>
+
+      <details className="rounded-lg border" style={{ borderColor: 'var(--border)' }}>
+        <summary className="px-3 py-2 cursor-pointer text-sm select-none" style={{ color: 'var(--text)' }}>
+          Çeviriler (Arapça / Rusça) — isteğe bağlı
+        </summary>
+        <div className="flex flex-col gap-2 p-3 pt-1">
+          <span className="text-[12px]" style={{ color: 'var(--muted)' }}>Boş bırakılan alan menüde İngilizce, o da boşsa Türkçe görünür.</span>
+          <input dir="rtl" className={field} style={fieldStyle} placeholder="الاسم (AR)" value={form.name_ar} onChange={(e) => set('name_ar', e.target.value)} />
+          <input className={field} style={fieldStyle} placeholder="Название (RU)" value={form.name_ru} onChange={(e) => set('name_ru', e.target.value)} />
+          <textarea dir="rtl" className={field} style={fieldStyle} placeholder="الوصف (AR)" value={form.desc_ar} onChange={(e) => set('desc_ar', e.target.value)} />
+          <textarea className={field} style={fieldStyle} placeholder="Описание (RU)" value={form.desc_ru} onChange={(e) => set('desc_ru', e.target.value)} />
+          <span className="text-[12px]" style={{ color: 'var(--muted)' }}>İçindekiler / Alerjenler — virgülle ayırın</span>
+          <input dir="rtl" className={field} style={fieldStyle} placeholder="المكوّنات (AR)" value={form.ing_ar} onChange={(e) => set('ing_ar', e.target.value)} />
+          <input className={field} style={fieldStyle} placeholder="Состав (RU)" value={form.ing_ru} onChange={(e) => set('ing_ru', e.target.value)} />
+          <input dir="rtl" className={field} style={fieldStyle} placeholder="مسببات الحساسية (AR)" value={form.alg_ar} onChange={(e) => set('alg_ar', e.target.value)} />
+          <input className={field} style={fieldStyle} placeholder="Аллергены (RU)" value={form.alg_ru} onChange={(e) => set('alg_ru', e.target.value)} />
+        </div>
+      </details>
       <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--text)' }}>
         <input type="checkbox" checked={!!form.is_market_price} onChange={(e) => set('is_market_price', e.target.checked ? 1 : 0)} />
         Piyasa Fiyatı

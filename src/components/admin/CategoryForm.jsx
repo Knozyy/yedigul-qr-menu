@@ -14,23 +14,31 @@ function slugify(s) {
 export default function CategoryForm({ categories, onChanged }) {
   const [nameTr, setNameTr] = useState('');
   const [nameEn, setNameEn] = useState('');
+  const [nameAr, setNameAr] = useState('');
+  const [nameRu, setNameRu] = useState('');
   const [error, setError] = useState('');
   // satır içi yeniden adlandırma: düzenlenen kategori id'si + taslak adlar
   const [editId, setEditId] = useState(null);
   const [editTr, setEditTr] = useState('');
   const [editEn, setEditEn] = useState('');
+  const [editAr, setEditAr] = useState('');
+  const [editRu, setEditRu] = useState('');
 
   function startEdit(cat) {
     setError('');
     setEditId(cat.id);
     setEditTr(cat.name_tr);
     setEditEn(cat.name_en);
+    setEditAr(cat.name_ar || '');
+    setEditRu(cat.name_ru || '');
   }
 
   function cancelEdit() {
     setEditId(null);
     setEditTr('');
     setEditEn('');
+    setEditAr('');
+    setEditRu('');
   }
 
   async function saveEdit(cat) {
@@ -42,7 +50,9 @@ export default function CategoryForm({ categories, onChanged }) {
     }
     setError('');
     try {
-      await api.patch(`/admin/categories/${cat.id}`, { name_tr: tr, name_en: en });
+      await api.patch(`/admin/categories/${cat.id}`, {
+        name_tr: tr, name_en: en, name_ar: editAr.trim(), name_ru: editRu.trim(),
+      });
       cancelEdit();
       onChanged();
     } catch (err) {
@@ -65,8 +75,10 @@ export default function CategoryForm({ categories, onChanged }) {
     let id = base;
     for (let n = 2; categories.some((c) => c.id === id); n++) id = `${base}-${n}`;
     try {
-      await api.post('/admin/categories', { id, name_tr: nameTr, name_en: nameEn });
-      setNameTr(''); setNameEn('');
+      await api.post('/admin/categories', {
+        id, name_tr: nameTr, name_en: nameEn, name_ar: nameAr.trim(), name_ru: nameRu.trim(),
+      });
+      setNameTr(''); setNameEn(''); setNameAr(''); setNameRu('');
       onChanged();
     } catch (err) {
       setError(err.message);
@@ -119,6 +131,8 @@ export default function CategoryForm({ categories, onChanged }) {
       <form onSubmit={onAdd} className="flex flex-col gap-2">
         <input className={field} style={fieldStyle} placeholder="Ad (TR)" value={nameTr} onChange={(e) => setNameTr(e.target.value)} required />
         <input className={field} style={fieldStyle} placeholder="Ad (EN)" value={nameEn} onChange={(e) => setNameEn(e.target.value)} required />
+        <input dir="rtl" className={field} style={fieldStyle} placeholder="الاسم (AR) — isteğe bağlı" value={nameAr} onChange={(e) => setNameAr(e.target.value)} />
+        <input className={field} style={fieldStyle} placeholder="Название (RU) — isteğe bağlı" value={nameRu} onChange={(e) => setNameRu(e.target.value)} />
         <button type="submit" className="px-4 py-2 rounded-lg font-semibold self-start" style={{ background: 'var(--gold)', color: '#fff' }}>
           Kategori ekle
         </button>
@@ -134,6 +148,10 @@ export default function CategoryForm({ categories, onChanged }) {
                 <div className="flex items-center gap-2">
                   <input className={field} style={fieldStyle} placeholder="Ad (TR)" value={editTr} onChange={(e) => setEditTr(e.target.value)} autoFocus />
                   <input className={field} style={fieldStyle} placeholder="Ad (EN)" value={editEn} onChange={(e) => setEditEn(e.target.value)} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input dir="rtl" className={field} style={fieldStyle} placeholder="الاسم (AR)" value={editAr} onChange={(e) => setEditAr(e.target.value)} />
+                  <input className={field} style={fieldStyle} placeholder="Название (RU)" value={editRu} onChange={(e) => setEditRu(e.target.value)} />
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => saveEdit(c)} className="text-[12px] px-3 py-1 rounded-lg font-semibold" style={{ background: 'var(--gold)', color: '#fff' }}>Kaydet</button>

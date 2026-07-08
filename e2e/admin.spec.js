@@ -54,6 +54,35 @@ test('admin can rename a category and customer sees the new name', async ({ page
   // exact: true — bölüm başlığı da bir buton ve adı "… N çeşit" içeriyor.
   await page.goto('/menu/');
   await expect(page.getByRole('button', { name: 'Yeşillikler TEST', exact: true })).toBeVisible({ timeout: 7000 });
+
+  // adı geri al: paylaşılan DB'de sonraki proje/koşum yine "Salatalar" bulsun
+  await page.goto('/menu/admin');
+  await page.getByRole('button', { name: 'Kategoriler' }).click();
+  const renamedRow = page.locator('li').filter({ hasText: 'Yeşillikler TEST' });
+  await renamedRow.getByRole('button', { name: 'Düzenle' }).click();
+  const restoreRow = page.locator('li').filter({ has: page.getByRole('button', { name: 'Kaydet' }) });
+  await restoreRow.getByPlaceholder('Ad (TR)').fill('Salatalar');
+  await restoreRow.getByRole('button', { name: 'Kaydet' }).click();
+  // kategori yöneticisi satırında yine "Salatalar" (Düzenle düğmeli) görünmeli
+  await expect(
+    page.locator('li').filter({ hasText: 'Salatalar' }).getByRole('button', { name: 'Düzenle' })
+  ).toBeVisible();
+});
+
+test('admin can add an Arabic name and the customer sees it in Arabic', async ({ page }) => {
+  await adminLogin(page);
+
+  // edit product "Fava" and open the optional AR/RU translations section
+  const row = rowFor(page, 'Fava');
+  await row.getByRole('button', { name: 'Düzenle' }).click();
+  await page.getByText('Çeviriler (Arapça / Rusça)', { exact: false }).click();
+  await page.getByPlaceholder('الاسم (AR)').fill('فافا تجريبي');
+  await page.getByRole('button', { name: 'Kaydet' }).click();
+
+  // customer menu, switched to Arabic, shows the Arabic name
+  await page.goto('/menu/');
+  await page.getByRole('button', { name: 'AR', exact: true }).click();
+  await expect(page.getByText('فافا تجريبي')).toBeVisible({ timeout: 7000 });
 });
 
 test('admin can deactivate a product and it disappears from menu', async ({ page }) => {
@@ -66,4 +95,10 @@ test('admin can deactivate a product and it disappears from menu', async ({ page
 
   await page.goto('/menu/');
   await expect(page.getByText('Ahtapot Salatası')).toHaveCount(0);
+
+  // yeniden aktif et: paylaşılan DB'de sonraki proje/koşum yine "Aktif" bulsun
+  await page.goto('/menu/admin');
+  const restoreRow = rowFor(page, 'Ahtapot Salatası');
+  await restoreRow.getByRole('button', { name: 'Pasif' }).click();
+  await expect(restoreRow.getByRole('button', { name: 'Aktif' })).toBeVisible();
 });
