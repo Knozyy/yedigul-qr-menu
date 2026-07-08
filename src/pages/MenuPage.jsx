@@ -270,6 +270,29 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
             />
           </div>
 
+          {meta.info.wifi && (
+            <div
+              className="mx-5 mt-3 flex items-center gap-3 px-4 py-3 rounded-2xl border"
+              style={{ background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
+            >
+              <svg
+                width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none"
+              >
+                <path d="M5 12.55a11 11 0 0 1 14 0" />
+                <path d="M8.5 16.03a6 6 0 0 1 7 0" />
+                <path d="M2 8.82a15 15 0 0 1 20 0" />
+                <line x1="12" y1="19.5" x2="12.01" y2="19.5" />
+              </svg>
+              <div className="min-w-0">
+                <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.wifi}</span>
+                <span className="font-outfit text-[17px] font-semibold tracking-wide select-all" style={{ color: 'var(--text)' }}>
+                  {meta.info.wifi}
+                </span>
+              </div>
+            </div>
+          )}
+
           {(meta.announcement[lang] || '').trim() !== '' && (
             <div
               className="mx-5 mt-3 flex items-start gap-2.5 px-4 py-3 rounded-2xl border"
@@ -337,7 +360,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
             />
           )}
 
-          {(meta.info.phone || meta.info.hours || meta.info.wifi || meta.info.instagram) && (
+          {(meta.info.phone || meta.info.hours || meta.info.instagram) && (
             <div
               className="mx-5 mb-5 px-4 py-3.5 rounded-2xl border grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2.5"
               style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
@@ -358,12 +381,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
                   >
                     {meta.info.phone}
                   </a>
-                </div>
-              )}
-              {meta.info.wifi && (
-                <div>
-                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.wifi}</span>
-                  <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>{meta.info.wifi}</span>
                 </div>
               )}
               {meta.info.instagram && (
