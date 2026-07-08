@@ -45,6 +45,17 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [portion, setPortion] = useState(() => parsePortion(product?.portion));
+  // porsiyon varyantları: fiyat düzenleme kolaylığı için string tutulur
+  const [variants, setVariants] = useState(() =>
+    (product?.variants ?? []).map((v) => ({
+      name_tr: v.name_tr ?? '', name_en: v.name_en ?? '',
+      name_ar: v.name_ar ?? '', name_ru: v.name_ru ?? '',
+      price: v.price == null ? '' : String(v.price),
+    }))
+  );
+  const setVariant = (i, k, val) => setVariants((vs) => vs.map((r, j) => (j === i ? { ...r, [k]: val } : r)));
+  const addVariant = () => setVariants((vs) => [...vs, { name_tr: '', name_en: '', name_ar: '', name_ru: '', price: '' }]);
+  const removeVariant = (i) => setVariants((vs) => vs.filter((_, j) => j !== i));
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleDiet = (d) =>
@@ -53,9 +64,31 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
   async function onSubmit(e) {
     e.preventDefault();
     setBusy(true); setError('');
+
+    // varyantlar: tamamen boş satırlar atılır; yarım doldurulmuş satır hatadır.
+    // (backend kuralı: name_tr + name_en dolu, price ≥ 0; AR/RU isteğe bağlı)
+    const cleanVariants = [];
+    for (const v of variants) {
+      const nt = v.name_tr.trim();
+      const ne = v.name_en.trim();
+      const pr = String(v.price).trim();
+      if (!nt && !ne && pr === '') continue;
+      const price = Number(pr.replace(',', '.'));
+      if (!nt || !ne || !Number.isFinite(price) || price < 0) {
+        setError('Varyant satırlarını tamamlayın (TR + EN ad ve fiyat ≥ 0).');
+        setBusy(false);
+        return;
+      }
+      cleanVariants.push({ name_tr: nt, name_en: ne, name_ar: v.name_ar.trim(), name_ru: v.name_ru.trim(), price });
+    }
+
     const payload = {
       ...form,
-      price: form.is_market_price ? null : (form.price === '' ? null : Number(form.price)),
+      // varyant varsa tekil fiyat kullanılmaz (menüde aralık gösterilir)
+      price: form.is_market_price || cleanVariants.length
+        ? null
+        : (form.price === '' ? null : Number(form.price)),
+      variants: cleanVariants,
       kcal: form.kcal === '' || form.kcal == null ? null : Number(form.kcal),
       portion: composePortion(portion.amount, portion.unit),
       ing_tr: textToList(form.ing_tr),
@@ -145,8 +178,34 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
         <input type="checkbox" checked={!!form.is_market_price} onChange={(e) => set('is_market_price', e.target.checked ? 1 : 0)} />
         Piyasa Fiyatı
       </label>
-      {!form.is_market_price && (
+      {!form.is_market_price && variants.length === 0 && (
         <input className={field} style={fieldStyle} type="number" placeholder="Fiyat (TL)" value={form.price ?? ''} onChange={(e) => set('price', e.target.value)} />
+      )}
+
+      {!form.is_market_price && (
+        <div className="flex flex-col gap-2 p-3 rounded-lg border" style={{ borderColor: 'var(--border)' }}>
+          <span className="text-[12px]" style={{ color: 'var(--muted)' }}>
+            Porsiyon seçenekleri{variants.length ? ' — menüde fiyat aralığı gösterilir, tekil fiyat kullanılmaz' : ' (isteğe bağlı)'}
+          </span>
+          {variants.map((v, i) => (
+            <div key={i} className="flex flex-col gap-2 pb-2" style={i < variants.length - 1 ? { borderBottom: '1px solid var(--border)' } : undefined}>
+              <div className="flex gap-2">
+                <input className={field} style={fieldStyle} placeholder="Boyut (TR)" value={v.name_tr} onChange={(e) => setVariant(i, 'name_tr', e.target.value)} />
+                <input className={field} style={fieldStyle} placeholder="Size (EN)" value={v.name_en} onChange={(e) => setVariant(i, 'name_en', e.target.value)} />
+                <input className="px-3 py-2 rounded-lg border bg-transparent outline-none w-24" style={fieldStyle} type="number" min="0" step="any" placeholder="TL" value={v.price} onChange={(e) => setVariant(i, 'price', e.target.value)} />
+                <button type="button" onClick={() => removeVariant(i)} className="px-2 rounded-lg" style={{ color: '#ef6b6b' }} aria-label="Varyantı kaldır">✕</button>
+              </div>
+              <div className="flex gap-2">
+                <input dir="rtl" className={field} style={fieldStyle} placeholder="الحجم (AR) — isteğe bağlı" value={v.name_ar} onChange={(e) => setVariant(i, 'name_ar', e.target.value)} />
+                <input className={field} style={fieldStyle} placeholder="Размер (RU) — isteğe bağlı" value={v.name_ru} onChange={(e) => setVariant(i, 'name_ru', e.target.value)} />
+                <span className="w-24 shrink-0" aria-hidden="true" />
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={addVariant} className="self-start text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
+            + Varyant ekle
+          </button>
+        </div>
       )}
       <input className={field} style={fieldStyle} type="number" min="0" placeholder="Kalori (kcal) — porsiyon başı enerji" value={form.kcal ?? ''} onChange={(e) => set('kcal', e.target.value)} />
       <div className="flex flex-col gap-1">

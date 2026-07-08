@@ -85,6 +85,36 @@ test('admin can add an Arabic name and the customer sees it in Arabic', async ({
   await expect(page.getByText('فافا تجريبي')).toBeVisible({ timeout: 7000 });
 });
 
+test('admin can add portion variants and the customer sees a price range', async ({ page }) => {
+  await adminLogin(page);
+
+  // "Pancar" (tekil 300 TL) ürününe iki porsiyon varyantı ekle
+  await rowFor(page, 'Pancar').getByRole('button', { name: 'Düzenle' }).click();
+  await page.getByRole('button', { name: '+ Varyant ekle' }).click();
+  await page.getByRole('button', { name: '+ Varyant ekle' }).click();
+  await page.getByPlaceholder('Boyut (TR)').nth(0).fill('Küçük');
+  await page.getByPlaceholder('Size (EN)').nth(0).fill('Small');
+  await page.getByPlaceholder('TL').nth(0).fill('90');
+  await page.getByPlaceholder('Boyut (TR)').nth(1).fill('Büyük');
+  await page.getByPlaceholder('Size (EN)').nth(1).fill('Large');
+  await page.getByPlaceholder('TL').nth(1).fill('150');
+  await page.getByRole('button', { name: 'Kaydet' }).click();
+
+  // müşteri menüsünde tekil fiyat yerine aralık görünür
+  await page.goto('/menu/');
+  await expect(page.getByText('90–150 TL')).toBeVisible({ timeout: 7000 });
+
+  // geri al: varyantları kaldır, tekil fiyatı 300 TL'ye döndür (paylaşılan DB)
+  await page.goto('/menu/admin');
+  await rowFor(page, 'Pancar').getByRole('button', { name: 'Düzenle' }).click();
+  await page.getByRole('button', { name: 'Varyantı kaldır' }).first().click();
+  await page.getByRole('button', { name: 'Varyantı kaldır' }).first().click();
+  await page.getByPlaceholder('Fiyat (TL)').fill('300');
+  await page.getByRole('button', { name: 'Kaydet' }).click();
+  await page.goto('/menu/');
+  await expect(page.getByText('90–150 TL')).toHaveCount(0);
+});
+
 test('admin can deactivate a product and it disappears from menu', async ({ page }) => {
   await adminLogin(page);
 
