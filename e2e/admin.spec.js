@@ -82,7 +82,8 @@ test('admin can add an Arabic name and the customer sees it in Arabic', async ({
   // customer menu, switched to Arabic, shows the Arabic name
   await page.goto('/menu/');
   await page.getByRole('button', { name: 'AR', exact: true }).click();
-  await expect(page.getByText('فافا تجريبي')).toBeVisible({ timeout: 7000 });
+  // görselsiz üründe ad hem kartta hem görsel placeholder'ında görünebilir
+  await expect(page.getByText('فافا تجريبي').first()).toBeVisible({ timeout: 7000 });
 });
 
 test('admin can add portion variants and the customer sees a price range', async ({ page }) => {

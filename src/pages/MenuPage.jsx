@@ -38,7 +38,9 @@ const mapItem = (it, lang, ui) => ({
   id: it.id,
   name: localize(it.name, lang),
   desc: localize(it.desc, lang),
-  thumb: it.thumb,
+  // görselsiz kartın placeholder yazısı seçili dildeki adı gösterir
+  // (sunucudaki it.thumb hep İngilizce olduğundan onu kullanmıyoruz)
+  thumb: localize(it.name, lang).toUpperCase(),
   image: it.image_url || null,
   isMarket: it.price == null && !hasVariants(it),
   priceText: priceLabel(it, ui),
@@ -191,7 +193,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       id: sel.id,
       name: localize(sel.name, lang),
       desc: localize(sel.desc, lang),
-      thumb: sel.thumb,
+      thumb: localize(sel.name, lang).toUpperCase(),
       image: sel.image_url || null,
       images: sel.images || [],
       variants: (sel.variants || []).map((v) => ({ name: localize(v.name, lang), price: v.price })),
