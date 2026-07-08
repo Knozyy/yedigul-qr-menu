@@ -40,3 +40,6 @@ dist-menu
 
 # arşiv artıfaktları repoya girmesin
 *.zip
+
+# yerel DB yedekleri
+server/backups/
