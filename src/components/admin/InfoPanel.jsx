@@ -13,6 +13,8 @@ const FIELDS = [
   { key: 'info_instagram', label: 'Instagram', placeholder: '@yedigulrestorant' },
   { key: 'announcement_tr', label: 'Duyuru (TR)', placeholder: 'örn. Bugün taze levrek var!' },
   { key: 'announcement_en', label: 'Duyuru (EN)', placeholder: 'e.g. Fresh sea bass today!' },
+  { key: 'announcement_ar', label: 'Duyuru (AR)', placeholder: 'مثال: سمك القاروس طازج اليوم!', dir: 'rtl' },
+  { key: 'announcement_ru', label: 'Duyuru (RU)', placeholder: 'напр. Сегодня свежий сибас!' },
 ];
 
 export default function InfoPanel() {
@@ -63,12 +65,13 @@ export default function InfoPanel() {
         <p className="text-sm" style={{ color: 'var(--muted)' }}>Yükleniyor…</p>
       ) : (
         <>
-          {FIELDS.map(({ key, label, placeholder }) => (
+          {FIELDS.map(({ key, label, placeholder, dir }) => (
             <label key={key} className="flex flex-col gap-1">
               <span className="text-[12px]" style={{ color: 'var(--muted)' }}>{label}</span>
               <input
                 className={field}
                 style={fieldStyle}
+                dir={dir}
                 placeholder={placeholder}
                 value={form[key]}
                 onChange={(e) => set(key, e.target.value)}

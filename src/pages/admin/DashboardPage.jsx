@@ -7,6 +7,7 @@ import ProductRow from '../../components/admin/ProductRow';
 import ProductForm from '../../components/admin/ProductForm';
 import CategoryForm from '../../components/admin/CategoryForm';
 import InfoPanel from '../../components/admin/InfoPanel';
+import HistoryPanel from '../../components/admin/HistoryPanel';
 import Toast from '../../components/Toast';
 
 // qrcode kütüphanesini yalnız QR bölümü açıldığında yükle (ayrı parça).
@@ -27,6 +28,7 @@ export default function DashboardPage() {
   const [editing, setEditing] = useState(null); // ürün objesi | 'new' | null
   const [showCategories, setShowCategories] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [showQr, setShowQr] = useState(false);
   const [toast, setToast] = useState('');
   const toastTimer = useRef(null);
@@ -102,6 +104,9 @@ export default function DashboardPage() {
             <button onClick={() => setShowInfo((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
               Bilgiler
             </button>
+            <button onClick={() => setShowHistory((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
+              Geçmiş
+            </button>
             <button onClick={() => setShowQr((v) => !v)} className="text-sm px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--border-strong)' }}>
               QR Kod
             </button>
@@ -137,6 +142,8 @@ export default function DashboardPage() {
         )}
 
         {showInfo && !editing && <InfoPanel />}
+
+        {showHistory && !editing && <HistoryPanel />}
 
         {showCategories && !editing && (
           <CategoryForm categories={categories} onChanged={() => { reload(); showToast('Güncellendi'); }} />
