@@ -58,7 +58,9 @@ export default function ProductsView({ categories, products, onEdit, onReload, o
   });
   const field = 'px-3 py-2 rounded-lg border bg-transparent outline-none w-full';
 
-  const showReorder = cat !== 'all'; // sıralama yalnız tek kategori görünümünde
+  // sıralama yalnız FİLTRESİZ tek kategori görünümünde: arama/durum filtresi
+  // aktifken oklar gizli komşuyla yer değiştirir, kafa karıştırır — kapat.
+  const showReorder = cat !== 'all' && !q.trim() && status === 'all';
   const singleCat = cat !== 'all';
 
   return (
