@@ -3,7 +3,7 @@ import { api } from '../../lib/api';
 
 const MAX = 6; // backend MAX_IMAGES ile aynı
 
-// Ürün görsel galerisi: 6'ya kadar görsel. İlk görsel kapaktır (menüde thumbnail).
+// Ürün görsel galerisi: 6'ya kadar görsel, çoklu seçilebilir. İlk görsel kapaktır.
 // Backend: POST /products/:id/images (ekle), PUT /products/:id/images (sırala/çıkar).
 export default function ImageUploader({ product, onChange }) {
   const inputRef = useRef(null);
@@ -16,49 +16,59 @@ export default function ImageUploader({ product, onChange }) {
 
   const images = product.images ?? [];
 
-  async function run(fn, resetInput = false) {
+  // Çoklu dosya: sırayla yükle, en sonda tek onChange (tek toast/reload).
+  async function onPick(e) {
+    const files = Array.from(e.target.files || []);
+    if (inputRef.current) inputRef.current.value = '';
+    if (!files.length) return;
     setBusy(true); setError('');
+    let updated = null;
+    let count = images.length;
     try {
-      const updated = await fn();
-      onChange(updated);
+      for (const file of files) {
+        if (count >= MAX) { setError(`En çok ${MAX} görsel — fazlası eklenmedi.`); break; }
+        const form = new FormData();
+        form.append('image', file);
+        updated = await api.upload(`/admin/products/${product.id}/images`, form);
+        count++;
+      }
     } catch (err) {
       setError(err.message);
     } finally {
+      if (updated) onChange(updated);
       setBusy(false);
-      if (resetInput && inputRef.current) inputRef.current.value = '';
     }
   }
 
-  async function onPick(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const form = new FormData();
-    form.append('image', file);
-    await run(() => api.upload(`/admin/products/${product.id}/images`, form), true);
-  }
-
-  const saveOrder = (next) => run(() => api.put(`/admin/products/${product.id}/images`, { images: next }));
+  const saveOrder = async (next) => {
+    setBusy(true); setError('');
+    try { onChange(await api.put(`/admin/products/${product.id}/images`, { images: next })); }
+    catch (err) { setError(err.message); }
+    finally { setBusy(false); }
+  };
   const removeAt = (i) => saveOrder(images.filter((_, idx) => idx !== i));
   const makeCover = (i) => saveOrder([images[i], ...images.filter((_, idx) => idx !== i)]);
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-2">
-        {images.length === 0 && (
-          <div className="w-16 h-16 rounded-lg border flex items-center justify-center text-[10px]" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
-            Görsel yok
-          </div>
-        )}
+      <div className="flex items-center justify-between">
+        <span className="text-[12px]" style={{ color: 'var(--muted)' }}>
+          İlk görsel <b style={{ color: 'var(--gold)' }}>kapak</b> olur. Birden fazla seçebilirsin.
+        </span>
+        <span className="text-[11px]" style={{ color: 'var(--muted)' }}>{images.length}/{MAX}</span>
+      </div>
+
+      <div className="flex flex-wrap gap-2.5">
         {images.map((url, i) => (
-          <div key={url} className="relative w-16 h-16">
+          <div key={url} className="relative w-20 h-20">
             <img
               src={url}
               alt=""
-              className="w-16 h-16 rounded-lg object-cover border"
+              className="w-20 h-20 rounded-lg object-cover border-2"
               style={{ borderColor: i === 0 ? 'var(--gold)' : 'var(--border)' }}
             />
             {i === 0 && (
-              <span className="absolute -top-1 -left-1 px-1 rounded text-[8px] font-semibold" style={{ background: 'var(--gold)', color: '#fff' }}>
+              <span className="absolute -top-1.5 -left-1.5 px-1.5 py-0.5 rounded text-[9px] font-semibold" style={{ background: 'var(--gold)', color: '#fff' }}>
                 Kapak
               </span>
             )}
@@ -67,7 +77,8 @@ export default function ImageUploader({ product, onChange }) {
               onClick={() => removeAt(i)}
               disabled={busy}
               title="Sil"
-              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[11px] leading-none flex items-center justify-center"
+              aria-label="Görseli sil"
+              className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-[13px] leading-none flex items-center justify-center shadow"
               style={{ background: '#ef6b6b', color: '#fff' }}
             >
               ×
@@ -77,23 +88,36 @@ export default function ImageUploader({ product, onChange }) {
                 type="button"
                 onClick={() => makeCover(i)}
                 disabled={busy}
-                className="absolute bottom-0 inset-x-0 text-[8px] py-0.5 rounded-b-lg"
-                style={{ background: 'rgba(0,0,0,.55)', color: '#fff' }}
+                className="absolute bottom-0 inset-x-0 text-[9px] py-1 rounded-b-lg"
+                style={{ background: 'rgba(0,0,0,.6)', color: '#fff' }}
               >
                 Kapak yap
               </button>
             )}
           </div>
         ))}
-      </div>
-      <div className="flex flex-col gap-1">
-        {images.length < MAX ? (
-          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={onPick} disabled={busy} className="text-[12px]" />
-        ) : (
-          <span className="text-[11px]" style={{ color: 'var(--muted)' }}>En çok {MAX} görsel eklenebilir.</span>
+
+        {images.length < MAX && (
+          <label
+            className="w-20 h-20 rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-0.5 text-[11px]"
+            style={{ borderColor: 'var(--border-strong)', color: 'var(--muted)', cursor: busy ? 'default' : 'pointer', opacity: busy ? 0.6 : 1 }}
+          >
+            <span className="text-[22px] leading-none">＋</span>
+            <span>{busy ? 'Yükleniyor…' : 'Foto ekle'}</span>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              onChange={onPick}
+              disabled={busy}
+              className="hidden"
+            />
+          </label>
         )}
-        {error && <span className="text-[11px]" style={{ color: '#ef6b6b' }}>{error}</span>}
       </div>
+
+      {error && <span className="text-[11px]" style={{ color: '#ef6b6b' }}>{error}</span>}
     </div>
   );
 }
