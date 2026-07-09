@@ -53,7 +53,7 @@ export default function ImageUploader({ product, onChange }) {
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <span className="text-[12px]" style={{ color: 'var(--muted)' }}>
-          İlk görsel <b style={{ color: 'var(--gold)' }}>kapak</b> olur. Birden fazla seçebilirsin.
+          İlk görsel <b style={{ color: 'var(--gold)' }}>kapak</b>tır. Değiştirmek için başka görselde <b style={{ color: 'var(--gold)' }}>“Kapak yap”</b>a dokun.
         </span>
         <span className="text-[11px]" style={{ color: 'var(--muted)' }}>{images.length}/{MAX}</span>
       </div>
@@ -69,7 +69,7 @@ export default function ImageUploader({ product, onChange }) {
             />
             {i === 0 && (
               <span className="absolute -top-1.5 -left-1.5 px-1.5 py-0.5 rounded text-[9px] font-semibold" style={{ background: 'var(--gold)', color: '#fff' }}>
-                Kapak
+                ★ Kapak
               </span>
             )}
             <button
@@ -88,10 +88,11 @@ export default function ImageUploader({ product, onChange }) {
                 type="button"
                 onClick={() => makeCover(i)}
                 disabled={busy}
-                className="absolute bottom-0 inset-x-0 text-[9px] py-1 rounded-b-lg"
-                style={{ background: 'rgba(0,0,0,.6)', color: '#fff' }}
+                title="Bu görseli kapak yap"
+                className="absolute bottom-0 inset-x-0 text-[10px] font-semibold py-1 rounded-b-md"
+                style={{ background: 'var(--gold)', color: '#fff' }}
               >
-                Kapak yap
+                ★ Kapak yap
               </button>
             )}
           </div>
