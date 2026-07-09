@@ -68,12 +68,20 @@ export default function ProductsView({ categories, products, onEdit, onReload, o
       {/* Sticky araç çubuğu */}
       <div className="sticky top-14 z-20 -mx-4 px-4 py-2 flex flex-col gap-2" style={{ background: 'var(--bg)' }}>
         <input className={field} style={{ borderColor: 'var(--border-strong)', color: 'var(--text)' }} placeholder="Ürün ara…" value={q} onChange={(e) => setQ(e.target.value)} />
-        <div className="flex gap-1.5 overflow-x-auto pb-1">
-          <button onClick={() => setCat('all')} className="text-[12px] px-3 py-1 rounded-full border whitespace-nowrap" style={chip(cat === 'all')}>Tümü</button>
+        <select
+          className={field}
+          style={{ borderColor: 'var(--border-strong)', color: 'var(--text)', background: 'var(--surface)' }}
+          value={cat}
+          onChange={(e) => setCat(e.target.value)}
+          aria-label="Kategori seç"
+        >
+          <option value="all">Tüm kategoriler ({products.length})</option>
           {categories.map((c) => (
-            <button key={c.id} onClick={() => setCat(c.id)} className="text-[12px] px-3 py-1 rounded-full border whitespace-nowrap" style={chip(cat === c.id)}>{c.name_tr}</button>
+            <option key={c.id} value={c.id}>
+              {c.name_tr} ({products.filter((p) => p.category_id === c.id).length})
+            </option>
           ))}
-        </div>
+        </select>
         <div className="flex items-center gap-1.5">
           {[['all', 'Tümü'], ['active', 'Aktif'], ['passive', 'Pasif']].map(([v, l]) => (
             <button key={v} onClick={() => setStatus(v)} className="text-[11px] px-2.5 py-1 rounded-full border" style={chip(status === v)}>{l}</button>
