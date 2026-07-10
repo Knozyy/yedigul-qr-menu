@@ -173,6 +173,15 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const announcement = (meta.announcement[lang] || meta.announcement.en || '').trim();
   const instagram = (meta.info.instagram || '').trim();
 
+  // Balık fiyatı oynak; menüde son fiyat güncelleme tarihi güven verir.
+  const priceUpdatedText = (() => {
+    if (!meta.price_updated_at) return '';
+    const d = new Date(meta.price_updated_at);
+    if (Number.isNaN(d.getTime())) return '';
+    const locale = { tr: 'tr-TR', en: 'en-GB', ar: 'ar', ru: 'ru-RU' }[lang] || 'tr-TR';
+    return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+  })();
+
   if (loading) {
     return (
       <div
@@ -347,6 +356,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
           <span className="text-[11.5px] mt-1.5 max-w-[420px] leading-[1.5]" style={{ color: 'var(--muted2)' }}>
             {ui.vat}
           </span>
+          {priceUpdatedText && (
+            <span className="text-[11.5px]" style={{ color: 'var(--muted2)' }}>
+              {ui.priceUpdated}: {priceUpdatedText}
+            </span>
+          )}
         </footer>
       </main>
 

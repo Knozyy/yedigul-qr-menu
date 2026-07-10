@@ -10,6 +10,9 @@ import { createAuth } from './auth.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3001;
+// Nginx arkasında HOST=127.0.0.1 ayarla → app portu dışarıdan erişilemez olur
+// (firewall'a ek savunma). Varsayılan her arayüz (mevcut davranış).
+const HOST = process.env.HOST || '0.0.0.0';
 const DB_PATH = process.env.DB_PATH || join(__dirname, 'data.db');
 const UPLOADS_DIR = process.env.UPLOADS_DIR || join(__dirname, 'uploads');
 const DEFAULT_SECRET = 'change-me-in-env';
@@ -95,7 +98,7 @@ if (existsSync(distDir)) {
   });
 }
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
   if (!PASSWORD) console.warn('UYARI: ADMIN_PASSWORD boş — admin girişi devre dışı.');
   console.log(`Yedigül API http://localhost:${PORT}`);
 });

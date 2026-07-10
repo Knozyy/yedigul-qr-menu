@@ -20,7 +20,14 @@
   <meta property="og:url" content="https://www.yedigulrestorant.com/">
   <meta property="og:title" content="Yedigül Restaurant — Anadolukavağı Boğaz Balık Restoranı">
   <meta property="og:description" content="Boğaz'ın muhteşem silüeti eşliğinde 30 yılı aşkın süredir devam eden bir lezzet hikâyesi.">
-  <meta property="og:image" content="images/slider/1.jpg">
+  <meta property="og:image" content="https://www.yedigulrestorant.com/images/slider/1.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Yedigül Restaurant — Anadolukavağı Boğaz Balık Restoranı">
+  <meta name="twitter:description" content="Boğaz'ın muhteşem silüeti eşliğinde 30 yılı aşkın süredir devam eden bir lezzet hikâyesi.">
+  <meta name="twitter:image" content="https://www.yedigulrestorant.com/images/slider/1.jpg">
 
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="icon" type="image/png" href="images/logo/favicon.png">
@@ -37,7 +44,7 @@
   <!-- ===================== NAV ===================== -->
   <header class="nav" id="top">
     <div class="nav__inner">
-      <a class="nav__brand" href="index.html" aria-label="Yedigül Restaurant ana sayfa">
+      <a class="nav__brand" href="/" aria-label="Yedigül Restaurant ana sayfa">
         <img class="nav__logo" src="images/logo/logo.png" alt="Yedigül Restaurant logosu">
         <span class="nav__wordmark">Yedigül<small>Anadolukavağı</small></span>
       </a>
@@ -319,7 +326,6 @@
             <span>© <span id="yr">2026</span> Yedigül Restaurant · Her hakkı saklıdır.</span>
           </div>
           <div class="footer-bar__social">
-            <a href="https://www.instagram.com/alp_eyuboglu/?hl=tr" target="_blank" rel="noopener">Instagram</a>
             <a href="menu/">Menümüz</a>
           </div>
         </div>
@@ -343,5 +349,45 @@
   </div>
 
   <script src="js/site.js" defer></script>
+
+  <!-- Yapısal veri: Google'da yıldız/saat/harita/"menüyü gör" zengin sonuçları için.
+       Adres, koordinat ve saatler bu sayfadaki İletişim bölümüyle birebir aynıdır (NAP tutarlılığı). -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Yedigül Restaurant",
+    "alternateName": "Yedigül Balık Restaurant",
+    "image": "https://www.yedigulrestorant.com/images/slider/1.jpg",
+    "url": "https://www.yedigulrestorant.com/",
+    "telephone": "+902163202180",
+    "email": "info@yedigulrestorant.com",
+    "servesCuisine": ["Deniz Ürünleri", "Balık", "Meze", "Türk Mutfağı"],
+    "priceRange": "₺₺₺",
+    "acceptsReservations": "True",
+    "menu": "https://www.yedigulrestorant.com/menu/",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Anadolu Kavağı Mahallesi, Macar Tabya Cd. 6/A",
+      "addressLocality": "Beykoz",
+      "addressRegion": "İstanbul",
+      "postalCode": "34825",
+      "addressCountry": "TR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 41.166679,
+      "longitude": 29.079102
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "11:00",
+        "closes": "00:00"
+      }
+    ]
+  }
+  </script>
 </body>
 </html>

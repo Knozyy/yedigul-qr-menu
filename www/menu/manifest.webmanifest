@@ -1,0 +1,15 @@
+{
+  "name": "Yedigül Menü",
+  "short_name": "Yedigül",
+  "description": "Yedigül Balık Restaurant dijital menüsü",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#FBF7ED",
+  "theme_color": "#0A1F35",
+  "lang": "tr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

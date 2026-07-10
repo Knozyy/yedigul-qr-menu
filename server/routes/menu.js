@@ -70,6 +70,7 @@ export function publicMeta(db) {
       wifi: getSetting(db, 'info_wifi', '') || '',
       instagram: getSetting(db, 'info_instagram', '') || '',
     },
+    price_updated_at: getSetting(db, 'price_updated_at', '') || '',
   };
 }
 

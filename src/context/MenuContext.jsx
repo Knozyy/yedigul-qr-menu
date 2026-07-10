@@ -7,7 +7,11 @@ const POLL_MS = 30000;
 // (no backend on the shared host), so there is nothing to poll
 const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 
-const EMPTY_META = { announcement: { tr: '', en: '' }, info: { phone: '', hours: '', wifi: '', instagram: '' } };
+const EMPTY_META = {
+  announcement: { tr: '', en: '' },
+  info: { phone: '', hours: '', wifi: '', instagram: '' },
+  price_updated_at: '',
+};
 
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);

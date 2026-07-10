@@ -124,6 +124,12 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     logChange(db, { action, entity, entityId, detail });
   }
 
+  // Menüde gösterilen "fiyat güncellenme tarihi" — fiyatı etkileyen her
+  // değişiklikte damgalanır (balık fiyatı oynak; tarih müşteriye güven verir).
+  function touchPriceStamp() {
+    setSetting(db, 'price_updated_at', new Date().toISOString());
+  }
+
   // Görsel listesi güncellemesini tek yerden yap: images + kapak (image_url) senkron
   function saveImages(id, images) {
     db.prepare('UPDATE products SET images = ?, image_url = ? WHERE id = ?')
@@ -248,6 +254,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       return res.status(400).json({ error: 'Geçersiz veri (örn. kategori bulunamadı)' });
     }
     log('create', 'product', id, String(b.name_tr));
+    touchPriceStamp();
     res.status(201).json(getProduct(db, id));
   });
 
@@ -287,6 +294,13 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const after = getProduct(db, req.params.id);
     const summary = diffSummary(before, after, PRODUCT_FIELDS);
     if (summary) log('update', 'product', req.params.id, `${after.name_tr}: ${summary}`);
+    if (
+      before.price !== after.price ||
+      before.is_market_price !== after.is_market_price ||
+      JSON.stringify(before.variants) !== JSON.stringify(after.variants)
+    ) {
+      touchPriceStamp();
+    }
     res.json(after);
   });
 

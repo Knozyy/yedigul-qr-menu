@@ -1,5 +1,10 @@
 # Yedigül — Sunucu Kurulumu
 
+> **Üretim sağlamlık kontrolü:** yedek cron'u, SSL yenileme, systemd, firewall,
+> Nginx 301 + güvenlik header'ları için `deploy/SUNUCU-CHECKLIST.md`'yi izle
+> (hazır dosyalar: `deploy/db-backup.sh`, `deploy/yedigul.service`,
+> `deploy/nginx-yedigul.conf`).
+
 ## Gereksinim
 - **Node.js 20+** (https://nodejs.org) — Linux örneği:
   ```
