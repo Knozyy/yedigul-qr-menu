@@ -1,24 +1,5 @@
 import { useEffect, useState } from 'react';
-import Heart from './Heart';
-
-function TagChip({ kind, label }) {
-  const popular = kind === 'popular';
-  return (
-    <span
-      className="inline-flex items-center gap-1 font-inter text-[10px] font-bold tracking-[.06em] px-2.5 py-1 rounded-full"
-      style={
-        popular ? { background: 'var(--gold)', color: '#fff' } : { background: 'var(--navy-2)', color: '#fff' }
-      }
-    >
-      {popular && (
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2l2.95 6.13L21.5 9l-4.75 4.43L18 20l-6-3.27L6 20l1.25-6.57L2.5 9l6.55-.87z" />
-        </svg>
-      )}
-      {label}
-    </span>
-  );
-}
+import Badges from './Badges';
 
 export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) {
   // Çoklu görselde seçili kare; ürün değişince kapağa dön.
@@ -40,87 +21,65 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
 
   if (!sheet) return null;
 
-  const gallery = sheet.images && sheet.images.length ? sheet.images : (sheet.image ? [sheet.image] : []);
-  const mainImage = gallery[Math.min(imgIdx, gallery.length - 1)] || null;
+  const gallery = sheet.images && sheet.images.length ? sheet.images : sheet.image ? [sheet.image] : [];
+  const hero = gallery[Math.min(imgIdx, gallery.length - 1)] || sheet.placeholderHero;
 
   return (
-    <>
+    <div className="fixed inset-0 z-[60]">
       <div
         onClick={onClose}
-        className="yg-anim-overlay fixed inset-0 z-[55]"
-        style={{ background: 'rgba(8,16,30,.5)', backdropFilter: 'blur(2px)' }}
+        className="yg-anim-overlay absolute inset-0"
+        style={{ background: 'rgba(5,14,25,0.55)' }}
       />
       <div
-        className="yg-anim-sheet fixed left-1/2 bottom-0 w-full max-w-[468px] md:max-w-[560px] z-[60] rounded-t-[26px]"
-        style={{ boxShadow: '0 -16px 50px rgba(0,0,0,.32)' }}
+        role="dialog"
+        aria-modal="true"
+        className="yg-anim-sheet absolute left-1/2 bottom-0 w-full max-w-[560px]"
+        style={{ boxShadow: '0 -16px 48px rgba(4,12,22,0.35)', borderRadius: '24px 24px 0 0' }}
       >
         <div
-          className="yg-scroll max-h-[86vh] overflow-y-auto rounded-t-[26px]"
-          style={{ background: 'var(--surface)' }}
+          className="yg-scroll max-h-[88vh] overflow-y-auto"
+          style={{ background: 'var(--sheet-bg)', color: 'var(--text)', borderRadius: '24px 24px 0 0' }}
         >
-          <div className="sticky top-0 z-10 flex items-center justify-center pt-[11px] pb-1" style={{ background: 'var(--surface)' }}>
+          <div className="sticky top-0 z-[2] flex justify-center pt-2.5 pb-1.5">
             <button
               onClick={onClose}
-              aria-label={ui.close || 'Kapat'}
-              className="absolute left-1/2 -translate-x-1/2 top-[9px] w-[52px] h-[9px] flex items-center justify-center cursor-pointer p-0 bg-transparent border-none"
+              aria-label={ui.close}
+              className="w-11 h-[22px] flex items-center justify-center bg-transparent border-none cursor-pointer p-0"
             >
-              <span className="w-[42px] h-[5px] rounded-full" style={{ background: 'var(--border-strong)' }} />
+              <span className="w-11 h-[5px] rounded-full" style={{ background: 'var(--faint-strong)' }} />
             </button>
             <button
               onClick={onClose}
-              aria-label={ui.close || 'Kapat'}
-              className="absolute right-3 top-2 w-[32px] h-[32px] rounded-full flex items-center justify-center cursor-pointer p-0 border"
-              style={{ background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text)' }}
+              aria-label={ui.close}
+              className="absolute top-3 w-11 h-11 rounded-full border-none flex items-center justify-center cursor-pointer"
+              style={{ insetInlineEnd: 12, background: 'var(--scrim-btn)', color: 'var(--text)' }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 6 6 18M6 6l12 12" />
+              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
             </button>
           </div>
 
-          <div className="px-[22px] pt-1.5 pb-[26px]">
-            <div className="relative">
-              {mainImage ? (
-                <img
-                  src={mainImage}
-                  alt={sheet.name}
-                  className="w-full h-[170px] rounded-[18px] object-cover border"
-                  style={{ borderColor: 'var(--border)' }}
-                  loading="lazy"
-                />
-              ) : (
-                <div
-                  className="w-full h-[170px] rounded-[18px] flex items-center justify-center text-center border"
-                  style={{
-                    background: 'repeating-linear-gradient(135deg, var(--thumb-a) 0 8px, var(--thumb-b) 8px 16px)',
-                    borderColor: 'var(--border)',
-                  }}
-                >
-                  <span className="font-outfit text-[11px] font-semibold tracking-[.22em]" style={{ color: 'var(--thumb-ink)' }}>
-                    {sheet.thumb}
-                  </span>
-                </div>
-              )}
-              <button
-                onClick={() => onToggleFav(sheet.id)}
-                aria-label="favorite"
-                aria-pressed={isFav}
-                className="absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center cursor-pointer p-0 border transition-transform duration-150 ease-out active:scale-90"
-                style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: '0 4px 12px var(--shadow)' }}
-              >
-                <Heart filled={isFav} size={19} color={isFav ? 'var(--gold)' : 'var(--muted)'} />
-              </button>
-            </div>
+          <div className="px-5 pt-1 pb-9 flex flex-col gap-4">
+            <div
+              role="img"
+              aria-label={sheet.name}
+              className="w-full h-[216px] rounded-[14px]"
+              style={{ backgroundImage: `url('${hero}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            />
 
             {gallery.length > 1 && (
-              <div className="flex gap-2 mt-2.5 overflow-x-auto yg-scroll pb-1">
+              <div className="yg-scroll flex gap-2 overflow-x-auto -mt-1.5">
                 {gallery.map((url, i) => (
                   <button
                     key={url}
                     onClick={() => setImgIdx(i)}
                     aria-label={`${sheet.name} ${i + 1}`}
-                    className="flex-none w-[56px] h-[56px] rounded-[12px] overflow-hidden border-2 cursor-pointer p-0"
-                    style={{ borderColor: i === Math.min(imgIdx, gallery.length - 1) ? 'var(--gold)' : 'var(--border)' }}
+                    className="flex-none w-14 h-14 rounded-xl overflow-hidden cursor-pointer p-0"
+                    style={{
+                      border: `2px solid ${i === Math.min(imgIdx, gallery.length - 1) ? 'var(--accent)' : 'var(--faint)'}`,
+                    }}
                   >
                     <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </button>
@@ -128,131 +87,122 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
               </div>
             )}
 
-            {sheet.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-4">
-                {sheet.tags.map((t) => (
-                  <TagChip key={t.kind} kind={t.kind} label={t.label} />
+            <div className="flex items-start gap-2.5">
+              <div className="flex-1 min-w-0 flex flex-col gap-[9px]">
+                <Badges item={sheet} ui={ui} />
+                <h2 className="m-0 font-outfit text-[29px] font-semibold leading-[1.12]">{sheet.name}</h2>
+                {(sheet.kcalText || sheet.portion) && (
+                  <div className="flex gap-2 flex-wrap text-[12.5px]" style={{ color: 'var(--muted)' }}>
+                    {sheet.kcalText && (
+                      <span className="rounded-full px-[11px] py-[4.5px]" style={{ border: '1px solid var(--faint)' }}>
+                        {sheet.kcalText}
+                      </span>
+                    )}
+                    {sheet.portion && (
+                      <span className="rounded-full px-[11px] py-[4.5px]" style={{ border: '1px solid var(--faint)' }}>
+                        {sheet.portion}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={() => onToggleFav(sheet.id)}
+                aria-label="Favori"
+                aria-pressed={isFav}
+                className="flex-none w-12 h-12 rounded-full flex items-center justify-center bg-transparent cursor-pointer"
+                style={{ border: '1px solid var(--faint)', color: isFav ? 'var(--accent)' : 'var(--muted2)' }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 20.3 C6.4 15.6 3.5 12.4 3.5 9 C3.5 6.4 5.5 4.5 8 4.5 C9.6 4.5 11.1 5.3 12 6.7 C12.9 5.3 14.4 4.5 16 4.5 C18.5 4.5 20.5 6.4 20.5 9 C20.5 12.4 17.6 15.6 12 20.3 Z"
+                    fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {!sheet.isMarket && (
+              <div className="text-[22px] font-semibold" style={{ color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>
+                {sheet.priceText}
+              </div>
+            )}
+
+            {sheet.isMarket && (
+              <div
+                className="flex gap-[11px] items-start rounded-[14px] px-[15px] py-[13px]"
+                style={{ border: '1px solid var(--ann-border)', background: 'var(--ann-bg)' }}
+              >
+                <svg width="21" height="21" viewBox="0 0 24 24" className="flex-none mt-px" style={{ color: 'var(--accent-text)' }} aria-hidden="true">
+                  <path
+                    d="M2.5 12 C5.5 8.2 11 7 15.2 9.6 C16.6 10.5 17.8 11.3 19.5 12 C17.8 12.7 16.6 13.5 15.2 14.4 C11 17 5.5 15.8 2.5 12 Z M19.5 12 L22.5 9.2 M19.5 12 L22.5 14.8"
+                    fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+                  />
+                </svg>
+                <div className="flex flex-col gap-[3px]">
+                  <span className="text-[11px] font-semibold tracking-[1.5px] uppercase" style={{ color: 'var(--accent-text)' }}>
+                    {ui.market}
+                  </span>
+                  <p className="m-0 text-[13.5px] leading-[1.5]" style={{ color: 'var(--text)' }}>
+                    {ui.marketNote}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {sheet.desc && (
+              <p className="m-0 text-[15px] leading-[1.65]" style={{ color: 'var(--muted)' }}>
+                {sheet.desc}
+              </p>
+            )}
+
+            {sheet.variants.length > 0 && (
+              <div className="flex flex-col gap-0.5">
+                <h4 className="m-0 mb-1.5 text-[11.5px] tracking-[2px] uppercase font-semibold" style={{ color: 'var(--muted2)' }}>
+                  {ui.options}
+                </h4>
+                {sheet.variants.map((v) => (
+                  <div
+                    key={v.name}
+                    className="flex items-baseline gap-2.5 py-[11px] text-[15px]"
+                    style={{ borderBottom: '1px solid var(--faint)' }}
+                  >
+                    <span>{v.name}</span>
+                    <span className="flex-1 self-end mb-1" style={{ borderBottom: '1px dotted var(--faint-strong)' }} />
+                    <span className="font-semibold whitespace-nowrap" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {v.priceText}
+                    </span>
+                  </div>
                 ))}
               </div>
             )}
 
-            <div className="flex items-start justify-between gap-3.5 mt-4">
-              <div className="flex-1 min-w-0">
-                <span className="yg-overline block text-[10px]" style={{ color: 'var(--gold)' }}>
-                  {sheet.category}
-                </span>
-                <span className="block font-outfit text-[30px] font-semibold leading-[1.05] mt-[6px]" style={{ color: 'var(--text)' }}>
-                  {sheet.name}
-                </span>
-              </div>
-              <span className="flex-none flex flex-col items-end gap-[3px]">
-                {sheet.isMarket ? (
-                  <span
-                    className="font-inter text-[10px] font-semibold uppercase tracking-[.1em] px-3 py-1.5 rounded-full border whitespace-nowrap text-right"
-                    style={{ color: 'var(--gold)', background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
-                  >
-                    {sheet.priceText}
-                  </span>
-                ) : (
-                  <span className="font-outfit text-[29px] font-semibold whitespace-nowrap leading-none" style={{ color: 'var(--gold)' }}>
-                    {sheet.priceText}
-                  </span>
-                )}
-                {sheet.portion && (
-                  <span className="font-inter text-[12px] font-medium whitespace-nowrap" style={{ color: 'var(--muted)' }}>
-                    {sheet.portion}
-                  </span>
-                )}
-              </span>
-            </div>
-
-            <p className="font-inter text-sm leading-[1.6] mt-3.5" style={{ color: 'var(--muted)', textWrap: 'pretty' }}>
-              {sheet.desc}
-            </p>
-
-            {sheet.variants && sheet.variants.length > 0 && (
-              <div className="mt-4">
-                <span className="yg-overline text-[10.5px]" style={{ color: 'var(--gold)' }}>
-                  {ui.options}
-                </span>
-                <div className="mt-2 rounded-2xl border divide-y" style={{ borderColor: 'var(--border)' }}>
-                  {sheet.variants.map((v) => (
-                    <div
-                      key={v.name}
-                      className="flex items-center justify-between px-4 py-2.5"
-                      style={{ borderColor: 'var(--border)' }}
-                    >
-                      <span className="font-inter text-[13.5px] font-medium" style={{ color: 'var(--text)' }}>
-                        {v.name}
-                      </span>
-                      <span className="font-outfit text-[16px] font-semibold whitespace-nowrap" style={{ color: 'var(--gold)' }}>
-                        {v.price} {ui.currency}
-                      </span>
-                    </div>
+            {sheet.ingredients.length > 0 && (
+              <div>
+                <h4 className="m-0 mb-2 text-[11.5px] tracking-[2px] uppercase font-semibold" style={{ color: 'var(--muted2)' }}>
+                  {ui.ingredients}
+                </h4>
+                <div className="flex gap-1.5 flex-wrap">
+                  {sheet.ingredients.map((ing) => (
+                    <span key={ing} className="rounded-full px-3 py-[5.5px] text-[13px]" style={{ background: 'var(--chip-soft)' }}>
+                      {ing}
+                    </span>
                   ))}
                 </div>
               </div>
             )}
 
-            {sheet.kcal != null && (
-              <div className="flex items-center gap-2 mt-3">
-                <span className="yg-overline text-[10px]" style={{ color: 'var(--gold)' }}>
-                  {ui.energy}
-                </span>
-                <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>
-                  {sheet.kcal} {ui.kcalUnit}
-                </span>
-              </div>
-            )}
-
-            <div className="mt-[22px]">
-              <span className="yg-overline text-[10.5px]" style={{ color: 'var(--gold)' }}>
-                {ui.ingredients}
-              </span>
-              <div className="flex flex-wrap gap-2 mt-[11px]">
-                {sheet.ingredients.map((ing) => (
-                  <span
-                    key={ing}
-                    className="font-inter text-[12.5px] px-3 py-1.5 rounded-full border"
-                    style={{ background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text)' }}
-                  >
-                    {ing}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div
-              className="mt-5 mb-1 flex gap-[11px] px-4 py-3.5 rounded-2xl border"
-              style={{ background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--gold)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="flex-none mt-px"
-              >
-                <path d="M12 9v4" />
-                <path d="M12 17h.01" />
-                <path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.42 0Z" />
-              </svg>
-              <div className="flex-1">
-                <span className="yg-overline block text-[10px]" style={{ color: 'var(--gold)' }}>
-                  {ui.allergens}
-                </span>
-                <span className="block font-inter text-[12.5px] leading-[1.5] mt-[3px]" style={{ color: 'var(--muted)' }}>
-                  {sheet.allergens}
-                </span>
-              </div>
+            <div>
+              <h4 className="m-0 mb-1.5 text-[11.5px] tracking-[2px] uppercase font-semibold" style={{ color: 'var(--muted2)' }}>
+                {ui.allergens}
+              </h4>
+              <p className="m-0 text-[13.5px] leading-[1.5]" style={{ color: 'var(--muted)' }}>
+                {sheet.allergens}
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -2,72 +2,62 @@ import ProductCard from './ProductCard';
 
 export default function MenuSections({
   sections,
+  ui,
   register,
   scrollMargin,
   countWord,
-  emptyLabel,
   onItemClick,
   favorites,
   onToggleFav,
   collapsedIds,
   onToggleSection,
 }) {
-  if (sections.length === 0) {
-    return (
-      <main className="flex-1 px-5 pt-1 pb-9">
-        <div className="text-center py-12 px-5 font-inter text-[13.5px] tracking-[.02em]" style={{ color: 'var(--muted)' }}>
-          {emptyLabel}
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <main className="flex-1 px-5 pt-1 pb-9 flex flex-col gap-7">
+    <>
       {sections.map((section) => {
         const isCollapsed = collapsedIds.has(section.id);
         return (
           <section
             key={section.id}
             ref={register(section.id)}
-            style={{ scrollMarginTop: `${scrollMargin}px` }}
-            className="flex flex-col gap-[13px]"
+            style={{ scrollMarginTop: scrollMargin + 8, paddingTop: 14 }}
           >
             <button
               type="button"
               onClick={() => onToggleSection(section.id)}
               aria-expanded={!isCollapsed}
-              className="flex items-baseline gap-3 my-1.5 w-full text-left cursor-pointer bg-transparent border-none p-0"
+              className="w-full min-h-12 flex items-center gap-3 bg-transparent border-none cursor-pointer text-start py-2.5 px-0"
+              style={{ color: 'inherit' }}
             >
-              <span className="font-outfit text-[23px] font-semibold leading-none tracking-[.01em]" style={{ color: 'var(--text)' }}>
+              <h2
+                className="m-0 font-outfit text-[27px] font-semibold leading-[1.1] tracking-[.2px]"
+                style={{ color: 'var(--text)' }}
+              >
                 {section.title}
-              </span>
-              <span className="flex-1 h-px self-center" style={{ background: 'var(--border)' }} />
-              <span className="yg-overline text-[9.5px]" style={{ color: 'var(--gold)' }}>
+              </h2>
+              <span className="flex-none text-[12.5px] tracking-[.5px] font-normal" style={{ color: 'var(--muted2)' }}>
                 {section.items.length} {countWord}
               </span>
+              <span className="flex-1" style={{ borderTop: '1px solid var(--faint)' }} />
               <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--muted)"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className={`flex-none self-center transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
+                width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"
+                className={`flex-none transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
+                style={{ color: 'var(--muted2)' }}
               >
-                <path d="m6 9 6 6 6-6" />
+                <path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
 
             {!isCollapsed && (
-              <div className="flex flex-col gap-[13px] md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-4">
+              <div
+                className="grid items-start"
+                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 330px), 1fr))', gap: '0 44px' }}
+              >
                 {section.items.map((item) => (
                   <ProductCard
                     key={item.id}
                     item={item}
+                    ui={ui}
                     onClick={() => onItemClick(item.id)}
                     isFav={favorites.includes(item.id)}
                     onToggleFav={onToggleFav}
@@ -78,6 +68,6 @@ export default function MenuSections({
           </section>
         );
       })}
-    </main>
+    </>
   );
 }

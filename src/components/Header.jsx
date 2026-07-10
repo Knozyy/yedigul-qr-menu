@@ -1,113 +1,101 @@
-import Heart from './Heart';
+const LANGS = ['tr', 'en', 'ar', 'ru'];
 
-export default function Header({
-  ui,
-  dark,
-  onToggleTheme,
-  lang,
-  onSetLang,
-  favView,
-  favCount,
-  onToggleFavView,
-}) {
+// Boğaz dalgası süsü — marka satırının iki yanında.
+function Wave() {
   return (
-    <header
-      className="px-5 pt-[18px] pb-3.5"
-      style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-[3px]">
-          <span
-            className="yg-overline text-[9.5px]"
-            style={{ color: 'var(--gold)' }}
-          >
-            Bosphorus · İstanbul
-          </span>
-          <span
-            className="font-outfit text-[32px] font-semibold leading-[0.95] tracking-[.005em] mt-[3px]"
-            style={{ color: 'var(--text)' }}
-          >
-            Yedigül
-          </span>
-          <span className="font-inter text-[11.5px] mt-[3px]" style={{ color: 'var(--muted)' }}>
-            {ui.tagline}
-          </span>
-        </div>
+    <svg width="34" height="10" viewBox="0 0 38 10" className="flex-none" aria-hidden="true">
+      <path
+        d="M1 5.5 C4 1.5 7 1.5 10 5.5 C13 9.5 16 9.5 19 5.5 C22 1.5 25 1.5 28 5.5 C31 9.5 34 9.5 37 5.5"
+        fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
-        <div className="flex-none flex items-center gap-2">
-          <button
-            onClick={onToggleFavView}
-            aria-label={ui.favorites}
-            aria-pressed={favView}
-            className="relative flex-none w-[38px] h-[38px] rounded-full border flex items-center justify-center cursor-pointer p-0"
-            style={
-              favView
-                ? { borderColor: 'var(--gold)', background: 'var(--gold)' }
-                : { borderColor: 'var(--border)', background: 'var(--surface-2)' }
-            }
+export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
+  return (
+    <header style={{ background: 'var(--bg)', borderBottom: '1px solid var(--faint)', transition: 'background .35s ease' }}>
+      <div className="max-w-[980px] mx-auto px-4 pt-3 pb-5 flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-3">
+          <div
+            role="group"
+            aria-label="Dil / Language"
+            className="flex overflow-hidden rounded-full border"
+            style={{ borderColor: 'var(--faint-strong)' }}
           >
-            <Heart filled={favView} size={16} color={favView ? '#fff' : 'var(--muted)'} />
-            {favCount > 0 && !favView && (
-              <span
-                className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-[3px] rounded-full font-inter text-[9px] font-bold flex items-center justify-center"
-                style={{ background: 'var(--gold)', color: '#fff' }}
-              >
-                {favCount}
-              </span>
-            )}
-          </button>
-
+            {LANGS.map((code) => {
+              const active = lang === code;
+              return (
+                <button
+                  key={code}
+                  onClick={() => onSetLang(code)}
+                  className="min-w-[46px] h-11 px-1.5 border-none cursor-pointer text-[13px] tracking-[.5px] transition-colors duration-200"
+                  style={{
+                    background: active ? 'var(--accent-text)' : 'transparent',
+                    color: active ? 'var(--on-accent)' : 'var(--muted)',
+                    fontWeight: active ? 600 : 400,
+                  }}
+                >
+                  {code.toUpperCase()}
+                </button>
+              );
+            })}
+          </div>
           <button
             onClick={onToggleTheme}
-            aria-label="theme"
-            className="flex-none w-[38px] h-[38px] rounded-full border flex items-center justify-center cursor-pointer p-0"
-            style={{ borderColor: 'var(--border)', background: 'var(--surface-2)' }}
+            aria-label="Tema / Theme"
+            className="flex-none w-11 h-11 flex items-center justify-center rounded-full border cursor-pointer bg-transparent"
+            style={{ borderColor: 'var(--faint-strong)', color: 'var(--text)' }}
           >
             {dark ? (
-              <span
-                className="w-[15px] h-[15px] rounded-full bg-transparent"
-                style={{ boxShadow: '5px -4px 0 0 var(--gold)' }}
-              />
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+                <path
+                  d="M12 2.5 V5 M12 19 V21.5 M2.5 12 H5 M19 12 H21.5 M5.3 5.3 L7 7 M17 17 L18.7 18.7 M18.7 5.3 L17 7 M7 17 L5.3 18.7"
+                  stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"
+                />
+              </svg>
             ) : (
-              <span
-                className="w-[13px] h-[13px] rounded-full"
-                style={{ background: 'var(--gold)', boxShadow: '0 0 0 3px var(--gold-tint)' }}
-              />
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20 14.2 A8.3 8.3 0 1 1 9.8 4 A6.8 6.8 0 0 0 20 14.2 Z"
+                  fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"
+                />
+              </svg>
             )}
           </button>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between gap-3 mt-3.5">
-        <a
-          href="/"
-          className="font-inter text-[12px] font-semibold tracking-[.06em] no-underline flex items-center gap-1.5"
-          style={{ color: 'var(--gold)' }}
-        >
-          <span aria-hidden="true">←</span>
-          {ui.home}
-        </a>
-        <div
-          className="inline-flex p-[3px] rounded-full border"
-          style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}
-        >
-          {['tr', 'en', 'ar', 'ru'].map((code) => {
-            const active = lang === code;
-            return (
-              <button
-                key={code}
-                onClick={() => onSetLang(code)}
-                className="border-none cursor-pointer font-inter text-[12px] font-semibold tracking-[.06em] px-2.5 py-1.5 rounded-full"
-                style={
-                  active
-                    ? { background: 'var(--navy-2)', color: '#fff' }
-                    : { background: 'transparent', color: 'var(--muted)' }
-                }
-              >
-                {code.toUpperCase()}
-              </button>
-            );
-          })}
+        <div className="flex flex-col items-center justify-center gap-3.5 text-center pt-0.5">
+          {/* Gerçek amblem (www/images/logo/logo.png'den kırpılmış balık-Y);
+              zemini lacivert olduğundan madalyon gibi daire içinde kullanılır. */}
+          <div
+            className="w-14 h-14 rounded-full overflow-hidden flex-none"
+            style={{ border: '1.5px solid var(--accent-text)' }}
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}logo-mark.png`}
+              alt="Yedigül logosu"
+              width="56"
+              height="56"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex flex-col items-center gap-[5px]">
+            <h1 className="m-0 font-outfit text-[34px] font-semibold tracking-[.5px] leading-[1.05]" style={{ color: 'var(--text)' }}>
+              Yedigül
+            </h1>
+            <div className="text-[11.5px] tracking-[3px] uppercase font-medium" style={{ color: 'var(--muted)' }}>
+              {ui.sub}
+            </div>
+            <div className="flex items-center gap-[9px]" style={{ color: 'var(--accent-text)' }}>
+              <Wave />
+              <span className="text-[11px] tracking-[1.2px]" style={{ color: 'var(--muted)' }}>
+                Anadolukavağı · İstanbul
+              </span>
+              <Wave />
+            </div>
+          </div>
         </div>
       </div>
     </header>

@@ -1,55 +1,43 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { UI } from '../data/ui';
+import { UI, fmtPrice, fmtPriceRange } from '../data/ui';
 import { useMenu } from '../context/MenuContext';
-import { getThemeVars } from '../lib/theme';
+import { getMenuThemeVars } from '../lib/theme';
+import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';
 import useScrollSpy from '../lib/useScrollSpy';
 import Header from '../components/Header';
 import CategoryBar from '../components/CategoryBar';
 import SearchFilters from '../components/SearchFilters';
-import ProductList from '../components/ProductList';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 
-const localize = (field, lang) => (field ? field[lang] : '');
+const localize = (field, lang) => (field ? field[lang] || field.en || '' : '');
 
-const buildTags = (item, ui) => {
-  const tags = [];
-  if (item.popular) tags.push({ kind: 'popular', label: ui.popular });
-  if (item.chef) tags.push({ kind: 'chef', label: ui.chef });
-  return tags;
-};
-
-// Varyantlı ürünlerde kart fiyatı aralık olarak gösterilir (120–180 TL);
-// varyantı da fiyatı da olmayan ürün "Piyasa Fiyatı" sayılır.
 const hasVariants = (it) => (it.variants || []).length > 0;
 
-// para birimi seçili dile göre (TL / ل.ت / ₺)
-const priceLabel = (it, ui) => {
+// Varyantlı ürünlerde kart fiyatı aralık olarak gösterilir (650–1100 TL);
+// varyantı da fiyatı da olmayan ürün "Piyasa Fiyatı" sayılır.
+const priceLabel = (it, lang, ui) => {
   if (hasVariants(it)) {
     const ps = it.variants.map((v) => v.price);
-    const min = Math.min(...ps);
-    const max = Math.max(...ps);
-    return min === max ? `${min} ${ui.currency}` : `${min}–${max} ${ui.currency}`;
+    return fmtPriceRange(Math.min(...ps), Math.max(...ps), lang);
   }
-  return it.price == null ? ui.market : `${it.price} ${ui.currency}`;
+  return it.price == null ? ui.market : fmtPrice(it.price, lang);
 };
 
-const mapItem = (it, lang, ui) => ({
+const mapItem = (it, lang, ui, dark) => ({
   id: it.id,
   name: localize(it.name, lang),
   desc: localize(it.desc, lang),
-  // görselsiz kartın placeholder yazısı seçili dildeki adı gösterir
-  // (sunucudaki it.thumb hep İngilizce olduğundan onu kullanmıyoruz)
-  thumb: localize(it.name, lang).toUpperCase(),
-  image: it.image_url || null,
+  thumb: it.image_url || placeholderArt(it.cat, 'thumb', dark),
   isMarket: it.price == null && !hasVariants(it),
-  priceText: priceLabel(it, ui),
-  kcal: it.kcal ?? null,
+  priceText: priceLabel(it, lang, ui),
   kcalText: it.kcal != null ? `${it.kcal} ${ui.kcalUnit}` : null,
   portion: it.portion ?? null,
-  badges: it.diet.map((d) => (d === 'gf' ? ui.gfShort : ui.vegShort)),
-  tags: buildTags(it, ui),
+  popular: !!it.popular,
+  chef: !!it.chef,
+  gf: it.diet.includes('gf'),
+  veg: it.diet.includes('veg'),
 });
 
 const passesDiet = (it, gf, veg) => {
@@ -70,15 +58,12 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [search, setSearch] = useState('');
   const [gf, setGf] = useState(false);
   const [veg, setVeg] = useState(false);
-  const [favView, setFavView] = useState(false);
+  const [fav, setFav] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [stickyH, setStickyH] = useState(220);
-  const [headTop, setHeadTop] = useState(0);
-  const [pendingScroll, setPendingScroll] = useState(null);
+  const [catbarH, setCatbarH] = useState(64);
   const [collapsedIds, setCollapsedIds] = useState(() => new Set());
 
-  const stickyRef = useRef(null);
-  const headerRef = useRef(null);
+  const catbarRef = useRef(null);
   const ui = UI[lang];
 
   // persist preferences
@@ -86,32 +71,21 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   useEffect(() => writeStorage('dark', dark), [dark]);
   useEffect(() => writeStorage('favorites', favorites), [favorites]);
 
-  // measure sticky header height for scroll-spy offsets
+  // Sayfa arka planı (overscroll dahil) temayı takip etsin; admin'e sızmasın.
+  useEffect(() => {
+    document.body.style.background = dark ? '#0A1F35' : '#FBF7ED';
+    return () => { document.body.style.background = ''; };
+  }, [dark]);
+
+  // Yalnız kategori çubuğu yapışkan; scroll-spy ofseti onun yüksekliği.
   useLayoutEffect(() => {
-    const mq = window.matchMedia('(max-height: 480px)');
     const measure = () => {
-      if (!stickyRef.current || !headerRef.current) return;
-      const total = stickyRef.current.offsetHeight;
-      const header = headerRef.current.offsetHeight;
-      // Kısa ekranda (yatay telefon) sticky bloğa negatif top verilir: büyük
-      // başlık kaydırınca ekrandan çıkar, kategori çipleri üstte asılı kalır.
-      // Scroll-spy/scroll-margin ofseti de asılı kalan kısma göre hesaplanır.
-      if (mq.matches) {
-        setHeadTop(-header);
-        setStickyH(total - header);
-      } else {
-        setHeadTop(0);
-        setStickyH(total);
-      }
+      if (catbarRef.current) setCatbarH(catbarRef.current.offsetHeight);
     };
     measure();
     window.addEventListener('resize', measure);
-    mq.addEventListener('change', measure);
-    return () => {
-      window.removeEventListener('resize', measure);
-      mq.removeEventListener('change', measure);
-    };
-  }, []);
+    return () => window.removeEventListener('resize', measure);
+  }, [loading]);
 
   const toggleFav = useCallback((id) => {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -126,300 +100,263 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     });
   }, []);
 
-  const expandSection = useCallback((id) => {
-    setCollapsedIds((prev) => {
-      if (!prev.has(id)) return prev;
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  }, []);
+  const q = search.trim().toLocaleLowerCase('tr');
 
-  const q = search.trim();
-  const mode = q ? 'search' : favView ? 'fav' : 'sections';
-
-  // yalnız (aktif diyet filtresinden geçen) ürünü olan kategoriler çip göstersin;
-  // aksi halde boş/filtrelenmiş kategorinin çipine tıklamak ölü tık olurdu
-  // (kayacak bölüm yok). Bu, çip listesini görünen bölümlerle tutarlı tutar.
-  const categories = useMemo(() => {
-    const withItems = new Set(
-      ITEMS.filter((it) => passesDiet(it, gf, veg)).map((it) => it.cat)
-    );
-    return CATEGORIES.filter((c) => withItems.has(c.id)).map((c) => ({ id: c.id, label: localize(c, lang) }));
-  }, [CATEGORIES, ITEMS, lang, gf, veg]);
-
-  // stacked sections (normal browsing) — drops categories emptied by filters
+  // Arama ve tüm filtreler bölümlerin İÇİNİ süzer (düz liste modu yok);
+  // boşalan kategori hem bölümden hem çip şeridinden düşer.
   const sections = useMemo(() => {
+    const favSet = new Set(favorites);
     return CATEGORIES.map((c) => ({
       id: c.id,
       title: localize(c, lang),
-      items: ITEMS.filter((it) => it.cat === c.id && passesDiet(it, gf, veg)).map((it) => mapItem(it, lang, ui)),
+      items: ITEMS.filter((it) => {
+        if (it.cat !== c.id || !passesDiet(it, gf, veg)) return false;
+        if (fav && !favSet.has(it.id)) return false;
+        if (!q) return true;
+        const hay = `${localize(it.name, lang)} ${localize(it.desc, lang)}`.toLocaleLowerCase('tr');
+        return hay.includes(q);
+      }).map((it) => mapItem(it, lang, ui, dark)),
     })).filter((s) => s.items.length > 0);
-  }, [CATEGORIES, ITEMS, lang, gf, veg, ui]);
+  }, [CATEGORIES, ITEMS, lang, ui, dark, gf, veg, fav, favorites, q]);
+
+  const categories = useMemo(
+    () => sections.map((s) => ({ id: s.id, label: s.title })),
+    [sections]
+  );
 
   const sectionIds = useMemo(() => sections.map((s) => s.id), [sections]);
-  const { active: activeCat, register, scrollTo } = useScrollSpy(
-    sectionIds,
-    stickyH,
-    mode === 'sections'
-  );
-
-  // search results (flat, across all categories)
-  const searchResults = useMemo(() => {
-    if (!q) return [];
-    const needle = q.toLowerCase();
-    return ITEMS.filter(
-      (it) =>
-        passesDiet(it, gf, veg) &&
-        (localize(it.name, lang).toLowerCase().includes(needle) ||
-          localize(it.desc, lang).toLowerCase().includes(needle))
-    ).map((it) => mapItem(it, lang, ui));
-  }, [ITEMS, q, gf, veg, lang, ui]);
-
-  // favorites (flat)
-  const favResults = useMemo(
-    () =>
-      ITEMS.filter((it) => favorites.includes(it.id) && passesDiet(it, gf, veg)).map((it) =>
-        mapItem(it, lang, ui)
-      ),
-    [ITEMS, favorites, gf, veg, lang, ui]
-  );
+  const { active: activeCat, register, scrollTo } = useScrollSpy(sectionIds, catbarH, sections.length > 0);
 
   const sheet = useMemo(() => {
     if (!selectedId) return null;
     const sel = ITEMS.find((i) => i.id === selectedId);
     if (!sel) return null;
-    const selCat = CATEGORIES.find((c) => c.id === sel.cat);
     const allergens = localize(sel.alg, lang);
     return {
-      id: sel.id,
-      name: localize(sel.name, lang),
-      desc: localize(sel.desc, lang),
-      thumb: localize(sel.name, lang).toUpperCase(),
+      ...mapItem(sel, lang, ui, dark),
       image: sel.image_url || null,
       images: sel.images || [],
-      variants: (sel.variants || []).map((v) => ({ name: localize(v.name, lang), price: v.price })),
-      category: localize(selCat, lang),
-      isMarket: sel.price == null && !hasVariants(sel),
-      priceText: priceLabel(sel, ui),
-      kcal: sel.kcal ?? null,
-      portion: sel.portion ?? null,
-      ingredients: localize(sel.ing, lang),
+      placeholderHero: placeholderArt(sel.cat, 'hero', dark),
+      variants: (sel.variants || []).map((v) => ({
+        name: localize(v.name, lang),
+        priceText: fmtPrice(v.price, lang),
+      })),
+      ingredients: localize(sel.ing, lang) || [],
       allergens: allergens && allergens.length ? allergens.join(' · ') : ui.noAlg,
-      tags: buildTags(sel, ui),
     };
-  }, [ITEMS, CATEGORIES, selectedId, lang, ui]);
+  }, [ITEMS, selectedId, lang, ui, dark]);
 
-  // category chip click — leave search/fav mode then scroll to the section
+  // kapalı bölüme kaydırılıyorsa önce aç
   const onSelectCategory = useCallback(
     (id) => {
-      expandSection(id); // kapalı bölüme kaydırılıyorsa önce aç
-      if (q || favView) {
-        setSearch('');
-        setFavView(false);
-        setPendingScroll(id);
-      } else {
-        scrollTo(id);
-      }
+      setCollapsedIds((prev) => {
+        if (!prev.has(id)) return prev;
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      scrollTo(id);
     },
-    [q, favView, scrollTo, expandSection]
+    [scrollTo]
   );
 
-  useEffect(() => {
-    if (mode === 'sections' && pendingScroll) {
-      scrollTo(pendingScroll);
-      setPendingScroll(null);
-    }
-  }, [mode, pendingScroll, scrollTo]);
+  const clearAll = useCallback(() => {
+    setSearch('');
+    setGf(false);
+    setVeg(false);
+    setFav(false);
+  }, []);
 
-  const themeVars = getThemeVars(dark, accent);
+  const themeVars = getMenuThemeVars(dark, accent);
+  const showEmpty = !loading && sections.length === 0;
+  const favEmpty = fav && favorites.length === 0;
+  const announcement = (meta.announcement[lang] || meta.announcement.en || '').trim();
+  const instagram = (meta.info.instagram || '').trim();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0b1422', color: '#92A3C0' }}>
+      <div
+        className="min-h-screen flex items-center justify-center text-[15px]"
+        style={{ ...themeVars, background: 'var(--bg)', color: 'var(--muted)' }}
+      >
         {ui.loading}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex justify-center font-inter" style={{ background: '#0b1422' }}>
-      <div className="w-full max-w-[468px] md:max-w-[1000px]" style={themeVars}>
-        <div
-          className="w-full max-w-[468px] md:max-w-[1000px] mx-auto min-h-screen flex flex-col relative"
-          dir={lang === 'ar' ? 'rtl' : 'ltr'}
-          style={{ background: 'var(--bg)', color: 'var(--text)', boxShadow: '0 0 90px rgba(0,0,0,.55)' }}
-        >
-          <div ref={stickyRef} className="sticky z-30" style={{ top: headTop }}>
-            <div ref={headerRef}>
-              <Header
-                ui={ui}
-                dark={dark}
-                onToggleTheme={() => setDark((d) => !d)}
-                lang={lang}
-                onSetLang={setLang}
-                favView={favView}
-                favCount={favorites.length}
-                onToggleFavView={() => setFavView((v) => !v)}
-              />
-            </div>
-            <CategoryBar
-              categories={categories}
-              activeCat={mode === 'sections' ? activeCat : null}
-              onSelect={onSelectCategory}
-            />
-          </div>
+    <div
+      dir={lang === 'ar' ? 'rtl' : 'ltr'}
+      className="min-h-screen text-[15px]"
+      style={{
+        ...themeVars,
+        background: 'var(--bg)',
+        color: 'var(--text)',
+        fontFamily: '"Jost", "Cairo", "Segoe UI", system-ui, sans-serif',
+        transition: 'background 0.35s ease, color 0.35s ease',
+      }}
+    >
+      <Header
+        ui={ui}
+        dark={dark}
+        onToggleTheme={() => setDark((d) => !d)}
+        lang={lang}
+        onSetLang={setLang}
+      />
 
-          {meta.info.wifi && (
+      <div className="max-w-[980px] mx-auto px-4 pt-4 pb-1 flex flex-col gap-3">
+        {announcement !== '' && (
+          <div
+            className="flex items-center gap-[11px] rounded-[14px] px-3.5 py-[11px] text-[13.5px] leading-[1.45]"
+            style={{ background: 'var(--ann-bg)', border: '1px solid var(--ann-border)', color: 'var(--accent-text)' }}
+          >
+            <svg width="21" height="21" viewBox="0 0 24 24" className="flex-none" aria-hidden="true">
+              <path
+                d="M2.5 12 C5.5 8.2 11 7 15.2 9.6 C16.6 10.5 17.8 11.3 19.5 12 C17.8 12.7 16.6 13.5 15.2 14.4 C11 17 5.5 15.8 2.5 12 Z M19.5 12 L22.5 9.2 M19.5 12 L22.5 14.8"
+                fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+              />
+              <circle cx="7" cy="11.2" r="0.9" fill="currentColor" />
+            </svg>
+            <span>{announcement}</span>
+          </div>
+        )}
+
+        {meta.info.wifi && (
+          <div
+            className="flex items-center gap-3.5 rounded-[14px] px-4 py-[11px]"
+            style={{ border: '1.5px dashed var(--faint-strong)' }}
+          >
+            <svg width="23" height="23" viewBox="0 0 24 24" className="flex-none" style={{ color: 'var(--accent-text)' }} aria-hidden="true">
+              <path
+                d="M3.5 9.5 a12 12 0 0 1 17 0 M6.5 12.8 a8 8 0 0 1 11 0 M9.5 16 a4 4 0 0 1 5 0"
+                fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+              />
+              <circle cx="12" cy="19" r="1.4" fill="currentColor" />
+            </svg>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[11px] tracking-[2px] uppercase" style={{ color: 'var(--muted2)' }}>{ui.wifi}</span>
+              <span className="text-[16px] font-semibold tracking-[1.5px] select-all">{meta.info.wifi}</span>
+            </div>
+          </div>
+        )}
+
+        <SearchFilters
+          search={search}
+          onSearchChange={setSearch}
+          placeholder={ui.search}
+          gf={gf}
+          veg={veg}
+          fav={fav}
+          onToggleGF={() => setGf((v) => !v)}
+          onToggleVeg={() => setVeg((v) => !v)}
+          onToggleFav={() => setFav((v) => !v)}
+          gfLabel={ui.gf}
+          vegLabel={ui.veg}
+          favLabel={ui.favorites}
+        />
+      </div>
+
+      {categories.length > 0 && (
+        <div
+          ref={catbarRef}
+          className="sticky top-0 z-30"
+          style={{
+            background: 'var(--sticky-bg)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+            borderBottom: '1px solid var(--faint)',
+            transition: 'background 0.35s ease',
+          }}
+        >
+          <CategoryBar categories={categories} activeCat={activeCat} onSelect={onSelectCategory} />
+        </div>
+      )}
+
+      <main className="max-w-[980px] mx-auto px-4 pt-1.5 pb-12">
+        {showEmpty && (
+          <div className="pt-14 pb-10 px-6 flex flex-col items-center gap-4 text-center">
             <div
-              className="mx-5 mt-3 flex items-center gap-3 px-4 py-3 rounded-2xl border"
-              style={{ background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
-            >
-              <svg
-                width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)"
-                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none"
-              >
-                <path d="M5 12.55a11 11 0 0 1 14 0" />
-                <path d="M8.5 16.03a6 6 0 0 1 7 0" />
-                <path d="M2 8.82a15 15 0 0 1 20 0" />
-                <line x1="12" y1="19.5" x2="12.01" y2="19.5" />
-              </svg>
-              <div className="min-w-0">
-                <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.wifi}</span>
-                <span className="font-outfit text-[17px] font-semibold tracking-wide select-all" style={{ color: 'var(--text)' }}>
-                  {meta.info.wifi}
-                </span>
+              role="img"
+              className="w-[116px] h-[116px] rounded-full"
+              style={{
+                backgroundImage: `url('${placeholderArt(favEmpty ? 'heart' : 'search', 'empty', dark)}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+            <div className="flex flex-col gap-1.5 max-w-[340px]">
+              <div className="font-outfit text-[25px] font-semibold">
+                {favEmpty ? ui.emptyFavT : ui.emptySearchT}
+              </div>
+              <div className="text-[14px] leading-[1.55]" style={{ color: 'var(--muted)' }}>
+                {favEmpty ? ui.emptyFavS : ui.emptySearchS}
               </div>
             </div>
-          )}
-
-          {(meta.announcement[lang] || '').trim() !== '' && (
-            <div
-              className="mx-5 mt-3 flex items-start gap-2.5 px-4 py-3 rounded-2xl border"
-              style={{ background: 'var(--gold-tint)', borderColor: 'var(--gold-soft)' }}
+            <button
+              onClick={clearAll}
+              className="min-h-11 px-[22px] rounded-full bg-transparent cursor-pointer text-[14px] font-medium"
+              style={{ border: '1px solid var(--accent-text)', color: 'var(--accent-text)' }}
             >
-              <svg
-                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)"
-                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none mt-[2px]"
-              >
-                <path d="m3 11 18-5v12L3 14v-3z" />
-                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
-              </svg>
-              <span className="font-inter text-[13px] leading-[1.5] font-medium" style={{ color: 'var(--text)' }}>
-                {meta.announcement[lang]}
-              </span>
-            </div>
-          )}
-
-          <SearchFilters
-            search={search}
-            onSearchChange={setSearch}
-            placeholder={ui.search}
-            gf={gf}
-            veg={veg}
-            onToggleGF={() => setGf((v) => !v)}
-            onToggleVeg={() => setVeg((v) => !v)}
-            gfLabel={ui.gf}
-            vegLabel={ui.veg}
-          />
-
-          {mode === 'search' && (
-            <ProductList
-              items={searchResults}
-              emptyLabel={ui.empty}
-              onItemClick={setSelectedId}
-              favorites={favorites}
-              onToggleFav={toggleFav}
-            />
-          )}
-
-          {mode === 'fav' && (
-            <ProductList
-              items={favResults}
-              title={ui.favorites}
-              countLabel={`${favResults.length} ${ui.items}`}
-              emptyLabel={ui.noFav}
-              onItemClick={setSelectedId}
-              favorites={favorites}
-              onToggleFav={toggleFav}
-            />
-          )}
-
-          {mode === 'sections' && (
-            <MenuSections
-              sections={sections}
-              register={register}
-              scrollMargin={stickyH}
-              countWord={ui.items}
-              emptyLabel={ui.empty}
-              onItemClick={setSelectedId}
-              favorites={favorites}
-              onToggleFav={toggleFav}
-              collapsedIds={collapsedIds}
-              onToggleSection={toggleSection}
-            />
-          )}
-
-          {(meta.info.phone || meta.info.hours || meta.info.instagram) && (
-            <div
-              className="mx-5 mb-5 px-4 py-3.5 rounded-2xl border grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2.5"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-            >
-              {meta.info.hours && (
-                <div>
-                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.hours}</span>
-                  <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>{meta.info.hours}</span>
-                </div>
-              )}
-              {meta.info.phone && (
-                <div>
-                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>{ui.phone}</span>
-                  <a
-                    href={`tel:${meta.info.phone.replace(/\s/g, '')}`}
-                    className="font-inter text-[13px] font-medium no-underline"
-                    style={{ color: 'var(--text)' }}
-                  >
-                    {meta.info.phone}
-                  </a>
-                </div>
-              )}
-              {meta.info.instagram && (
-                <div>
-                  <span className="yg-overline block text-[9.5px]" style={{ color: 'var(--gold)' }}>Instagram</span>
-                  <span className="font-inter text-[13px] font-medium" style={{ color: 'var(--text)' }}>{meta.info.instagram}</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="px-5 pb-[30px] flex flex-col items-center gap-2">
-            <span
-              className="flex-none w-8 h-px"
-              style={{ background: 'var(--gold-soft)' }}
-            />
-            <span
-              className="font-outfit italic text-[19px] font-medium leading-none"
-              style={{ color: 'var(--gold)' }}
-            >
-              Yedigül
-            </span>
-            <span
-              className="yg-overline text-[9px] opacity-80"
-              style={{ color: 'var(--muted)' }}
-            >
-              {ui.tagline}
-            </span>
+              {ui.clear}
+            </button>
           </div>
+        )}
 
-          <BottomSheet
-            sheet={sheet}
-            ui={ui}
-            onClose={() => setSelectedId(null)}
-            isFav={selectedId ? favorites.includes(selectedId) : false}
-            onToggleFav={toggleFav}
-          />
-        </div>
-      </div>
+        <MenuSections
+          sections={sections}
+          ui={ui}
+          register={register}
+          scrollMargin={catbarH}
+          countWord={ui.items}
+          onItemClick={setSelectedId}
+          favorites={favorites}
+          onToggleFav={toggleFav}
+          collapsedIds={collapsedIds}
+          onToggleSection={toggleSection}
+        />
+
+        <footer
+          className="mt-8 px-2 pt-7 pb-1.5 flex flex-col items-center gap-2 text-center"
+          style={{ borderTop: '1px solid var(--faint)' }}
+        >
+          <span className="font-outfit text-[21px] font-semibold">Yedigül</span>
+          {meta.info.hours && (
+            <span className="text-[12.5px] tracking-[.4px]" style={{ color: 'var(--muted)' }}>
+              {meta.info.hours}
+            </span>
+          )}
+          <div className="flex gap-[18px] flex-wrap justify-center text-[13.5px]">
+            {meta.info.phone && (
+              <a href={`tel:${meta.info.phone.replace(/\s/g, '')}`} style={{ color: 'var(--accent-text)' }}>
+                {meta.info.phone}
+              </a>
+            )}
+            {instagram && (
+              <a
+                href={`https://instagram.com/${instagram.replace(/^@/, '')}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'var(--accent-text)' }}
+              >
+                {instagram.startsWith('@') ? instagram : `@${instagram}`}
+              </a>
+            )}
+            <a href="/" style={{ color: 'var(--accent-text)' }}>{ui.home}</a>
+          </div>
+          <span className="text-[12px]" style={{ color: 'var(--muted2)' }}>Anadolukavağı, Beykoz — İstanbul</span>
+          <span className="text-[11.5px] mt-1.5 max-w-[420px] leading-[1.5]" style={{ color: 'var(--muted2)' }}>
+            {ui.vat}
+          </span>
+        </footer>
+      </main>
+
+      <BottomSheet
+        sheet={sheet}
+        ui={ui}
+        onClose={() => setSelectedId(null)}
+        isFav={selectedId ? favorites.includes(selectedId) : false}
+        onToggleFav={toggleFav}
+      />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+// Alt çizgili (editoryal) kategori sekmeleri. Yapışkan sarmalayıcı ve
+// blur arka plan MenuPage'dedir; burada yalnızca kaydırılabilir şerit var.
 export default function CategoryBar({ categories, activeCat, onSelect }) {
   const navRef = useRef(null);
   const btnRefs = useRef({});
@@ -15,8 +17,8 @@ export default function CategoryBar({ categories, activeCat, onSelect }) {
   return (
     <nav
       ref={navRef}
-      className="yg-scroll flex gap-[9px] px-5 pt-3.5 pb-3 overflow-x-auto whitespace-nowrap"
-      style={{ background: 'var(--bg)' }}
+      aria-label="Kategoriler"
+      className="yg-scroll max-w-[980px] mx-auto flex gap-5 overflow-x-auto px-4 py-2.5"
     >
       {categories.map((cat) => {
         const active = cat.id === activeCat;
@@ -27,24 +29,12 @@ export default function CategoryBar({ categories, activeCat, onSelect }) {
               if (el) btnRefs.current[cat.id] = el;
             }}
             onClick={() => onSelect(cat.id)}
-            className="flex-none cursor-pointer font-inter text-[12.5px] tracking-[.05em] px-[17px] py-[9px] rounded-full border"
-            style={
-              active
-                ? {
-                    fontWeight: 600,
-                    background: 'var(--navy-2)',
-                    color: '#fff',
-                    borderColor: 'var(--navy-2)',
-                    boxShadow: '0 5px 16px rgba(30,58,138,.26)',
-                  }
-                : {
-                    fontWeight: 500,
-                    background: 'var(--surface)',
-                    color: 'var(--text)',
-                    borderColor: 'var(--border)',
-                    boxShadow: 'none',
-                  }
-            }
+            className="flex-none min-h-11 px-1 bg-transparent border-none cursor-pointer text-[14px] tracking-[.3px] whitespace-nowrap transition-colors duration-200"
+            style={{
+              color: active ? 'var(--text)' : 'var(--muted)',
+              borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
+              fontWeight: active ? 600 : 400,
+            }}
           >
             {cat.label}
           </button>

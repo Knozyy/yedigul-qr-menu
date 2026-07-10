@@ -4,6 +4,62 @@ export const ACCENTS = [
   { id: 'teal', label: 'Teal', value: '#1F6F6B' },
 ];
 
+// QR menü ("Boğaz'da Akşam" editoryal tasarım) token'ları.
+// Admin sayfaları aşağıdaki eski getThemeVars'ı kullanmaya devam eder.
+const ACCENT_ON_CREAM = { '#C8902F': '#8F6318', '#B0653A': '#8A4A28', '#2F7E6D': '#1F5A4C' };
+const ACCENT_ON_NAVY = { '#C8902F': '#E2B45C', '#B0653A': '#E09B72', '#2F7E6D': '#7FC5B2' };
+
+export function getMenuThemeVars(dark, accent) {
+  if (dark) {
+    return {
+      '--bg': '#0A1F35',
+      '--text': '#F2E9D6',
+      '--muted': '#A7B4C3',
+      '--muted2': '#7E8FA3',
+      '--faint': 'rgba(242,233,214,0.14)',
+      '--faint-strong': 'rgba(242,233,214,0.32)',
+      '--accent': accent,
+      '--accent-text': ACCENT_ON_NAVY[accent] || accent,
+      '--on-accent': '#081726',
+      '--search-bg': 'rgba(255,255,255,0.06)',
+      '--search-border': 'rgba(242,233,214,0.22)',
+      '--sticky-bg': 'rgba(10,31,53,0.86)',
+      '--ann-bg': 'rgba(200,144,47,0.13)',
+      '--ann-border': 'rgba(226,180,92,0.40)',
+      '--chef-bg': 'rgba(242,233,214,0.12)',
+      '--chef-ink': '#F2E9D6',
+      '--diet': '#93C4AE',
+      '--diet-border': 'rgba(147,196,174,0.40)',
+      '--chip-soft': 'rgba(242,233,214,0.09)',
+      '--scrim-btn': 'rgba(10,31,53,0.72)',
+      '--sheet-bg': '#0F2A46',
+    };
+  }
+  return {
+    '--bg': '#FBF7ED',
+    '--text': '#16293D',
+    '--muted': '#5D6C7B',
+    '--muted2': '#8A94A0',
+    '--faint': 'rgba(22,41,61,0.14)',
+    '--faint-strong': 'rgba(22,41,61,0.30)',
+    '--accent': accent,
+    '--accent-text': ACCENT_ON_CREAM[accent] || accent,
+    '--on-accent': '#081726',
+    '--search-bg': 'rgba(255,255,255,0.65)',
+    '--search-border': 'rgba(22,41,61,0.20)',
+    '--sticky-bg': 'rgba(251,247,237,0.88)',
+    '--ann-bg': `${accent}14`,
+    '--ann-border': `${accent}55`,
+    '--chef-bg': '#16324F',
+    '--chef-ink': '#F5EDDA',
+    '--diet': '#3E6B5B',
+    '--diet-border': 'rgba(62,107,91,0.45)',
+    '--chip-soft': 'rgba(22,41,61,0.07)',
+    '--scrim-btn': 'rgba(251,247,237,0.9)',
+    '--sheet-bg': '#FDFAF2',
+  };
+}
+
 export function getThemeVars(dark, accent) {
   if (dark) {
     return {
