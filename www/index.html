@@ -42,7 +42,9 @@
 <body>
 
   <!-- ===================== NAV ===================== -->
-  <header class="nav" id="top">
+  <!-- id="top" nav'da DURMAMALI: .nav position:fixed olduğundan tarayıcı
+       ona kaydırma yapmaz ("Ana Sayfa" linki çalışmaz olur) — id main'de. -->
+  <header class="nav">
     <div class="nav__inner">
       <a class="nav__brand" href="/" aria-label="Yedigül Restaurant ana sayfa">
         <img class="nav__logo" src="images/logo/logo.png" alt="Yedigül Restaurant logosu">
@@ -84,7 +86,7 @@
     </div>
   </div>
 
-  <main>
+  <main id="top">
 
     <!-- ===================== HERO ===================== -->
     <section class="hero" aria-label="Yedigül Restaurant'a hoş geldiniz">
