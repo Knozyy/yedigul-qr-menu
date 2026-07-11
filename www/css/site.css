@@ -500,6 +500,19 @@ body.nav-open .nav__panel-links a {
 @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes dotFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
+/* Yatay telefon / kısa ekranlar: başlık 12vw ile ölçeklenince tek başına
+   ekranı aşıyor, mutlak konumlu .hero__meta da butonların üstüne biniyordu.
+   Kısa ekranda başlık yüksekliğe göre ölçeklenir, dekoratif rozet ve
+   "Keşfet" ipucu gizlenir. */
+@media (max-height: 560px) {
+  .hero__inner { padding-top: calc(var(--nav-h) + .8rem); padding-bottom: 4.2rem; }
+  .hero__title { font-size: clamp(2.1rem, 10vh, 3.4rem); margin-block: .7rem .4rem; }
+  .hero__caption { font-size: .95rem; max-width: 58ch; }
+  .hero__actions { margin-top: 1.1rem; }
+  .hero__meta, .hero__scroll { display: none; }
+  .hero__dots { bottom: 1rem; }
+}
+
 /* ==========================================================================
    TARİHÇE / ABOUT
    ========================================================================== */
