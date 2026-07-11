@@ -994,3 +994,56 @@ body.nav-open .nav__panel-links a {
   .hero__eyebrow, .hero__caption, .hero__actions, .hero__meta, .hero__dots, .hero__scroll,
   .nav__panel-links a { opacity: 1 !important; transform: none !important; }
 }
+
+/* ==========================================================================
+   Rehber sayfaları (/nasil-gelinir/, /anadolukavagi-nerede-yemek-yenir/,
+   /bogazda-balik-raki/) — ana sayfa bileşenlerinden bağımsız, .page-* önekli.
+   ========================================================================== */
+.page-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(244, 242, 236, .92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.page-nav__inner {
+  max-width: var(--wrap); margin-inline: auto; padding: .8rem var(--gutter);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.page-nav__brand { display: flex; align-items: center; gap: .6rem; font-family: var(--serif); font-size: 1.35rem; font-weight: 600; }
+.page-nav__brand img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.page-nav__links { display: flex; gap: 1.1rem; flex-wrap: wrap; font-size: .86rem; letter-spacing: .04em; }
+.page-nav__links a { color: var(--muted); transition: color .2s; min-height: 44px; display: inline-flex; align-items: center; }
+.page-nav__links a:hover, .page-nav__links a[aria-current] { color: var(--gold); }
+
+.page-hero { background: var(--ink); color: var(--cream); padding: clamp(3.2rem, 8vw, 6rem) 0 clamp(2.6rem, 6vw, 4.5rem); }
+.page-hero .eyebrow { color: var(--gold-soft); }
+.page-hero h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); margin-top: 1rem; max-width: 22ch; }
+.page-hero p { color: var(--muted-ink); max-width: 62ch; margin-top: 1.1rem; font-size: 1.05rem; }
+
+.page-body { padding: clamp(2.4rem, 6vw, 4.5rem) 0; }
+.prose { max-width: 760px; }
+.prose h2 { font-size: clamp(1.5rem, 3.5vw, 2.1rem); margin: 2.4rem 0 .8rem; }
+.prose h2:first-child { margin-top: 0; }
+.prose p { margin-bottom: 1rem; }
+.prose ul { list-style: none; margin: 0 0 1.2rem; }
+.prose ul li { padding-inline-start: 1.4rem; position: relative; margin-bottom: .55rem; }
+.prose ul li::before { content: ""; position: absolute; inset-inline-start: 0; top: .62em; width: .55rem; height: 1px; background: var(--gold); }
+.prose a { color: var(--gold); border-bottom: 1px dotted var(--line-gold); }
+.prose a:hover { color: var(--navy-royal); }
+.prose .not { border: 1px dashed var(--line-strong); border-radius: 12px; padding: .9rem 1.1rem; font-size: .93rem; color: var(--muted); margin: 1.4rem 0; }
+
+.page-cta {
+  margin-top: 2.6rem; border: 1px solid var(--line-gold); border-radius: 16px;
+  background: var(--cream-2); padding: 1.6rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap;
+}
+.page-cta strong { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; }
+.page-cta .btns { display: flex; gap: .7rem; flex-wrap: wrap; }
+
+.page-foot { border-top: 1px solid var(--line); padding: 2.2rem 0 2.6rem; text-align: center; font-size: .9rem; color: var(--muted); }
+.page-foot nav { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; margin-bottom: .9rem; }
+.page-foot a { color: var(--gold); min-height: 44px; display: inline-flex; align-items: center; }
+
+.page-map { margin: 1.6rem 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+.page-map iframe { width: 100%; height: 340px; border: 0; display: block; }
