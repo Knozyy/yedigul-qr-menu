@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # Yedigül — günlük SQLite + uploads yedeği.
 # Kurulum (sunucuda): deploy/SUNUCU-CHECKLIST.md → A1.
 set -euo pipefail
 
-APP_DIR="/root/yedigul"            # << DÜZENLE: repo'nun sunucudaki yolu >>
+APP_DIR="/root/yedigul"    # repo'nun sunucudaki yolu
 DEST="/opt/backups/yedigul"
 KEEP_DAYS=14
 

@@ -1,4 +1,4 @@
-# Sunucuda Çalıştırılacaklar — Üretim Sağlamlık Kontrolü
+﻿# Sunucuda Çalıştırılacaklar — Üretim Sağlamlık Kontrolü
 
 Kaynak: `files/yedigulrestorant-production-checklist.md` + frontend audit.
 Repo tarafında yapılabilecek her şey yapıldı; bu dosyadaki adımlar **sunucuda
@@ -109,7 +109,7 @@ https://uptimerobot.com → hesap aç → HTTP(s) monitor:
 ## Deploy sonrası hızlı doğrulama
 
 ```bash
-cd /root/yedigul && git pull && npm ci --omit=dev && npm run build
+cd /root/yedigul && git pull && npm ci && npm run build   # devDeps dahil: build vite ister
 sudo systemctl restart yedigul     # veya: pm2 restart yedigul
 curl -s https://www.yedigulrestorant.com/api/menu | head -c 200   # JSON gelmeli
 ```
