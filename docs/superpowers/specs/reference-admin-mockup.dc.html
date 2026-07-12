@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Jost:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { background: #FBF7ED; }
+  * { box-sizing: border-box; }
+  a { color: #8F6318; text-decoration: none; }
+  a:hover { color: #C8902F; }
+  button { font-family: inherit; }
+  input, textarea, select { font-family: inherit; outline: none; }
+  input::placeholder, textarea::placeholder { color: inherit; opacity: 0.45; }
+  .nosb { scrollbar-width: none; }
+  .nosb::-webkit-scrollbar { display: none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes sheetUpFull { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes popIn { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+</style>
+</helmet>
+
+<div data-screen-label="Yönetim Paneli" style="min-height:100vh; background:#FBF7ED; color:#16293D; font-family:Jost, system-ui, sans-serif; font-size:15px;">
+
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Giriş" style="min-height:100vh; background:#0A1F35; display:flex; align-items:center; justify-content:center; padding:24px;">
+      <div style="width:min(400px, 100%); display:flex; flex-direction:column; align-items:center; gap:20px; text-align:center;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+          <div style="width:64px; height:64px; border-radius:50%; border:1.5px solid {{ acLt }}; display:flex; align-items:center; justify-content:center;">
+            <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:34px; font-weight:600; color:{{ acLt }}; line-height:1; padding-bottom:4px;">Y</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+            <h1 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:38px; font-weight:600; color:#F2E9D6; line-height:1;">Yedigül</h1>
+            <span style="font-size:11px; letter-spacing:3.5px; text-transform:uppercase; color:rgba(242,233,214,0.6); font-weight:500;">Yönetim Paneli</span>
+          </div>
+          <svg width="38" height="10" viewBox="0 0 38 10" style="color:{{ acLt }};"><path d="M1 5.5 C4 1.5 7 1.5 10 5.5 C13 9.5 16 9.5 19 5.5 C22 1.5 25 1.5 28 5.5 C31 9.5 34 9.5 37 5.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        </div>
+        <div style="width:100%; background:#0F2A46; border:1px solid rgba(242,233,214,0.12); border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:12px; text-align:start;">
+          <label style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(242,233,214,0.55); font-weight:600;">Şifre</label>
+          <input type="password" value="{{ pwVal }}" onChange="{{ onPw }}" onKeyDown="{{ onPwKey }}" placeholder="••••" aria-label="Şifre" style="width:100%; height:48px; padding:0 16px; background:rgba(255,255,255,0.06); border:1px solid rgba(242,233,214,0.22); border-radius:12px; color:#F2E9D6; font-size:16px; letter-spacing:3px;" />
+          <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px; color:#E09B72;">Şifre hatalı, tekrar deneyin.</span>
+          </sc-if>
+          <button onClick="{{ submitPw }}" style="height:48px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:15px; font-weight:600; letter-spacing:0.3px; cursor:pointer;" style-hover="opacity:0.9;">Giriş Yap</button>
+          <span style="font-size:12px; color:rgba(242,233,214,0.45); text-align:center;">Demo şifresi: 2180</span>
+        </div>
+        <span style="font-size:11.5px; color:rgba(242,233,214,0.4); letter-spacing:0.5px;">Anadolukavağı, Beykoz — İstanbul</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showApp }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:{{ shellDir }}; min-height:100vh; align-items:stretch;">
+
+      <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+        <aside data-screen-label="Yan Menü" class="nosb" style="width:238px; flex:0 0 auto; background:#0A1F35; color:#F2E9D6; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;">
+          <div style="padding:22px 18px 12px; display:flex; align-items:center; gap:11px;">
+            <div style="width:42px; height:42px; border-radius:50%; border:1.5px solid {{ acLt }}; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+              <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:23px; font-weight:600; color:{{ acLt }}; line-height:1; padding-bottom:2px;">Y</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:22px; font-weight:600; line-height:1;">Yedigül</span>
+              <span style="font-size:9.5px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(242,233,214,0.55);">Yönetim Paneli</span>
+            </div>
+          </div>
+          <nav style="flex:1; display:flex; flex-direction:column; gap:2px; padding:10px 0;">
+            <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+              <button onClick="{{ n.click }}" style="display:flex; align-items:center; gap:12px; min-height:46px; padding:0 16px; background:{{ n.sideBg }}; border:none; border-inline-start:3px solid {{ n.sideBar }}; color:{{ n.sideColor }}; font-size:14.5px; font-weight:{{ n.sideWeight }}; letter-spacing:0.3px; cursor:pointer; text-align:start; width:100%; transition:all 0.2s ease;" style-hover="background:rgba(255,255,255,0.05);">
+                <svg width="20" height="20" viewBox="0 0 24 24" style="flex:0 0 auto;"><path d="{{ n.d }}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <span>{{ n.label }}</span>
+              </button>
+            </sc-for>
+          </nav>
+          <div style="border-top:1px solid rgba(242,233,214,0.12); padding:10px 8px 14px; display:flex; flex-direction:column; gap:2px;">
+            <a href="Yedigül QR Menü.dc.html" style="display:flex; align-items:center; gap:11px; min-height:44px; padding:0 10px; border-radius:10px; color:{{ acLt }}; font-size:13.5px; font-weight:500;">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="flex:0 0 auto;"><path d="M9.5 5 H5 V19 H19 V14.5 M14 4 H20 V10 M20 4 L11.5 12.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span>Menüyü Görüntüle</span>
+            </a>
+            <button onClick="{{ logout }}" style="display:flex; align-items:center; gap:11px; min-height:44px; padding:0 10px; border-radius:10px; background:none; border:none; color:rgba(242,233,214,0.6); font-size:13.5px; cursor:pointer; text-align:start; width:100%;" style-hover="color:#F2E9D6;">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="flex:0 0 auto;"><path d="M13 4 H5 V20 H13 M10 12 H21 M17.5 8.5 L21 12 L17.5 15.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span>Çıkış Yap</span>
+            </button>
+          </div>
+        </aside>
+      </sc-if>
+
+      <sc-if value="{{ showTopbar }}" hint-placeholder-val="{{ false }}">
+        <header data-screen-label="Üst Sekmeler" style="background:#0A1F35; color:#F2E9D6; position:sticky; top:0; z-index:40;">
+          <div style="max-width:1128px; margin:0 auto; padding:0 20px;">
+            <div style="height:62px; display:flex; align-items:center; justify-content:space-between; gap:14px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:50%; border:1.5px solid {{ acLt }}; display:flex; align-items:center; justify-content:center;">
+                  <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:20px; font-weight:600; color:{{ acLt }}; line-height:1; padding-bottom:2px;">Y</span>
+                </div>
+                <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600;">Yedigül</span>
+                <span style="font-size:9.5px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(242,233,214,0.55); margin-top:3px;">Yönetim</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <a href="Yedigül QR Menü.dc.html" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 12px; color:{{ acLt }}; font-size:13.5px; font-weight:500;">
+                  <svg width="17" height="17" viewBox="0 0 24 24"><path d="M9.5 5 H5 V19 H19 V14.5 M14 4 H20 V10 M20 4 L11.5 12.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  <span>Menüyü Görüntüle</span>
+                </a>
+                <button onClick="{{ logout }}" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 12px; background:none; border:none; color:rgba(242,233,214,0.6); font-size:13.5px; cursor:pointer;" style-hover="color:#F2E9D6;">
+                  <svg width="17" height="17" viewBox="0 0 24 24"><path d="M13 4 H5 V20 H13 M10 12 H21 M17.5 8.5 L21 12 L17.5 15.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  <span>Çıkış</span>
+                </button>
+              </div>
+            </div>
+            <nav class="nosb" aria-label="Bölümler" style="display:flex; gap:22px; overflow-x:auto;">
+              <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+                <button onClick="{{ n.click }}" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; min-height:46px; padding:0 2px; background:none; border:none; border-bottom:2px solid {{ n.tabBorder }}; color:{{ n.tabColor }}; font-size:14px; font-weight:{{ n.tabWeight }}; letter-spacing:0.3px; cursor:pointer; white-space:nowrap;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" style="flex:0 0 auto;"><path d="{{ n.d }}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  <span>{{ n.label }}</span>
+                </button>
+              </sc-for>
+            </nav>
+          </div>
+        </header>
+      </sc-if>
+
+      <sc-if value="{{ showMobileHead }}" hint-placeholder-val="{{ false }}">
+        <header data-screen-label="Mobil Üst Bar" style="background:#0A1F35; color:#F2E9D6; position:sticky; top:0; z-index:40;">
+          <div style="height:58px; padding:0 8px 0 16px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:9px;">
+              <div style="width:32px; height:32px; border-radius:50%; border:1.5px solid {{ acLt }}; display:flex; align-items:center; justify-content:center;">
+                <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:18px; font-weight:600; color:{{ acLt }}; line-height:1; padding-bottom:2px;">Y</span>
+              </div>
+              <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:20px; font-weight:600;">Yedigül</span>
+              <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(242,233,214,0.55); margin-top:3px;">Yönetim</span>
+            </div>
+            <div style="display:flex; align-items:center;">
+              <a href="Yedigül QR Menü.dc.html" aria-label="Menüyü Görüntüle" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:{{ acLt }};">
+                <svg width="19" height="19" viewBox="0 0 24 24"><path d="M9.5 5 H5 V19 H19 V14.5 M14 4 H20 V10 M20 4 L11.5 12.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </a>
+              <button onClick="{{ logout }}" aria-label="Çıkış Yap" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:rgba(242,233,214,0.6); cursor:pointer;">
+                <svg width="19" height="19" viewBox="0 0 24 24"><path d="M13 4 H5 V20 H13 M10 12 H21 M17.5 8.5 L21 12 L17.5 15.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </button>
+            </div>
+          </div>
+        </header>
+      </sc-if>
+
+      <main style="flex:1; min-width:0; padding:{{ mainPad }};">
+        <div style="max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:18px;">
+
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <h2 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:31px; font-weight:600; line-height:1.1;">{{ pageTitle }}</h2>
+            <span style="font-size:13.5px; color:#8A94A0; letter-spacing:0.3px;">{{ pageSub }}</span>
+          </div>
+
+          <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:48px 20px; text-align:center; color:#8A94A0; font-size:14px;">Menü verisi yükleniyor…</div>
+          </sc-if>
+
+          <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Genel Bakış" style="display:flex; flex-direction:column; gap:16px;">
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <sc-for list="{{ quicks }}" as="qa" hint-placeholder-count="4">
+                  <button onClick="{{ qa.click }}" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 16px; background:#FFFDF6; border:1px solid rgba(22,41,61,0.18); border-radius:999px; color:#16293D; font-size:13.5px; font-weight:500; cursor:pointer;" style-hover="border-color:rgba(22,41,61,0.4);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" style="color:{{ acDk }};"><path d="{{ qa.d }}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    <span>{{ qa.label }}</span>
+                  </button>
+                </sc-for>
+              </div>
+
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px;">
+                <sc-for list="{{ stats }}" as="st" hint-placeholder-count="3">
+                  <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:16px 18px; display:flex; flex-direction:column; gap:5px;">
+                    <span style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#8A94A0; font-weight:600;">{{ st.label }}</span>
+                    <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:30px; font-weight:600; line-height:1.05;">{{ st.value }}</span>
+                    <span style="font-size:12px; color:#8A94A0;">{{ st.sub }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:14px; align-items:start;">
+                <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:18px;">
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px;">
+                    <h3 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600;">Günün Fiyatları</h3>
+                    <span style="font-size:11.5px; color:#8A94A0;">piyasa fiyatlı ürünler</span>
+                  </div>
+                  <p style="margin:0 0 6px; font-size:12.5px; color:#5D6C7B; line-height:1.5;">Fiyat girilirse menüde "Piyasa Fiyatı" yerine bugünkü fiyat gösterilir.</p>
+                  <sc-for list="{{ marketRows }}" as="mr" hint-placeholder-count="3">
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid rgba(22,41,61,0.08);">
+                      <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;">
+                        <span style="font-size:14.5px; font-weight:500;">{{ mr.name }}</span>
+                        <span style="font-size:11.5px; color:{{ mr.statusColor }};">{{ mr.status }}</span>
+                      </div>
+                      <div style="position:relative; flex:0 0 auto;">
+                        <input value="{{ mr.val }}" onChange="{{ mr.onVal }}" inputMode="numeric" placeholder="—" aria-label="Bugünkü fiyat" style="width:104px; height:44px; padding:0 38px 0 12px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:11px; color:#16293D; font-size:15px; text-align:end; font-variant-numeric:tabular-nums;" />
+                        <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#8A94A0;">TL</span>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <button onClick="{{ saveDaily }}" style="margin-top:12px; height:44px; padding:0 20px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:13.5px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">Fiyatları Kaydet</button>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                  <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:18px;">
+                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px;">
+                      <h3 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600;">Menü Görüntülenme</h3>
+                      <span style="font-size:11.5px; color:#8A94A0;">son 7 gün</span>
+                    </div>
+                    <div style="display:flex; align-items:flex-end; gap:8px; height:104px;">
+                      <sc-for list="{{ days }}" as="dy" hint-placeholder-count="7">
+                        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end;">
+                          <div style="width:100%; height:{{ dy.h }}; background:{{ dy.bg }}; border-radius:5px 5px 2px 2px;"></div>
+                          <span style="font-size:10.5px; color:#8A94A0; letter-spacing:0.5px;">{{ dy.label }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:18px;">
+                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:6px;">
+                      <h3 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600;">En Çok Görüntülenen</h3>
+                      <span style="font-size:11.5px; color:#8A94A0;">bu hafta</span>
+                    </div>
+                    <sc-for list="{{ pops }}" as="pp" hint-placeholder-count="5">
+                      <div style="display:flex; align-items:center; gap:10px; padding:8px 0;">
+                        <span style="flex:0 0 118px; font-size:13.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ pp.name }}</span>
+                        <div style="flex:1; height:7px; background:rgba(22,41,61,0.07); border-radius:99px; overflow:hidden;">
+                          <div style="width:{{ pp.w }}; height:100%; background:{{ ac }}; border-radius:99px;"></div>
+                        </div>
+                        <span style="flex:0 0 auto; font-size:12px; color:#8A94A0; font-variant-numeric:tabular-nums;">{{ pp.views }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isItems }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Ürünler" style="display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <div style="position:relative; flex:1; min-width:190px;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:#8A94A0;"><path d="M16.2 16.2 L21 21 M18 11 A7 7 0 1 1 4 11 A7 7 0 1 1 18 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Ürün ara…" aria-label="Ürün ara" style="width:100%; height:46px; padding:0 40px 0 42px; background:rgba(255,255,255,0.65); border:1px solid rgba(22,41,61,0.20); border-radius:999px; color:#16293D; font-size:14.5px;" />
+                  <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ clearQ }}" aria-label="Temizle" style="position:absolute; right:2px; top:50%; transform:translateY(-50%); width:42px; height:42px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:#8A94A0; cursor:pointer;">
+                      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                    </button>
+                  </sc-if>
+                </div>
+                <button onClick="{{ openBulk }}" style="display:flex; align-items:center; gap:7px; min-height:46px; padding:0 16px; background:transparent; border:1px solid rgba(22,41,61,0.30); border-radius:999px; color:#16293D; font-size:13.5px; font-weight:500; cursor:pointer;" style-hover="border-color:rgba(22,41,61,0.55);">
+                  <svg width="15" height="15" viewBox="0 0 24 24"><path d="M6.5 17.5 L17.5 6.5 M9.5 7.5 A2 2 0 1 1 5.5 7.5 A2 2 0 1 1 9.5 7.5 M18.5 16.5 A2 2 0 1 1 14.5 16.5 A2 2 0 1 1 18.5 16.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg>
+                  <span>Toplu Zam</span>
+                </button>
+                <button onClick="{{ addItem }}" style="display:flex; align-items:center; gap:7px; min-height:46px; padding:0 18px; background:{{ ac }}; border:none; border-radius:999px; color:#081726; font-size:13.5px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">
+                  <svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+                  <span>Yeni Ürün</span>
+                </button>
+              </div>
+
+              <div class="nosb" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:2px;">
+                <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="6">
+                  <button onClick="{{ ch.click }}" style="flex:0 0 auto; min-height:40px; padding:0 15px; background:{{ ch.bg }}; color:{{ ch.color }}; border:{{ ch.border }}; border-radius:999px; font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; transition:all 0.2s ease;">{{ ch.label }}</button>
+                </sc-for>
+              </div>
+
+              <span style="font-size:12.5px; color:#8A94A0; letter-spacing:0.3px;">{{ itemCount }}</span>
+
+              <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); overflow:hidden;">
+                <sc-if value="{{ emptyItems }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:36px 20px; text-align:center; color:#8A94A0; font-size:13.5px;">Aramanızla eşleşen ürün yok.</div>
+                </sc-if>
+                <sc-for list="{{ itemRows }}" as="r" hint-placeholder-count="8">
+                  <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid rgba(22,41,61,0.08);">
+                    <img src="{{ r.thumb }}" alt="" width="46" height="46" style="width:46px; height:46px; border-radius:10px; object-fit:cover; flex:0 0 auto; opacity:{{ r.dim }};" />
+                    <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; opacity:{{ r.dim }};">
+                      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <span style="font-size:15px; font-weight:600;">{{ r.name }}</span>
+                        <sc-if value="{{ r.hiddenChip }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:2.5px 8px; border:1px solid rgba(22,41,61,0.30); color:#5D6C7B; border-radius:999px;">Gizli</span>
+                        </sc-if>
+                        <sc-if value="{{ r.popChip }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:2.5px 8px; background:{{ acSoft }}; color:{{ acDk }}; border-radius:999px;">Popüler</span>
+                        </sc-if>
+                      </div>
+                      <span style="font-size:12.5px; color:#5D6C7B;">{{ r.meta }}</span>
+                    </div>
+                    <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:3px;">
+                      <button role="switch" aria-checked="{{ r.soOn }}" onClick="{{ r.soClick }}" aria-label="Tükendi" style="width:44px; height:25px; border-radius:999px; border:none; background:{{ r.soBg }}; position:relative; cursor:pointer; transition:background 0.2s ease;">
+                        <span style="position:absolute; top:3px; left:3px; width:19px; height:19px; border-radius:50%; background:#FFFDF6; box-shadow:0 1px 3px rgba(10,31,53,0.35); transform:{{ r.soKnob }}; transition:transform 0.2s ease;"></span>
+                      </button>
+                      <span style="font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:#8A94A0;">Tükendi</span>
+                    </div>
+                    <button onClick="{{ r.edit }}" aria-label="Düzenle" style="flex:0 0 auto; width:42px; height:42px; display:flex; align-items:center; justify-content:center; background:none; border:1px solid rgba(22,41,61,0.16); border-radius:50%; color:#5D6C7B; cursor:pointer;" style-hover="border-color:rgba(22,41,61,0.45); color:#16293D;">
+                      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4.8 19.2 L8.6 18.4 L19 8 A2.1 2.1 0 0 0 16 5 L5.6 15.4 Z M13.8 7.2 L16.8 10.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isCats }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Kategoriler" style="display:flex; flex-direction:column; gap:12px;">
+              <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); overflow:hidden;">
+                <sc-for list="{{ catRows }}" as="cr" hint-placeholder-count="7">
+                  <div style="display:flex; align-items:center; gap:8px; padding:9px 14px 9px 10px; border-bottom:1px solid rgba(22,41,61,0.08);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" style="flex:0 0 auto; color:rgba(22,41,61,0.30);"><path d="M9 6.5 L9.01 6.5 M15 6.5 L15.01 6.5 M9 12 L9.01 12 M15 12 L15.01 12 M9 17.5 L9.01 17.5 M15 17.5 L15.01 17.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>
+                    <sc-if value="{{ cr.isEdit }}" hint-placeholder-val="{{ false }}">
+                      <input value="{{ cr.editVal }}" onChange="{{ cr.onEditVal }}" onKeyDown="{{ cr.onEditKey }}" aria-label="Kategori adı" style="flex:1; min-width:0; height:42px; padding:0 12px; background:#FFFFFF; border:1px solid {{ ac }}; border-radius:10px; color:#16293D; font-size:14.5px; font-weight:500;" />
+                      <button onClick="{{ cr.commit }}" aria-label="Kaydet" style="flex:0 0 auto; width:42px; height:42px; display:flex; align-items:center; justify-content:center; background:{{ ac }}; border:none; border-radius:50%; color:#081726; cursor:pointer;">
+                        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </button>
+                    </sc-if>
+                    <sc-if value="{{ cr.isView }}" hint-placeholder-val="{{ true }}">
+                      <span style="flex:1; min-width:0; font-size:15px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ cr.name }}</span>
+                      <span style="flex:0 0 auto; font-size:12px; color:#8A94A0; background:rgba(22,41,61,0.06); padding:4px 10px; border-radius:999px;">{{ cr.count }}</span>
+                      <button onClick="{{ cr.up }}" aria-label="Yukarı taşı" style="flex:0 0 auto; width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:none; border:1px solid rgba(22,41,61,0.14); border-radius:10px; color:#5D6C7B; cursor:pointer; opacity:{{ cr.upOp }};">
+                        <svg width="15" height="15" viewBox="0 0 24 24"><path d="M6 14.5 L12 8.5 L18 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </button>
+                      <button onClick="{{ cr.down }}" aria-label="Aşağı taşı" style="flex:0 0 auto; width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:none; border:1px solid rgba(22,41,61,0.14); border-radius:10px; color:#5D6C7B; cursor:pointer; opacity:{{ cr.downOp }};">
+                        <svg width="15" height="15" viewBox="0 0 24 24"><path d="M6 9.5 L12 15.5 L18 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </button>
+                      <button onClick="{{ cr.rename }}" aria-label="Yeniden adlandır" style="flex:0 0 auto; width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:none; border:1px solid rgba(22,41,61,0.14); border-radius:10px; color:#5D6C7B; cursor:pointer;">
+                        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M4.8 19.2 L8.6 18.4 L19 8 A2.1 2.1 0 0 0 16 5 L5.6 15.4 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </button>
+                      <button onClick="{{ cr.del }}" aria-label="Sil" style="flex:0 0 auto; width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:none; border:1px solid rgba(163,59,46,0.30); border-radius:10px; color:#A33B2E; cursor:pointer; opacity:{{ cr.delOp }};">
+                        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M5 7 H19 M9.5 7 V5 H14.5 V7 M7 7 L7.8 19 H16.2 L17 7 M10.2 10.5 V15.8 M13.8 10.5 V15.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <p style="margin:0; font-size:12px; color:#8A94A0; line-height:1.5;">Sıralama menüde birebir aynı şekilde görünür. Yalnızca boş kategoriler silinebilir.</p>
+              <button onClick="{{ addCat }}" style="align-self:flex-start; display:flex; align-items:center; gap:8px; min-height:46px; padding:0 18px; background:transparent; border:1.5px dashed rgba(22,41,61,0.30); border-radius:999px; color:#16293D; font-size:13.5px; font-weight:500; cursor:pointer;" style-hover="border-color:rgba(22,41,61,0.55);">
+                <svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+                <span>Yeni Kategori</span>
+              </button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Ayarlar" style="display:flex; flex-direction:column; gap:14px; max-width:640px;">
+              <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:18px; display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; flex-direction:column; gap:3px;">
+                  <h3 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600;">Duyuru</h3>
+                  <span style="font-size:12.5px; color:#8A94A0;">Menünün üstündeki şeritte görünür. Boş bırakılırsa şerit gizlenir.</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Türkçe</label>
+                  <textarea value="{{ sTr }}" onChange="{{ onSTr }}" rows="2" style="width:100%; padding:11px 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; line-height:1.5; resize:vertical;"></textarea>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">İngilizce</label>
+                  <textarea value="{{ sEn }}" onChange="{{ onSEn }}" rows="2" style="width:100%; padding:11px 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; line-height:1.5; resize:vertical;"></textarea>
+                </div>
+                <button onClick="{{ saveAnn }}" style="align-self:flex-start; height:44px; padding:0 20px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:13.5px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">Duyuruyu Kaydet</button>
+              </div>
+
+              <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:18px; display:flex; flex-direction:column; gap:12px;">
+                <h3 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600;">İşletme Bilgileri</h3>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Wi-Fi Şifresi</label>
+                    <input value="{{ sWifi }}" onChange="{{ onSWifi }}" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Telefon</label>
+                    <input value="{{ sPhone }}" onChange="{{ onSPhone }}" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Açılış</label>
+                    <input value="{{ sOpen }}" onChange="{{ onSOpen }}" placeholder="11:00" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Kapanış</label>
+                    <input value="{{ sClose }}" onChange="{{ onSClose }}" placeholder="00:00" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Instagram</label>
+                    <input value="{{ sInsta }}" onChange="{{ onSInsta }}" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+                  </div>
+                </div>
+                <button onClick="{{ saveInfo }}" style="align-self:flex-start; height:44px; padding:0 20px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:13.5px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">Bilgileri Kaydet</button>
+              </div>
+
+              <div style="background:transparent; border:1px solid rgba(163,59,46,0.35); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:10px;">
+                <h3 style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:21px; font-weight:600; color:#A33B2E;">Örnek Verilere Dön</h3>
+                <p style="margin:0; font-size:12.5px; color:#5D6C7B; line-height:1.5;">Panelde yaptığınız tüm değişiklikleri siler ve menüyü ilk haline döndürür.</p>
+                <button onClick="{{ resetClick }}" style="align-self:flex-start; height:44px; padding:0 20px; background:{{ resetBg }}; border:1px solid rgba(163,59,46,0.5); border-radius:999px; color:{{ resetColor }}; font-size:13.5px; font-weight:600; cursor:pointer; transition:all 0.2s ease;">{{ resetLabel }}</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isQr }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="QR Kod" style="display:flex; flex-direction:column; gap:14px; max-width:460px;">
+              <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:24px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+                <div style="display:flex; align-items:center; gap:9px; color:{{ acDk }};">
+                  <svg width="30" height="9" viewBox="0 0 38 10"><path d="M1 5.5 C4 1.5 7 1.5 10 5.5 C13 9.5 16 9.5 19 5.5 C22 1.5 25 1.5 28 5.5 C31 9.5 34 9.5 37 5.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+                  <span style="font-family:'Cormorant Garamond', Georgia, serif; font-size:22px; font-weight:600; color:#16293D;">Yedigül</span>
+                  <svg width="30" height="9" viewBox="0 0 38 10"><path d="M1 5.5 C4 1.5 7 1.5 10 5.5 C13 9.5 16 9.5 19 5.5 C22 1.5 25 1.5 28 5.5 C31 9.5 34 9.5 37 5.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+                </div>
+                <span style="font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#8A94A0;">Menü için okutun</span>
+                <sc-if value="{{ hasQr }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ qrImg }}" alt="Menü QR kodu" style="width:min(260px, 100%); aspect-ratio:1; border:1px solid rgba(22,41,61,0.10); border-radius:14px;" />
+                </sc-if>
+                <span style="font-size:12.5px; color:#5D6C7B; word-break:break-all;">{{ qrUrlShown }}</span>
+                <button onClick="{{ downloadQr }}" style="display:flex; align-items:center; gap:8px; height:46px; padding:0 22px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:14px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 4 V15 M7.5 11 L12 15.5 L16.5 11 M5 19.5 H19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  <span>PNG İndir</span>
+                </button>
+              </div>
+              <div style="background:#FFFDF6; border:1px solid rgba(22,41,61,0.10); border-radius:16px; box-shadow:0 1px 2px rgba(10,31,53,0.04); padding:18px; display:flex; flex-direction:column; gap:10px;">
+                <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Menü Bağlantısı</label>
+                <input value="{{ qrUrl }}" onChange="{{ onQrUrl }}" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14px;" />
+                <button onClick="{{ saveQrUrl }}" style="align-self:flex-start; height:42px; padding:0 18px; background:transparent; border:1px solid rgba(22,41,61,0.30); border-radius:999px; color:#16293D; font-size:13px; font-weight:500; cursor:pointer;" style-hover="border-color:rgba(22,41,61,0.55);">Bağlantıyı Kaydet</button>
+                <p style="margin:0; font-size:12px; color:#8A94A0; line-height:1.5;">Kod, masa kartlarına baskı için yüksek çözünürlükte indirilir.</p>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </main>
+
+      <sc-if value="{{ showBottomNav }}" hint-placeholder-val="{{ false }}">
+        <nav data-screen-label="Alt Gezinme" aria-label="Bölümler" style="position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(10,31,53,0.97); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid rgba(242,233,214,0.12); display:flex; padding:6px 4px calc(6px + env(safe-area-inset-bottom));">
+          <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+            <button onClick="{{ n.click }}" style="flex:1; min-height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; background:none; border:none; color:{{ n.mobColor }}; cursor:pointer; padding:0;">
+              <svg width="21" height="21" viewBox="0 0 24 24"><path d="{{ n.d }}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span style="font-size:10px; font-weight:500; letter-spacing:0.3px;">{{ n.label }}</span>
+            </button>
+          </sc-for>
+        </nav>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ editor }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Ürün Düzenleme" style="position:fixed; inset:0; z-index:80;">
+      <div onClick="{{ editor.cancel }}" style="position:absolute; inset:0; background:rgba(5,14,25,0.55); animation:fadeIn 0.2s ease both;"></div>
+      <div role="dialog" aria-modal="true" style="position:absolute; inset:{{ mwInset }}; margin:{{ mwMargin }}; transform:{{ mwTransform }}; width:{{ mwWidth }}; max-width:580px; max-height:{{ mwMaxH }}; overflow-y:auto; background:#FDFAF2; border-radius:{{ mwRadius }}; animation:{{ mwAnim }} 0.26s cubic-bezier(0.2, 0.9, 0.3, 1) both; box-shadow:0 -16px 48px rgba(4,12,22,0.35);">
+        <div style="padding:20px 22px 30px; display:flex; flex-direction:column; gap:15px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <h3 style="margin:0; flex:1; font-family:'Cormorant Garamond', Georgia, serif; font-size:25px; font-weight:600;">{{ editor.title }}</h3>
+            <button onClick="{{ editor.cancel }}" aria-label="Kapat" style="width:42px; height:42px; border-radius:50%; border:none; background:rgba(22,41,61,0.06); color:#16293D; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+            </button>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Ürün Adı *</label>
+            <input value="{{ editor.eName }}" onChange="{{ editor.onEName }}" placeholder="ör. Izgara Levrek" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+              <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Kategori</label>
+              <select value="{{ editor.eCat }}" onChange="{{ editor.onECat }}" style="width:100%; height:46px; padding:0 10px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;">
+                <sc-for list="{{ editor.catOpts }}" as="co" hint-placeholder-count="7">
+                  <option value="{{ co.id }}">{{ co.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+              <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Porsiyon</label>
+              <input value="{{ editor.ePortion }}" onChange="{{ editor.onEPortion }}" placeholder="ör. 350 gr" style="width:100%; height:46px; padding:0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px;" />
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Açıklama</label>
+            <textarea value="{{ editor.eDesc }}" onChange="{{ editor.onEDesc }}" rows="2" placeholder="Menüde ürünün altında görünür." style="width:100%; padding:11px 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; line-height:1.5; resize:vertical;"></textarea>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Fiyatlandırma</label>
+            <div style="display:flex; gap:8px;">
+              <sc-for list="{{ editor.modeChips }}" as="mc" hint-placeholder-count="2">
+                <button onClick="{{ mc.click }}" style="min-height:42px; padding:0 16px; background:{{ mc.bg }}; color:{{ mc.color }}; border:{{ mc.border }}; border-radius:999px; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s ease;">{{ mc.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ editor.isFixed }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div style="position:relative; min-width:0;">
+                  <input value="{{ editor.ePrice }}" onChange="{{ editor.onEPrice }}" inputMode="numeric" placeholder="Fiyat" aria-label="Fiyat" style="width:100%; height:46px; padding:0 40px 0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; font-variant-numeric:tabular-nums;" />
+                  <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12.5px; color:#8A94A0;">TL</span>
+                </div>
+                <div style="position:relative; min-width:0;">
+                  <input value="{{ editor.eKcal }}" onChange="{{ editor.onEKcal }}" inputMode="numeric" placeholder="Kalori" aria-label="Kalori" style="width:100%; height:46px; padding:0 48px 0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; font-variant-numeric:tabular-nums;" />
+                  <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12.5px; color:#8A94A0;">kcal</span>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ editor.isMarket }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div style="position:relative; min-width:0;">
+                  <input value="{{ editor.eDaily }}" onChange="{{ editor.onEDaily }}" inputMode="numeric" placeholder="Bugünkü fiyat" aria-label="Bugünkü fiyat" style="width:100%; height:46px; padding:0 40px 0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; font-variant-numeric:tabular-nums;" />
+                  <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12.5px; color:#8A94A0;">TL</span>
+                </div>
+                <div style="position:relative; min-width:0;">
+                  <input value="{{ editor.eKcal }}" onChange="{{ editor.onEKcal }}" inputMode="numeric" placeholder="Kalori" aria-label="Kalori" style="width:100%; height:46px; padding:0 48px 0 14px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14.5px; font-variant-numeric:tabular-nums;" />
+                  <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12.5px; color:#8A94A0;">kcal</span>
+                </div>
+              </div>
+              <span style="font-size:12px; color:#8A94A0; line-height:1.5;">Bugünkü fiyat boş bırakılırsa menüde "Piyasa Fiyatı" rozeti görünür.</span>
+            </sc-if>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; align-items:baseline; gap:8px;">
+              <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Porsiyon Seçenekleri</label>
+              <span style="font-size:11.5px; color:#8A94A0;">girilirse menüde fiyat aralığı gösterilir</span>
+            </div>
+            <sc-for list="{{ editor.vRows }}" as="vr" hint-placeholder-count="0">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <input value="{{ vr.name }}" onChange="{{ vr.onName }}" placeholder="ör. Porsiyon · 350 gr" aria-label="Seçenek adı" style="flex:1; min-width:0; height:44px; padding:0 12px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:11px; color:#16293D; font-size:14px;" />
+                <div style="position:relative; flex:0 0 108px;">
+                  <input value="{{ vr.price }}" onChange="{{ vr.onPrice }}" inputMode="numeric" placeholder="Fiyat" aria-label="Seçenek fiyatı" style="width:100%; height:44px; padding:0 34px 0 12px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:11px; color:#16293D; font-size:14px; text-align:end; font-variant-numeric:tabular-nums;" />
+                  <span style="position:absolute; right:11px; top:50%; transform:translateY(-50%); font-size:11.5px; color:#8A94A0;">TL</span>
+                </div>
+                <button onClick="{{ vr.del }}" aria-label="Seçeneği sil" style="flex:0 0 auto; width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:#8A94A0; cursor:pointer;" style-hover="color:#A33B2E;">
+                  <svg width="15" height="15" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+            <button onClick="{{ editor.addVariant }}" style="align-self:flex-start; display:flex; align-items:center; gap:7px; min-height:40px; padding:0 14px; background:none; border:1.5px dashed rgba(22,41,61,0.28); border-radius:999px; color:#5D6C7B; font-size:12.5px; font-weight:500; cursor:pointer;" style-hover="border-color:rgba(22,41,61,0.5); color:#16293D;">
+              <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+              <span>Seçenek Ekle</span>
+            </button>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Rozetler</label>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <sc-for list="{{ editor.badgeChips }}" as="bc" hint-placeholder-count="4">
+                <button onClick="{{ bc.click }}" style="min-height:42px; padding:0 15px; background:{{ bc.bg }}; color:{{ bc.color }}; border:{{ bc.border }}; border-radius:999px; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s ease;">{{ bc.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; border-top:1px solid rgba(22,41,61,0.10);">
+            <div style="display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid rgba(22,41,61,0.10);">
+              <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:14.5px; font-weight:500;">Bugün tükendi</span>
+                <span style="font-size:12px; color:#8A94A0;">Menüde soluk ve "Tükendi" rozetiyle görünür.</span>
+              </div>
+              <button role="switch" aria-checked="{{ editor.swSoldout.on }}" onClick="{{ editor.swSoldout.click }}" style="width:46px; height:26px; border-radius:999px; border:none; background:{{ editor.swSoldout.bg }}; position:relative; cursor:pointer; flex:0 0 auto; transition:background 0.2s ease;">
+                <span style="position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#FFFDF6; box-shadow:0 1px 3px rgba(10,31,53,0.35); transform:{{ editor.swSoldout.knob }}; transition:transform 0.2s ease;"></span>
+              </button>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:13px 0;">
+              <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:14.5px; font-weight:500;">Menüde gizle</span>
+                <span style="font-size:12px; color:#8A94A0;">Ürün menüden tamamen kaldırılır, veriler saklanır.</span>
+              </div>
+              <button role="switch" aria-checked="{{ editor.swHidden.on }}" onClick="{{ editor.swHidden.click }}" style="width:46px; height:26px; border-radius:999px; border:none; background:{{ editor.swHidden.bg }}; position:relative; cursor:pointer; flex:0 0 auto; transition:background 0.2s ease;">
+                <span style="position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#FFFDF6; box-shadow:0 1px 3px rgba(10,31,53,0.35); transform:{{ editor.swHidden.knob }}; transition:transform 0.2s ease;"></span>
+              </button>
+            </div>
+          </div>
+
+          <sc-if value="{{ editor.hasErr }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px; color:#A33B2E;">{{ editor.err }}</span>
+          </sc-if>
+
+          <div style="display:flex; gap:10px;">
+            <button onClick="{{ editor.cancel }}" style="flex:1; height:48px; background:transparent; border:1px solid rgba(22,41,61,0.30); border-radius:999px; color:#16293D; font-size:14px; font-weight:500; cursor:pointer;">Vazgeç</button>
+            <button onClick="{{ editor.save }}" style="flex:1.4; height:48px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:14px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">Kaydet</button>
+          </div>
+
+          <sc-if value="{{ editor.isEdit }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ editor.del }}" style="height:44px; background:{{ editor.delBg }}; border:1px solid rgba(163,59,46,0.45); border-radius:999px; color:{{ editor.delColor }}; font-size:13.5px; font-weight:600; cursor:pointer; transition:all 0.2s ease;">{{ editor.delLabel }}</button>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ bulk }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Toplu Zam" style="position:fixed; inset:0; z-index:80;">
+      <div onClick="{{ bulk.cancel }}" style="position:absolute; inset:0; background:rgba(5,14,25,0.55); animation:fadeIn 0.2s ease both;"></div>
+      <div role="dialog" aria-modal="true" style="position:absolute; inset:{{ mwInset }}; margin:{{ mwMargin }}; transform:{{ mwTransform }}; width:{{ mwWidth }}; max-width:500px; max-height:{{ mwMaxH }}; overflow-y:auto; background:#FDFAF2; border-radius:{{ mwRadius }}; animation:{{ mwAnim }} 0.26s cubic-bezier(0.2, 0.9, 0.3, 1) both; box-shadow:0 -16px 48px rgba(4,12,22,0.35);">
+        <div style="padding:20px 22px 30px; display:flex; flex-direction:column; gap:15px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <h3 style="margin:0; flex:1; font-family:'Cormorant Garamond', Georgia, serif; font-size:25px; font-weight:600;">Toplu Fiyat Güncelleme</h3>
+            <button onClick="{{ bulk.cancel }}" aria-label="Kapat" style="width:42px; height:42px; border-radius:50%; border:none; background:rgba(22,41,61,0.06); color:#16293D; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+            </button>
+          </div>
+          <p style="margin:0; font-size:13px; color:#5D6C7B; line-height:1.5;">Seçilen kapsamdaki tüm fiyatlara yüzde uygulanır. Negatif değerle indirim yapabilirsiniz.</p>
+
+          <div style="display:flex; align-items:center; justify-content:center; gap:14px;">
+            <button onClick="{{ bulk.minus }}" aria-label="Azalt" style="width:46px; height:46px; border-radius:50%; border:1px solid rgba(22,41,61,0.25); background:none; color:#16293D; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center;">−</button>
+            <div style="position:relative;">
+              <input value="{{ bulk.pctVal }}" onChange="{{ bulk.onPct }}" inputMode="numeric" aria-label="Yüzde" style="width:110px; height:56px; padding:0 30px 0 12px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.25); border-radius:14px; color:#16293D; font-size:24px; font-weight:600; text-align:center; font-variant-numeric:tabular-nums;" />
+              <span style="position:absolute; right:13px; top:50%; transform:translateY(-50%); font-size:17px; color:#8A94A0;">%</span>
+            </div>
+            <button onClick="{{ bulk.plus }}" aria-label="Artır" style="width:46px; height:46px; border-radius:50%; border:1px solid rgba(22,41,61,0.25); background:none; color:#16293D; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+            <sc-for list="{{ bulk.chips }}" as="bp" hint-placeholder-count="4">
+              <button onClick="{{ bp.click }}" style="min-height:38px; padding:0 14px; background:{{ bp.bg }}; color:{{ bp.color }}; border:{{ bp.border }}; border-radius:999px; font-size:12.5px; font-weight:500; cursor:pointer;">{{ bp.label }}</button>
+            </sc-for>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+              <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Kapsam</label>
+              <select value="{{ bulk.scopeVal }}" onChange="{{ bulk.onScope }}" style="width:100%; height:46px; padding:0 10px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14px;">
+                <option value="all">Tüm menü</option>
+                <sc-for list="{{ bulk.scopeOpts }}" as="so" hint-placeholder-count="7">
+                  <option value="{{ so.id }}">{{ so.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+              <label style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600;">Yuvarlama</label>
+              <select value="{{ bulk.roundVal }}" onChange="{{ bulk.onRound }}" style="width:100%; height:46px; padding:0 10px; background:#FFFFFF; border:1px solid rgba(22,41,61,0.22); border-radius:12px; color:#16293D; font-size:14px;">
+                <option value="1">1 TL'ye</option>
+                <option value="5">5 TL'ye</option>
+                <option value="10">10 TL'ye</option>
+                <option value="25">25 TL'ye</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="border:1.5px dashed rgba(22,41,61,0.22); border-radius:14px; padding:12px 15px; display:flex; flex-direction:column;">
+            <span style="font-size:11px; letter-spacing:1.8px; text-transform:uppercase; color:#8A94A0; font-weight:600; padding-bottom:4px;">Önizleme</span>
+            <sc-for list="{{ bulk.preview }}" as="pv" hint-placeholder-count="3">
+              <div style="display:flex; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px solid rgba(22,41,61,0.08); font-size:13.5px;">
+                <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ pv.name }}</span>
+                <span style="color:#8A94A0; text-decoration:line-through; font-variant-numeric:tabular-nums;">{{ pv.old }}</span>
+                <span style="color:#8A94A0;">→</span>
+                <span style="font-weight:600; font-variant-numeric:tabular-nums;">{{ pv.next }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ bulk.hasMore }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:12px; color:#8A94A0; padding-top:8px;">{{ bulk.moreLabel }}</span>
+            </sc-if>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button onClick="{{ bulk.cancel }}" style="flex:1; height:48px; background:transparent; border:1px solid rgba(22,41,61,0.30); border-radius:999px; color:#16293D; font-size:14px; font-weight:500; cursor:pointer;">Vazgeç</button>
+            <button onClick="{{ bulk.apply }}" style="flex:1.6; height:48px; border:none; border-radius:999px; background:{{ ac }}; color:#081726; font-size:14px; font-weight:600; cursor:pointer;" style-hover="opacity:0.9;">{{ bulk.applyLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; left:50%; bottom:{{ toastBottom }}; transform:translateX(-50%); z-index:100; background:#0F2A46; color:#F2E9D6; padding:12px 20px; border-radius:999px; font-size:13.5px; box-shadow:0 10px 30px rgba(4,12,22,0.4); animation:fadeIn 0.2s ease both; display:flex; align-items:center; gap:9px; white-space:nowrap;">
+      <svg width="15" height="15" viewBox="0 0 24 24" style="color:{{ acLt }};"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span>{{ toastMsg }}</span>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 860 },
+  &quot;layout&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Yan menü&quot;, &quot;Üst sekmeler&quot;], &quot;default&quot;: &quot;Yan menü&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Yerleşim&quot; },
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;options&quot;: [&quot;#C8902F&quot;, &quot;#B0653A&quot;, &quot;#2F7E6D&quot;], &quot;default&quot;: &quot;#C8902F&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Yerleşim&quot; }
+}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      authed: false, pw: '', pwErr: false, page: 'home', width: 1200,
+      search: '', catFilter: 'all', data: null, dailyDraft: {},
+      sTr: '', sEn: '', sWifi: '', sOpen: '', sClose: '', sPhone: '', sInsta: '',
+      form: null, formErr: '', confirmDel: false, bulk: null, toast: '',
+      qrUrl: '', catEditId: null, catEditVal: '', resetArm: false,
+    };
+    this.M0 = null; this.Q = null; this.phCache = {}; this._toastT = null;
+    this.LSK = 'yedigul.admin.data.v1';
+  }
+
+  componentDidMount() {
+    document.title = 'Yedigül — Yönetim';
+    this.setState({ width: window.innerWidth, authed: localStorage.getItem('yedigul.admin.session') === '1' });
+    this.onResize = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+    import('./menu-data.js').then((m) => { this.M0 = m; this.initData(); });
+    import('./qr.js').then((q) => { this.Q = q; this.forceUpdate(); });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    if (this._toastT) clearTimeout(this._toastT);
+  }
+
+  componentDidUpdate() {
+    document.body.style.overflow = (this.state.form || this.state.bulk) ? 'hidden' : '';
+  }
+
+  clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  defaults() {
+    const meta = Object.assign({}, this.clone(this.M0.META), { dailyPrices: {}, menuUrl: 'https://yedigul.com/menu' });
+    return { cats: this.clone(this.M0.CATEGORIES), items: this.clone(this.M0.ITEMS), meta: meta };
+  }
+
+  initData() {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(this.LSK) || 'null'); } catch (e) {}
+    if (!d || !d.items || !d.cats || !d.meta) d = this.defaults();
+    if (!d.meta.dailyPrices) d.meta.dailyPrices = {};
+    this.seedDrafts(d);
+    this.setState({ data: d });
+  }
+
+  seedDrafts(d) {
+    const hrs = (d.meta.hours || '11:00 – 00:00').split('–').map((s) => s.trim());
+    this.setState({
+      sTr: (d.meta.announcement && d.meta.announcement.tr) || '',
+      sEn: (d.meta.announcement && d.meta.announcement.en) || '',
+      sWifi: d.meta.wifi || '', sOpen: hrs[0] || '', sClose: hrs[1] || '',
+      sPhone: d.meta.phone || '', sInsta: d.meta.instagram || '',
+      qrUrl: d.meta.menuUrl || 'https://yedigul.com/menu',
+    });
+  }
+
+  commit(d, msg) {
+    try { localStorage.setItem(this.LSK, JSON.stringify(d)); } catch (e) {}
+    this.setState({ data: d });
+    if (msg) this.showToast(msg);
+  }
+
+  showToast(m) {
+    if (this._toastT) clearTimeout(this._toastT);
+    this.setState({ toast: m });
+    this._toastT = setTimeout(() => this.setState({ toast: '' }), 2400);
+  }
+
+  todayStr() {
+    const t = new Date();
+    return t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate();
+  }
+
+  hash(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = ((h * 31) + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+
+  viewsFor(id) { return 62 + (this.hash(id + 'v') % 260); }
+
+  fmtTL(n) { return n + ' TL'; }
+
+  priceText(it) {
+    if (it.variants && it.variants.length) {
+      const ps = it.variants.map((v) => v.price);
+      return Math.min.apply(null, ps) + '–' + Math.max.apply(null, ps) + ' TL';
+    }
+    if (it.price == null) {
+      const rec = this.state.data.meta.dailyPrices[it.id];
+      if (rec && rec.date === this.todayStr() && rec.price) return 'Bugün: ' + rec.price + ' TL';
+      return 'Piyasa fiyatı';
+    }
+    return this.fmtTL(it.price);
+  }
+
+  ph(cat) {
+    const key = cat + '|thumb';
+    if (this.phCache[key]) return this.phCache[key];
+    const w = 72, h = 72;
+    const bg = '#F0E6CF', line = 'rgba(16,41,66,0.15)', gl = '#A6741F';
+    const G = {
+      fish: ['M14 36 C22 26 38 23 48 31 C51 33 54 34.5 58 36 C54 37.5 51 39 48 41 C38 49 22 46 14 36 Z', 'M58 36 L66 28.5', 'M58 36 L66 43.5', 'M25 33.5 a1.4 1.4 0 1 0 0.05 0'],
+      hot: ['M20 33 H52', 'M23 33 V41 C23 46 26.5 49 31.5 49 H40.5 C45.5 49 49 46 49 41 V33', 'M52 35.5 H58', 'M30 26 C30 23.5 32.5 23.5 32.5 21', 'M40 26 C40 23.5 42.5 23.5 42.5 21'],
+      cold: ['M36 52 L23.5 30', 'M36 52 L30 26.5', 'M36 52 L36 25', 'M36 52 L42 26.5', 'M36 52 L48.5 30', 'M23.5 30 C30 22.5 42 22.5 48.5 30'],
+      salad: ['M36 54 C23 46 23 28 36 18 C49 28 49 46 36 54 Z', 'M36 25 V49', 'M36 35 L29.5 30.5', 'M36 41 L42.5 36'],
+      meat: ['M18 54 L54 18', 'M26 40 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0', 'M36 30 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0'],
+      dessert: ['M36 20 L52 36 L36 52 L20 36 Z', 'M28.5 28.5 L43.5 43.5', 'M43.5 28.5 L28.5 43.5'],
+      drink: ['M28 20 C28 32 30 37.5 36 39.5 C42 37.5 44 32 44 20 Z', 'M29 51 H43', 'M36 39.5 V51'],
+    };
+    const paths = G[cat] || G.fish;
+    let d = '';
+    const r = 9;
+    for (let row = 0, y = 0; y <= h + r; y += r, row++) {
+      const off = (row % 2) ? -r : 0;
+      for (let x = off; x <= w + r; x += r * 2) d += 'M' + (x - r) + ' ' + y + ' a' + r + ' ' + r + ' 0 0 1 ' + (2 * r) + ' 0 ';
+    }
+    let g = '';
+    paths.forEach((p) => { g += '<path d="' + p + '"/>'; });
+    const sc = 0.82, tx = (w - 72 * sc) / 2, ty = (h - 72 * sc) / 2;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 72 72"><rect width="72" height="72" fill="' + bg + '"/><path d="' + d + '" fill="none" stroke="' + line + '" stroke-width="1"/><g transform="translate(' + tx + ' ' + ty + ') scale(' + sc + ')" fill="none" stroke="' + gl + '" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' + g + '</g></svg>';
+    const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    this.phCache[key] = uri;
+    return uri;
+  }
+
+  go(page) { this.setState({ page: page }); window.scrollTo(0, 0); }
+
+  openEditor(it) {
+    const d = this.state.data;
+    const base = {
+      id: null, eName: '', eDesc: '', eCat: (this.state.catFilter !== 'all' && this.state.catFilter) || (d.cats[0] && d.cats[0].id) || 'fish',
+      mode: 'fixed', ePrice: '', eDaily: '', ePortion: '', eKcal: '',
+      popular: false, chef: false, gf: false, veg: false, hidden: false, soldout: false, variants: [],
+    };
+    if (it) {
+      const rec = d.meta.dailyPrices[it.id];
+      Object.assign(base, {
+        id: it.id, eName: it.name.tr, eDesc: it.desc.tr, eCat: it.cat,
+        mode: it.price == null ? 'market' : 'fixed',
+        ePrice: it.price == null ? '' : String(it.price),
+        eDaily: (rec && rec.date === this.todayStr() && rec.price) ? String(rec.price) : '',
+        ePortion: it.portion || '', eKcal: it.kcal ? String(it.kcal) : '',
+        popular: !!it.popular, chef: !!it.chef,
+        gf: (it.diet || []).indexOf('gf') >= 0, veg: (it.diet || []).indexOf('veg') >= 0,
+        hidden: !!it.hidden, soldout: !!it.soldout,
+        variants: (it.variants || []).map((v) => ({ name: v.name.tr, price: String(v.price) })),
+      });
+    }
+    this.setState({ form: base, formErr: '', confirmDel: false });
+  }
+
+  setForm(patch) { this.setState({ form: Object.assign({}, this.state.form, patch), formErr: '' }); }
+
+  saveItem() {
+    const f = this.state.form;
+    const d = this.clone(this.state.data);
+    const nameTr = f.eName.trim();
+    if (!nameTr) { this.setState({ formErr: 'Ürün adı boş olamaz.' }); return; }
+    const variants = f.variants
+      .map((v) => ({ name: v.name.trim(), price: parseInt(v.price, 10) }))
+      .filter((v) => v.name && v.price > 0);
+    let price = null;
+    if (f.mode === 'fixed') {
+      if (variants.length) {
+        price = Math.min.apply(null, variants.map((v) => v.price));
+      } else {
+        price = parseInt(f.ePrice, 10);
+        if (!(price > 0)) { this.setState({ formErr: 'Geçerli bir fiyat girin.' }); return; }
+      }
+    }
+    const existing = f.id ? d.items.find((x) => x.id === f.id) : null;
+    const descTr = f.eDesc.trim();
+    const nameEn = existing && existing.name.en && existing.name.en !== existing.name.tr ? existing.name.en : nameTr;
+    const descEn = existing && existing.desc.en && existing.desc.en !== existing.desc.tr ? existing.desc.en : descTr;
+    const id = f.id || (nameTr.toLocaleLowerCase('tr').replace(/[^a-z0-9]+/g, '') || 'urun') + (Date.now() % 100000);
+    const item = {
+      id: id, cat: f.eCat, price: price, portion: f.ePortion.trim() || null,
+      kcal: parseInt(f.eKcal, 10) || 0,
+      diet: [f.gf ? 'gf' : null, f.veg ? 'veg' : null].filter(Boolean),
+      popular: f.popular, chef: f.chef, hidden: f.hidden, soldout: f.soldout,
+      name: { tr: nameTr, en: nameEn }, desc: { tr: descTr, en: descEn },
+      ing: existing ? existing.ing : { tr: [], en: [] },
+      alg: existing ? existing.alg : { tr: [], en: [] },
+    };
+    if (existing && existing.image_url) item.image_url = existing.image_url;
+    if (variants.length) item.variants = variants.map((v) => ({ name: { tr: v.name, en: v.name }, price: v.price }));
+    const idx = d.items.findIndex((x) => x.id === f.id);
+    if (idx >= 0) d.items[idx] = item; else d.items.push(item);
+    if (f.mode === 'market') {
+      const dp = parseInt(f.eDaily, 10);
+      if (dp > 0) d.meta.dailyPrices[id] = { price: dp, date: this.todayStr() };
+      else delete d.meta.dailyPrices[id];
+    } else {
+      delete d.meta.dailyPrices[id];
+    }
+    this.commit(d, f.id ? 'Ürün güncellendi' : 'Ürün eklendi');
+    this.setState({ form: null });
+  }
+
+  deleteItem() {
+    if (!this.state.confirmDel) { this.setState({ confirmDel: true }); return; }
+    const f = this.state.form;
+    const d = this.clone(this.state.data);
+    d.items = d.items.filter((x) => x.id !== f.id);
+    delete d.meta.dailyPrices[f.id];
+    this.commit(d, 'Ürün silindi');
+    this.setState({ form: null, confirmDel: false });
+  }
+
+  bulkAffected(b, d) {
+    return d.items.filter((it) => (b.scope === 'all' || it.cat === b.scope) && (it.price != null || (it.variants && it.variants.length)));
+  }
+
+  applyBulk() {
+    const b = this.state.bulk;
+    const d = this.clone(this.state.data);
+    const pct = parseFloat(String(b.pct).replace(',', '.')) || 0;
+    const rd = parseInt(b.round, 10) || 1;
+    const r = (p) => Math.max(1, Math.round((p * (1 + pct / 100)) / rd) * rd);
+    let n = 0;
+    d.items = d.items.map((it) => {
+      if (b.scope !== 'all' && it.cat !== b.scope) return it;
+      if (it.price == null && !(it.variants && it.variants.length)) return it;
+      n++;
+      const c = this.clone(it);
+      if (c.price != null) c.price = r(c.price);
+      if (c.variants) c.variants = c.variants.map((v) => Object.assign({}, v, { price: r(v.price) }));
+      return c;
+    });
+    this.commit(d, n + ' ürünün fiyatı güncellendi');
+    this.setState({ bulk: null });
+  }
+
+  moveCat(i, dir) {
+    const d = this.clone(this.state.data);
+    const j = i + dir;
+    if (j < 0 || j >= d.cats.length) return;
+    const t = d.cats[i]; d.cats[i] = d.cats[j]; d.cats[j] = t;
+    this.commit(d);
+  }
+
+  commitCatName() {
+    const s = this.state;
+    if (!s.catEditId) return;
+    const d = this.clone(s.data);
+    const c = d.cats.find((x) => x.id === s.catEditId);
+    if (c) {
+      const v = s.catEditVal.trim();
+      if (v) { if (c.en === c.tr) c.en = v; c.tr = v; }
+      this.commit(d, 'Kategori güncellendi');
+    }
+    this.setState({ catEditId: null, catEditVal: '' });
+  }
+
+  saveDailyPrices() {
+    const d = this.clone(this.state.data);
+    const drafts = this.state.dailyDraft;
+    Object.keys(drafts).forEach((id) => {
+      const p = parseInt(drafts[id], 10);
+      if (p > 0) d.meta.dailyPrices[id] = { price: p, date: this.todayStr() };
+      else delete d.meta.dailyPrices[id];
+    });
+    this.commit(d, 'Günün fiyatları kaydedildi');
+    this.setState({ dailyDraft: {} });
+  }
+
+  dateLine() {
+    const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    const GUN = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+    const t = new Date();
+    return t.getDate() + ' ' + AY[t.getMonth()] + ' ' + t.getFullYear() + ', ' + GUN[t.getDay()];
+  }
+
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent || '#C8902F';
+    const AC_DK = { '#C8902F': '#8F6318', '#B0653A': '#8A4A28', '#2F7E6D': '#1F5A4C' };
+    const AC_LT = { '#C8902F': '#E2B45C', '#B0653A': '#E09B72', '#2F7E6D': '#7FC5B2' };
+    const ac = accent, acDk = AC_DK[accent] || accent, acLt = AC_LT[accent] || accent, acSoft = accent + '26';
+    const layout = this.props.layout || 'Yan menü';
+    const isMobile = s.width < 780;
+    const sidebar = !isMobile && layout.indexOf('Yan') >= 0;
+    const topbar = !isMobile && !sidebar;
+    const d = s.data;
+    const ready = !!d;
+    const today = this.todayStr();
+
+    const NAVD = {
+      home: 'M4 11.2 L12 4.4 L20 11.2 M6.4 9.6 V19.4 H17.6 V9.6',
+      items: 'M2.5 12 C5.5 8.2 11 7 15.2 9.6 C16.6 10.5 17.8 11.3 19.5 12 C17.8 12.7 16.6 13.5 15.2 14.4 C11 17 5.5 15.8 2.5 12 Z M19.5 12 L22 9.4 M19.5 12 L22 14.6',
+      cats: 'M12 3.6 L20.5 8.3 L12 13 L3.5 8.3 Z M4.8 12.4 L12 16.4 L19.2 12.4 M4.8 16.2 L12 20.2 L19.2 16.2',
+      settings: 'M12 8.8 A3.2 3.2 0 1 0 12 15.2 A3.2 3.2 0 1 0 12 8.8 M12 3 V5.4 M12 18.6 V21 M3 12 H5.4 M18.6 12 H21 M5.6 5.6 L7.3 7.3 M16.7 16.7 L18.4 18.4 M18.4 5.6 L16.7 7.3 M7.3 16.7 L5.6 18.4',
+      qr: 'M4 4 H9.5 V9.5 H4 Z M14.5 4 H20 V9.5 H14.5 Z M4 14.5 H9.5 V20 H4 Z M13.5 13.5 H16 V16 H13.5 Z M18 13.5 H20 M18 17 H20 V20 M13.5 18 V20 H16',
+    };
+    const navItems = [
+      { id: 'home', label: 'Genel Bakış' }, { id: 'items', label: 'Ürünler' }, { id: 'cats', label: 'Kategoriler' },
+      { id: 'settings', label: 'Ayarlar' }, { id: 'qr', label: 'QR Kod' },
+    ].map((n) => {
+      const active = s.page === n.id;
+      return {
+        label: n.label, d: NAVD[n.id], click: () => this.go(n.id),
+        sideBg: active ? 'rgba(255,255,255,0.06)' : 'transparent',
+        sideBar: active ? ac : 'transparent',
+        sideColor: active ? acLt : 'rgba(242,233,214,0.72)',
+        sideWeight: active ? '600' : '400',
+        tabColor: active ? acLt : 'rgba(242,233,214,0.68)',
+        tabBorder: active ? ac : 'transparent',
+        tabWeight: active ? '600' : '400',
+        mobColor: active ? acLt : 'rgba(242,233,214,0.6)',
+      };
+    });
+
+    const TITLES = {
+      home: ['Genel Bakış', this.dateLine()],
+      items: ['Ürünler', 'Menüdeki ürünleri ekleyin, düzenleyin, gizleyin'],
+      cats: ['Kategoriler', 'Menü bölümlerini sıralayın ve adlandırın'],
+      settings: ['Ayarlar', 'Duyuru, Wi-Fi ve işletme bilgileri'],
+      qr: ['QR Kod', 'Masa kartları için menü kodu'],
+    };
+
+    const out = {
+      ac: ac, acDk: acDk, acLt: acLt, acSoft: acSoft,
+      showLogin: !s.authed, showApp: s.authed,
+      pwVal: s.pw,
+      onPw: (e) => this.setState({ pw: e.target.value, pwErr: false }),
+      onPwKey: (e) => { if (e.key === 'Enter') this.trySubmit(); },
+      submitPw: () => this.trySubmit(),
+      hasErr: s.pwErr,
+      shellDir: sidebar ? 'row' : 'column',
+      showSidebar: sidebar, showTopbar: topbar, showMobileHead: isMobile, showBottomNav: isMobile,
+      logout: () => { try { localStorage.removeItem('yedigul.admin.session'); } catch (e) {} this.setState({ authed: false, pw: '' }); },
+      navItems: navItems,
+      mainPad: isMobile ? '18px 16px 110px' : '30px 34px 60px',
+      pageTitle: TITLES[s.page][0], pageSub: TITLES[s.page][1],
+      notReady: !ready,
+      isHome: ready && s.page === 'home', isItems: ready && s.page === 'items', isCats: ready && s.page === 'cats',
+      isSettings: ready && s.page === 'settings', isQr: ready && s.page === 'qr',
+      hasToast: !!s.toast, toastMsg: s.toast, toastBottom: isMobile ? '86px' : '28px',
+      mwInset: isMobile ? 'auto 0 0 0' : '50% auto auto 50%',
+      mwMargin: isMobile ? '0 auto' : '0',
+      mwTransform: isMobile ? 'none' : 'translate(-50%, -50%)',
+      mwWidth: isMobile ? 'auto' : 'min(580px, 94vw)',
+      mwMaxH: isMobile ? '90vh' : '86vh',
+      mwRadius: isMobile ? '24px 24px 0 0' : '20px',
+      mwAnim: isMobile ? 'sheetUpFull' : 'popIn',
+      editor: null, bulk: null,
+      quicks: [], stats: [], days: [], pops: [], marketRows: [], saveDaily: null,
+      q: s.search, onQ: null, hasQ: false, clearQ: null, chips: [], itemRows: [], itemCount: '', emptyItems: false, addItem: null, openBulk: null,
+      catRows: [], addCat: null,
+      sTr: s.sTr, onSTr: (e) => this.setState({ sTr: e.target.value }),
+      sEn: s.sEn, onSEn: (e) => this.setState({ sEn: e.target.value }),
+      sWifi: s.sWifi, onSWifi: (e) => this.setState({ sWifi: e.target.value }),
+      sOpen: s.sOpen, onSOpen: (e) => this.setState({ sOpen: e.target.value }),
+      sClose: s.sClose, onSClose: (e) => this.setState({ sClose: e.target.value }),
+      sPhone: s.sPhone, onSPhone: (e) => this.setState({ sPhone: e.target.value }),
+      sInsta: s.sInsta, onSInsta: (e) => this.setState({ sInsta: e.target.value }),
+      saveAnn: null, saveInfo: null,
+      resetLabel: s.resetArm ? 'Emin misiniz? Tekrar dokunun' : 'Verileri Sıfırla',
+      resetBg: s.resetArm ? '#A33B2E' : 'transparent',
+      resetColor: s.resetArm ? '#FBF7ED' : '#A33B2E',
+      resetClick: null,
+      hasQr: false, qrImg: '', qrUrl: s.qrUrl, qrUrlShown: s.qrUrl,
+      onQrUrl: (e) => this.setState({ qrUrl: e.target.value }),
+      saveQrUrl: null, downloadQr: null,
+    };
+
+    if (!ready) return out;
+
+    const catName = (id) => { const c = d.cats.find((x) => x.id === id); return c ? c.tr : id; };
+    const visibleItems = d.items.filter((it) => !it.hidden);
+
+    // ---- Genel Bakış ----
+    if (s.page === 'home') {
+      const dayVals = [];
+      const GUNK = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+      for (let i = 6; i >= 0; i--) {
+        const dt = new Date(Date.now() - i * 86400000);
+        const wd = dt.getDay();
+        let v = 150 + (this.hash(dt.toDateString()) % 160);
+        if (wd === 0 || wd === 6) v += 170;
+        if (i === 0) v = Math.round(v * 0.62);
+        dayVals.push({ label: GUNK[wd], v: v, today: i === 0 });
+      }
+      const maxV = Math.max.apply(null, dayVals.map((x) => x.v));
+      out.days = dayVals.map((x) => ({ label: x.label, h: Math.max(8, Math.round((x.v / maxV) * 78)) + 'px', bg: x.today ? ac : acSoft }));
+      const sorted = visibleItems.slice().sort((a, b) => this.viewsFor(b.id) - this.viewsFor(a.id));
+      const top5 = sorted.slice(0, 5);
+      const maxP = top5.length ? this.viewsFor(top5[0].id) : 1;
+      out.pops = top5.map((it) => ({ name: it.name.tr, views: this.viewsFor(it.id), w: Math.round((this.viewsFor(it.id) / maxP) * 100) + '%' }));
+      out.stats = [
+        { label: 'Bugün', value: String(dayVals[6].v), sub: 'menü görüntülenme' },
+        { label: 'Son 7 gün', value: String(dayVals.reduce((a, x) => a + x.v, 0)), sub: 'toplam görüntülenme' },
+        { label: 'Menüde', value: String(visibleItems.length), sub: d.items.length - visibleItems.length + ' ürün gizli' },
+      ];
+      out.quicks = [
+        { label: 'Yeni Ürün', d: 'M12 5 V19 M5 12 H19', click: () => { this.setState({ page: 'items' }); this.openEditor(null); } },
+        { label: 'Toplu Zam', d: 'M6.5 17.5 L17.5 6.5 M9.5 7.5 A2 2 0 1 1 5.5 7.5 A2 2 0 1 1 9.5 7.5 M18.5 16.5 A2 2 0 1 1 14.5 16.5 A2 2 0 1 1 18.5 16.5', click: () => this.setState({ bulk: { pct: '10', scope: 'all', round: '5' } }) },
+        { label: 'Duyuruyu Düzenle', d: 'M4 10 V14 M7 9 V15 M7 12 L16.5 17.5 V6.5 L7 12 M19 9.5 C20.3 10.8 20.3 13.2 19 14.5', click: () => this.go('settings') },
+        { label: 'QR Kod', d: NAVD.qr, click: () => this.go('qr') },
+      ];
+      out.marketRows = d.items.filter((it) => it.price == null && !(it.variants && it.variants.length)).map((it) => {
+        const rec = d.meta.dailyPrices[it.id];
+        const savedToday = rec && rec.date === today && rec.price;
+        const draft = s.dailyDraft[it.id];
+        return {
+          name: it.name.tr,
+          status: savedToday ? 'Bugün girildi: ' + rec.price + ' TL' : 'Bugün girilmedi',
+          statusColor: savedToday ? acDk : '#8A94A0',
+          val: draft != null ? draft : (savedToday ? String(rec.price) : ''),
+          onVal: (e) => { const dd = Object.assign({}, this.state.dailyDraft); dd[it.id] = e.target.value; this.setState({ dailyDraft: dd }); },
+        };
+      });
+      out.saveDaily = () => this.saveDailyPrices();
+    }
+
+    // ---- Ürünler ----
+    if (s.page === 'items') {
+      const q = s.search.trim().toLocaleLowerCase('tr');
+      out.onQ = (e) => this.setState({ search: e.target.value });
+      out.hasQ = !!s.search;
+      out.clearQ = () => this.setState({ search: '' });
+      out.addItem = () => this.openEditor(null);
+      out.openBulk = () => this.setState({ bulk: { pct: '10', scope: 'all', round: '5' } });
+      const mkChip = (id, label) => {
+        const active = s.catFilter === id;
+        return {
+          label: label, click: () => this.setState({ catFilter: id }),
+          bg: active ? ac : 'transparent', color: active ? '#081726' : '#5D6C7B',
+          border: '1px solid ' + (active ? ac : 'rgba(22,41,61,0.25)'),
+        };
+      };
+      out.chips = [mkChip('all', 'Tümü')].concat(d.cats.map((c) => mkChip(c.id, c.tr)));
+      const list = d.items
+        .filter((it) => s.catFilter === 'all' || it.cat === s.catFilter)
+        .filter((it) => !q || (it.name.tr + ' ' + it.name.en + ' ' + it.desc.tr).toLocaleLowerCase('tr').indexOf(q) >= 0);
+      out.itemRows = list.map((it) => ({
+        thumb: it.image_url || this.ph(it.cat),
+        name: it.name.tr,
+        meta: catName(it.cat) + ' · ' + this.priceText(it),
+        dim: it.hidden || it.soldout ? 0.5 : 1,
+        hiddenChip: !!it.hidden,
+        popChip: !!it.popular,
+        soOn: !!it.soldout,
+        soBg: it.soldout ? ac : 'rgba(22,41,61,0.18)',
+        soKnob: it.soldout ? 'translateX(19px)' : 'translateX(0)',
+        soClick: () => {
+          const nd = this.clone(this.state.data);
+          const t = nd.items.find((x) => x.id === it.id);
+          if (t) { t.soldout = !t.soldout; this.commit(nd, t.soldout ? '"' + t.name.tr + '" tükendi olarak işaretlendi' : '"' + t.name.tr + '" tekrar satışta'); }
+        },
+        edit: () => this.openEditor(it),
+      }));
+      const hid = list.filter((x) => x.hidden).length;
+      out.itemCount = list.length + ' ürün' + (hid ? ' · ' + hid + ' gizli' : '');
+      out.emptyItems = list.length === 0;
+    }
+
+    // ---- Kategoriler ----
+    if (s.page === 'cats') {
+      out.catRows = d.cats.map((c, i) => {
+        const count = d.items.filter((x) => x.cat === c.id).length;
+        const isEdit = s.catEditId === c.id;
+        const canDel = count === 0 && d.cats.length > 1;
+        return {
+          isEdit: isEdit, isView: !isEdit,
+          name: c.tr, count: count + ' ürün',
+          editVal: s.catEditVal,
+          onEditVal: (e) => this.setState({ catEditVal: e.target.value }),
+          onEditKey: (e) => { if (e.key === 'Enter') this.commitCatName(); },
+          commit: () => this.commitCatName(),
+          rename: () => this.setState({ catEditId: c.id, catEditVal: c.tr }),
+          up: () => this.moveCat(i, -1), down: () => this.moveCat(i, 1),
+          upOp: i === 0 ? 0.3 : 1, downOp: i === d.cats.length - 1 ? 0.3 : 1,
+          delOp: canDel ? 1 : 0.3,
+          del: () => {
+            if (!canDel) { this.showToast('Yalnızca boş kategoriler silinebilir'); return; }
+            const nd = this.clone(this.state.data);
+            nd.cats = nd.cats.filter((x) => x.id !== c.id);
+            this.commit(nd, 'Kategori silindi');
+          },
+        };
+      });
+      out.addCat = () => {
+        const nd = this.clone(this.state.data);
+        const id = 'c' + Date.now().toString(36);
+        nd.cats.push({ id: id, tr: 'Yeni Kategori', en: 'New Category' });
+        this.commit(nd);
+        this.setState({ catEditId: id, catEditVal: 'Yeni Kategori' });
+      };
+    }
+
+    // ---- Ayarlar ----
+    if (s.page === 'settings') {
+      out.saveAnn = () => {
+        const nd = this.clone(this.state.data);
+        const tr = s.sTr.trim(), en = s.sEn.trim();
+        nd.meta.announcement = { tr: tr, en: en || tr, ar: '', ru: '' };
+        this.commit(nd, 'Duyuru kaydedildi');
+      };
+      out.saveInfo = () => {
+        const nd = this.clone(this.state.data);
+        nd.meta.wifi = s.sWifi.trim();
+        nd.meta.hours = (s.sOpen.trim() || '11:00') + ' – ' + (s.sClose.trim() || '00:00');
+        nd.meta.phone = s.sPhone.trim();
+        nd.meta.instagram = s.sInsta.trim();
+        this.commit(nd, 'Bilgiler kaydedildi');
+      };
+      out.resetClick = () => {
+        if (!s.resetArm) { this.setState({ resetArm: true }); setTimeout(() => this.setState({ resetArm: false }), 3500); return; }
+        try { localStorage.removeItem(this.LSK); } catch (e) {}
+        const nd = this.defaults();
+        this.seedDrafts(nd);
+        this.commit(nd, 'Örnek verilere dönüldü');
+        this.setState({ resetArm: false });
+      };
+    }
+
+    // ---- QR ----
+    if (s.page === 'qr') {
+      const url = (d.meta.menuUrl || 'https://yedigul.com/menu');
+      out.qrUrlShown = url;
+      if (this.Q) {
+        try { out.qrImg = this.Q.qrSvgDataUrl(url); out.hasQr = true; } catch (e) {}
+      }
+      out.saveQrUrl = () => {
+        const nd = this.clone(this.state.data);
+        nd.meta.menuUrl = s.qrUrl.trim() || 'https://yedigul.com/menu';
+        this.commit(nd, 'Bağlantı kaydedildi');
+      };
+      out.downloadQr = () => {
+        if (!this.Q) return;
+        try {
+          const a = document.createElement('a');
+          a.href = this.Q.qrPngDataUrl(url, 16);
+          a.download = 'yedigul-menu-qr.png';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          this.showToast('QR kod indirildi');
+        } catch (e) {}
+      };
+    }
+
+    // ---- Ürün formu ----
+    if (s.form) {
+      const f = s.form;
+      const sw = (on, click) => ({ on: on, bg: on ? ac : 'rgba(22,41,61,0.18)', knob: on ? 'translateX(20px)' : 'translateX(0)', click: click });
+      const chip = (label, on, click) => ({
+        label: label, click: click,
+        bg: on ? ac : 'transparent', color: on ? '#081726' : '#5D6C7B',
+        border: '1px solid ' + (on ? ac : 'rgba(22,41,61,0.25)'),
+      });
+      out.editor = {
+        title: f.id ? 'Ürünü Düzenle' : 'Yeni Ürün',
+        isEdit: !!f.id,
+        cancel: () => this.setState({ form: null, confirmDel: false }),
+        save: () => this.saveItem(),
+        del: () => this.deleteItem(),
+        delLabel: s.confirmDel ? 'Emin misiniz? Silmek için tekrar dokunun' : 'Ürünü Sil',
+        delBg: s.confirmDel ? '#A33B2E' : 'transparent',
+        delColor: s.confirmDel ? '#FBF7ED' : '#A33B2E',
+        err: s.formErr, hasErr: !!s.formErr,
+        eName: f.eName, onEName: (e) => this.setForm({ eName: e.target.value }),
+        eDesc: f.eDesc, onEDesc: (e) => this.setForm({ eDesc: e.target.value }),
+        eCat: f.eCat, onECat: (e) => this.setForm({ eCat: e.target.value }),
+        catOpts: d.cats.map((c) => ({ id: c.id, label: c.tr })),
+        ePortion: f.ePortion, onEPortion: (e) => this.setForm({ ePortion: e.target.value }),
+        eKcal: f.eKcal, onEKcal: (e) => this.setForm({ eKcal: e.target.value }),
+        ePrice: f.ePrice, onEPrice: (e) => this.setForm({ ePrice: e.target.value }),
+        eDaily: f.eDaily, onEDaily: (e) => this.setForm({ eDaily: e.target.value }),
+        isFixed: f.mode === 'fixed', isMarket: f.mode === 'market',
+        modeChips: [
+          chip('Sabit fiyat', f.mode === 'fixed', () => this.setForm({ mode: 'fixed' })),
+          chip('Piyasa fiyatı (günlük)', f.mode === 'market', () => this.setForm({ mode: 'market' })),
+        ],
+        badgeChips: [
+          chip('Popüler', f.popular, () => this.setForm({ popular: !f.popular })),
+          chip('Şefin Önerisi', f.chef, () => this.setForm({ chef: !f.chef })),
+          chip('Glutensiz', f.gf, () => this.setForm({ gf: !f.gf })),
+          chip('Vejetaryen', f.veg, () => this.setForm({ veg: !f.veg })),
+        ],
+        swHidden: sw(f.hidden, () => this.setForm({ hidden: !f.hidden })),
+        swSoldout: sw(f.soldout, () => this.setForm({ soldout: !f.soldout })),
+        vRows: f.variants.map((v, i) => ({
+          name: v.name, price: v.price,
+          onName: (e) => { const vs = f.variants.slice(); vs[i] = Object.assign({}, vs[i], { name: e.target.value }); this.setForm({ variants: vs }); },
+          onPrice: (e) => { const vs = f.variants.slice(); vs[i] = Object.assign({}, vs[i], { price: e.target.value }); this.setForm({ variants: vs }); },
+          del: () => { const vs = f.variants.slice(); vs.splice(i, 1); this.setForm({ variants: vs }); },
+        })),
+        addVariant: () => this.setForm({ variants: f.variants.concat([{ name: '', price: '' }]) }),
+      };
+    }
+
+    // ---- Toplu zam ----
+    if (s.bulk) {
+      const b = s.bulk;
+      const setB = (patch) => this.setState({ bulk: Object.assign({}, b, patch) });
+      const pct = parseFloat(String(b.pct).replace(',', '.')) || 0;
+      const rd = parseInt(b.round, 10) || 1;
+      const r = (p) => Math.max(1, Math.round((p * (1 + pct / 100)) / rd) * rd);
+      const affected = this.bulkAffected(b, d);
+      const withPrice = affected.filter((x) => x.price != null).slice(0, 3);
+      out.bulk = {
+        cancel: () => this.setState({ bulk: null }),
+        pctVal: String(b.pct),
+        onPct: (e) => setB({ pct: e.target.value }),
+        minus: () => setB({ pct: String((parseFloat(String(b.pct).replace(',', '.')) || 0) - 5) }),
+        plus: () => setB({ pct: String((parseFloat(String(b.pct).replace(',', '.')) || 0) + 5) }),
+        chips: ['5', '10', '15', '25'].map((p) => ({
+          label: '%' + p, click: () => setB({ pct: p }),
+          bg: String(b.pct) === p ? ac : 'transparent',
+          color: String(b.pct) === p ? '#081726' : '#5D6C7B',
+          border: '1px solid ' + (String(b.pct) === p ? ac : 'rgba(22,41,61,0.25)'),
+        })),
+        scopeVal: b.scope, onScope: (e) => setB({ scope: e.target.value }),
+        scopeOpts: d.cats.map((c) => ({ id: c.id, label: c.tr })),
+        roundVal: b.round, onRound: (e) => setB({ round: e.target.value }),
+        preview: withPrice.map((it) => ({ name: it.name.tr, old: this.fmtTL(it.price), next: this.fmtTL(r(it.price)) })),
+        hasMore: affected.length > withPrice.length,
+        moreLabel: '+ ' + (affected.length - withPrice.length) + ' ürün daha etkilenecek',
+        applyLabel: 'Uygula · ' + affected.length + ' ürün',
+        apply: () => this.applyBulk(),
+      };
+    }
+
+    return out;
+  }
+
+  trySubmit() {
+    if (this.state.pw === '2180') {
+      try { localStorage.setItem('yedigul.admin.session', '1'); } catch (e) {}
+      this.setState({ authed: true, pw: '', pwErr: false });
+    } else {
+      this.setState({ pwErr: true });
+    }
+  }
+}
+</script>
+</body>
+</html>
