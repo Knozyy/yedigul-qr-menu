@@ -10,6 +10,7 @@ import CategoryBar from '../components/CategoryBar';
 import SearchFilters from '../components/SearchFilters';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
+import ScrollTopButton from '../components/ScrollTopButton';
 
 const localize = (field, lang) => (field ? field[lang] || field.en || '' : '');
 
@@ -371,6 +372,8 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         isFav={selectedId ? favorites.includes(selectedId) : false}
         onToggleFav={toggleFav}
       />
+
+      <ScrollTopButton label={ui.toTop} />
     </div>
   );
 }
