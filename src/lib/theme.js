@@ -100,3 +100,24 @@ export function getThemeVars(dark, accent) {
     '--thumb-ink': 'rgba(21,41,77,.5)',
   };
 }
+
+// Yönetim paneli ("Boğaz" editoryal) token'ları — tek mod (krem sayfa + lacivert kabuk).
+// Menü getMenuThemeVars ve eski getThemeVars'a dokunulmaz.
+export function getAdminThemeVars() {
+  const gold = '#C8902F';
+  return {
+    '--ink': '#0A1F35',
+    '--ink-2': '#0F2A46',
+    '--cream': '#FBF7ED',
+    '--card': '#FFFDF6',
+    '--card-2': '#FDFAF2',
+    '--text': '#16293D',
+    '--muted': '#8A94A0',
+    '--muted-2': '#5D6C7B',
+    '--gold': gold,
+    '--gold-dk': '#8F6318',
+    '--gold-lt': '#E2B45C',
+    '--gold-soft': `${gold}26`,
+    '--danger': '#A33B2E',
+  };
+}
