@@ -29,7 +29,8 @@ export function rowToPublicItem(row) {
     id: row.id,
     cat: row.category_id,
     thumb: row.name_en.toUpperCase(),
-    price: row.is_market_price ? null : row.price,
+    // Piyasa ürününe günlük fiyat girildiyse onu göster; girilmediyse "Piyasa Fiyatı" (null).
+    price: row.is_market_price && row.price == null ? null : row.price,
     kcal: row.kcal ?? null,
     portion: row.portion ?? null,
     image_url: row.image_url,
@@ -92,7 +93,7 @@ export function createMenuRouter(db) {
       .prepare(
         `SELECT p.* FROM products p
          JOIN categories c ON c.id = p.category_id
-         WHERE p.is_available = 1 AND c.is_active = 1
+         WHERE p.is_available = 1 AND p.is_hidden = 0 AND c.is_active = 1
          ORDER BY p.sort`
       )
       .all();

@@ -32,7 +32,8 @@ export function openDb(path) {
       alg_en          TEXT NOT NULL DEFAULT '[]',
       sort            INTEGER NOT NULL DEFAULT 0,
       kcal            INTEGER,
-      portion         TEXT
+      portion         TEXT,
+      is_hidden       INTEGER NOT NULL DEFAULT 0
     );
     CREATE TABLE IF NOT EXISTS settings (
       key   TEXT PRIMARY KEY,
@@ -61,6 +62,9 @@ export function openDb(path) {
   }
   if (!cols.includes('portion')) {
     db.exec('ALTER TABLE products ADD COLUMN portion TEXT');
+  }
+  if (!cols.includes('is_hidden')) {
+    db.exec('ALTER TABLE products ADD COLUMN is_hidden INTEGER NOT NULL DEFAULT 0');
   }
   if (!cols.includes('variants')) {
     db.exec("ALTER TABLE products ADD COLUMN variants TEXT NOT NULL DEFAULT '[]'");

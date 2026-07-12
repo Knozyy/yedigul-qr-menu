@@ -8,6 +8,45 @@ import { api } from '../../lib/api';
 //  - Aynı QR, sunucunun yayınlandığı her domainde çalışır.
 // "Genel adres" alanı, QR'da hangi domainin kodlanacağını belirler (varsayılan:
 // panele girilen adres). Domaininizi buraya yazın ki basılan QR doğru olsun.
+
+const cardStyle = {
+  background: 'var(--card)',
+  border: '1px solid rgba(22,41,61,0.10)',
+  borderRadius: 16,
+  boxShadow: '0 1px 2px rgba(10,31,53,0.04)',
+  padding: 18,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 10,
+};
+const qrCardStyle = { ...cardStyle, alignItems: 'center', textAlign: 'center', padding: 24, gap: 14 };
+const labelStyle = { fontSize: 11, letterSpacing: 1.8, textTransform: 'uppercase', color: 'var(--muted)', fontWeight: 600 };
+const inputStyle = {
+  width: '100%', height: 46, padding: '0 14px', background: '#FFFFFF',
+  border: '1px solid rgba(22,41,61,0.22)', borderRadius: 12, color: 'var(--text)', fontSize: 14.5,
+};
+const smallHintStyle = { fontSize: 12, color: 'var(--muted)', lineHeight: 1.5 };
+const downloadBtnStyle = {
+  display: 'flex', alignItems: 'center', gap: 8, height: 46, padding: '0 22px', border: 'none',
+  borderRadius: 999, background: 'var(--gold)', color: '#081726', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+};
+const ghostBtnStyle = {
+  alignSelf: 'flex-start', height: 42, padding: '0 18px', background: 'transparent',
+  border: '1px solid rgba(22,41,61,0.30)', borderRadius: 999, color: 'var(--text)', fontSize: 13, fontWeight: 500, cursor: 'pointer',
+};
+const saveBtnStyle = {
+  alignSelf: 'flex-start', height: 44, padding: '0 20px', border: 'none', borderRadius: 999,
+  background: 'var(--navy-2)', color: '#fff', fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
+};
+
+function WaveDivider() {
+  return (
+    <svg width="30" height="9" viewBox="0 0 38 10">
+      <path d="M1 5.5 C4 1.5 7 1.5 10 5.5 C13 9.5 16 9.5 19 5.5 C22 1.5 25 1.5 28 5.5 C31 9.5 34 9.5 37 5.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function QrPanel() {
   const [baseUrl, setBaseUrl] = useState('');
   const [menuPath, setMenuPath] = useState('/menu/');
@@ -77,54 +116,53 @@ export default function QrPanel() {
     else w.print();
   }
 
-  const field = 'px-3 py-2 rounded-lg border bg-transparent outline-none w-full';
-  const fieldStyle = { borderColor: 'var(--border-strong)', color: 'var(--text)' };
-
   return (
-    <div className="mb-4 p-4 rounded-xl border flex flex-col gap-3" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
-      <h2 className="font-outfit text-base font-semibold" style={{ color: 'var(--text)' }}>QR Kod</h2>
-
-      <div className="flex flex-col items-center gap-2 py-2" ref={wrapRef}>
-        <div className="p-3 rounded-xl bg-white">
-          <QRCodeCanvas value={qrUrl} size={200} level="M" includeMargin={false} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 460 }}>
+      <div style={qrCardStyle} ref={wrapRef}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'var(--gold-dk)' }}>
+          <WaveDivider />
+          <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 600, color: 'var(--text)' }}>Yedigül</span>
+          <WaveDivider />
         </div>
-        <span className="text-[12px] break-all text-center" style={{ color: 'var(--muted)' }}>
-          QR içeriği: <b>{qrUrl}</b>
-        </span>
-        <span className="text-[11px] break-all text-center" style={{ color: 'var(--muted)' }}>
-          → yönlendirir: {targetUrl}
-        </span>
-      </div>
+        <span style={{ fontSize: 11, letterSpacing: 2.5, textTransform: 'uppercase', color: 'var(--muted)' }}>Menü için okutun</span>
 
-      <div className="flex gap-2 justify-center flex-wrap">
-        <button type="button" onClick={() => download('png')} className="px-4 py-2 rounded-lg font-semibold" style={{ background: 'var(--gold)', color: '#fff' }}>
-          PNG indir
-        </button>
-        <button type="button" onClick={printQr} className="px-4 py-2 rounded-lg border" style={{ borderColor: 'var(--border-strong)', color: 'var(--text)' }}>
-          Yazdır
-        </button>
-      </div>
+        <div style={{ padding: 12, borderRadius: 14, border: '1px solid rgba(22,41,61,0.10)', background: '#fff' }}>
+          <QRCodeCanvas value={qrUrl} size={236} level="M" includeMargin={false} />
+        </div>
 
-      <div className="flex flex-col gap-2 mt-1">
-        <label className="text-[12px]" style={{ color: 'var(--muted)' }}>
-          Genel adres (domain) — QR bu adresi kodlar. Boşsa panelin adresi kullanılır.
-        </label>
-        <input className={field} style={fieldStyle} placeholder="https://yedigul.com" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} />
-        <label className="text-[12px]" style={{ color: 'var(--muted)' }}>
-          Menü yolu (ileri düzey) — QR'ın yönlendireceği yer. Varsayılan: /menu/
-        </label>
-        <input className={field} style={fieldStyle} placeholder="/menu/" value={menuPath} onChange={(e) => setMenuPath(e.target.value)} />
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={onSave} className="px-4 py-2 rounded-lg font-semibold" style={{ background: 'var(--navy-2)', color: '#fff' }}>
-            Kaydet
+        <span style={{ fontSize: 12.5, color: 'var(--muted)', wordBreak: 'break-all' }}>{qrUrl}</span>
+
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <button type="button" onClick={() => download('png')} style={downloadBtnStyle}>
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 4 V15 M7.5 11 L12 15.5 L16.5 11 M5 19.5 H19" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <span>PNG İndir</span>
           </button>
-          {msg && <span className="text-sm" style={{ color: 'var(--gold)' }}>{msg}</span>}
-          {err && <span className="text-sm" style={{ color: '#ef6b6b' }}>{err}</span>}
+          <button type="button" onClick={printQr} style={ghostBtnStyle}>Yazdır</button>
+        </div>
+
+        <span style={smallHintStyle}>→ yönlendirir: {targetUrl}</span>
+      </div>
+
+      <div style={cardStyle}>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span style={labelStyle}>Genel Adres (Domain)</span>
+          <input style={inputStyle} placeholder="https://yedigul.com" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} />
+        </label>
+        <span style={smallHintStyle}>QR bu adresi kodlar. Boşsa panelin adresi kullanılır.</span>
+
+        <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span style={labelStyle}>Menü Yolu (İleri Düzey)</span>
+          <input style={inputStyle} placeholder="/menu/" value={menuPath} onChange={(e) => setMenuPath(e.target.value)} />
+        </label>
+        <span style={smallHintStyle}>QR'ın yönlendireceği yer. Varsayılan: /menu/</span>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <button type="button" onClick={onSave} style={saveBtnStyle}>Kaydet</button>
+          {msg && <span style={{ fontSize: 13, color: 'var(--gold)' }}>{msg}</span>}
+          {err && <span style={{ fontSize: 13, color: '#ef6b6b' }}>{err}</span>}
         </div>
         {savedBase && (
-          <span className="text-[11px]" style={{ color: 'var(--muted)' }}>
-            Kayıtlı genel adres: {savedBase}
-          </span>
+          <span style={smallHintStyle}>Kayıtlı genel adres: {savedBase}</span>
         )}
       </div>
     </div>

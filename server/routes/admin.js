@@ -25,7 +25,7 @@ const JSON_FIELDS = [
 const PRODUCT_FIELDS = [
   'category_id', 'name_tr', 'name_en', 'name_ar', 'name_ru',
   'desc_tr', 'desc_en', 'desc_ar', 'desc_ru', 'price',
-  'is_market_price', 'is_available', 'popular', 'chef',
+  'is_market_price', 'is_available', 'popular', 'chef', 'is_hidden',
   'diet', 'ing_tr', 'ing_en', 'ing_ar', 'ing_ru',
   'alg_tr', 'alg_en', 'alg_ar', 'alg_ru', 'sort', 'kcal', 'portion', 'variants',
 ];
@@ -72,7 +72,7 @@ const FIELD_LABELS = {
   desc_tr: 'açıklama (TR)', desc_en: 'açıklama (EN)',
   desc_ar: 'açıklama (AR)', desc_ru: 'açıklama (RU)', price: 'fiyat',
   is_market_price: 'piyasa fiyatı', is_available: 'stok', popular: 'popüler',
-  chef: 'şef önerisi', sort: 'sıra', kcal: 'kalori', portion: 'porsiyon',
+  chef: 'şef önerisi', is_hidden: 'gizli', sort: 'sıra', kcal: 'kalori', portion: 'porsiyon',
   diet: 'diyet', ing_tr: 'içindekiler (TR)', ing_en: 'içindekiler (EN)',
   ing_ar: 'içindekiler (AR)', ing_ru: 'içindekiler (RU)',
   alg_tr: 'alerjenler (TR)', alg_en: 'alerjenler (EN)',
@@ -211,13 +211,13 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         `INSERT INTO products
           (id, category_id, name_tr, name_en, name_ar, name_ru,
            desc_tr, desc_en, desc_ar, desc_ru, price, is_market_price,
-           image_url, images, is_available, popular, chef, diet,
+           image_url, images, is_available, popular, chef, is_hidden, diet,
            ing_tr, ing_en, ing_ar, ing_ru, alg_tr, alg_en, alg_ar, alg_ru,
            sort, kcal, portion, variants)
          VALUES
           (@id, @category_id, @name_tr, @name_en, @name_ar, @name_ru,
            @desc_tr, @desc_en, @desc_ar, @desc_ru, @price, @is_market_price,
-           NULL, '[]', @is_available, @popular, @chef, @diet,
+           NULL, '[]', @is_available, @popular, @chef, @is_hidden, @diet,
            @ing_tr, @ing_en, @ing_ar, @ing_ru, @alg_tr, @alg_en, @alg_ar, @alg_ru,
            @sort, @kcal, @portion, @variants)`
       ).run({
@@ -236,6 +236,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
         is_available: b.is_available === 0 ? 0 : 1,
         popular: b.popular ? 1 : 0,
         chef: b.chef ? 1 : 0,
+        is_hidden: b.is_hidden ? 1 : 0,
         diet: JSON.stringify(b.diet ?? []),
         ing_tr: JSON.stringify(b.ing_tr ?? []),
         ing_en: JSON.stringify(b.ing_en ?? []),
@@ -275,7 +276,7 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       if (!(f in b)) continue;
       let v = b[f];
       if (JSON_FIELDS.includes(f)) v = JSON.stringify(v ?? []);
-      else if (['is_market_price', 'is_available', 'popular', 'chef'].includes(f)) v = v ? 1 : 0;
+      else if (['is_market_price', 'is_available', 'popular', 'chef', 'is_hidden'].includes(f)) v = v ? 1 : 0;
       sets.push(`${f} = @${f}`);
       params[f] = v;
     }
