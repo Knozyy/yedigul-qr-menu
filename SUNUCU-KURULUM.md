@@ -66,6 +66,20 @@ pm2 start server/index.js --name yedigul
 pm2 save && pm2 startup
 ```
 
+## Güncelleme (deploy)
+Kod GitHub'a push'landıktan sonra sunucuda tek komut:
+```
+cd /root/yedigul && ./update.sh
+```
+Sırasıyla: `git pull` → `npm ci` → `npm run build` (menü/admin derlemesi) →
+servis restart (systemd `yedigul` veya pm2) → `:3001` sağlık kontrolü.
+İlk sefer gerekirse: `chmod +x update.sh`.
+
+> Neden restart şart? `server/` değişiklikleri (ör. CSP başlıkları) yalnızca
+> süreç yeniden başlayınca geçerli olur; `www/` (ana sayfa + rehber sayfaları)
+> statik servis edildiği için pull sonrası anında yansır, `/menu/` ise `dist/`
+> derlemesini gerektirir.
+
 ## Veri nerede?
 - Menü/fiyatlar: `server/data.db` (ilk açılışta örnek menüyle kendiliğinden oluşur)
 - Ürün görselleri: `server/uploads/`
