@@ -94,7 +94,7 @@ export default function DashboardPage() {
           onDeleted={() => { setEditing(null); reload(); showToast('Ürün silindi'); }}
         />
       ) : view === 'items' ? (
-        <ProductsView categories={categories} products={products} onEdit={setEditing} onReload={reload} onError={setError} onAdd={() => setEditing('new')} />
+        <ProductsView categories={categories} products={products} onEdit={setEditing} onReload={reload} onError={setError} onAdd={() => setEditing('new')} onBulk={() => setBulk({ pct: '10', scope: 'all', round: '5' })} />
       ) : view === 'cats' ? (
         <CategoryForm categories={categories} products={products} onChanged={() => { reload(); showToast('Güncellendi'); }} />
       ) : view === 'settings' ? (
