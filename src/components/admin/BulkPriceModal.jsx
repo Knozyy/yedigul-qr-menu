@@ -57,6 +57,7 @@ export default function BulkPriceModal({ products, categories, onClose, onApplie
     setBusy(true);
     setError('');
     let count = 0;
+    let lastError = '';
     for (const p of affected) {
       const body = {};
       if (p.price != null) body.price = next(p.price);
@@ -65,10 +66,14 @@ export default function BulkPriceModal({ products, categories, onClose, onApplie
         await api.patch(`/admin/products/${p.id}`, body);
         count++;
       } catch (err) {
-        setError(err.message);
+        lastError = err.message;
       }
     }
     setBusy(false);
+    if (count === 0) {
+      setError(lastError || 'Güncelleme başarısız oldu, tekrar deneyin.');
+      return;
+    }
     onApplied(count);
   }
 
