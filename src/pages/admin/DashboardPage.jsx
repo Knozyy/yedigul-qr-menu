@@ -85,15 +85,7 @@ export default function DashboardPage() {
 
       {error && <p className="text-sm mb-2" style={{ color: '#ef6b6b' }}>{error}</p>}
 
-      {editing ? (
-        <ProductForm
-          product={editing === 'new' ? null : editing}
-          categories={categories}
-          onSaved={() => { reload(); showToast('Kaydedildi'); }}
-          onCancel={() => setEditing(null)}
-          onDeleted={() => { setEditing(null); reload(); showToast('Ürün silindi'); }}
-        />
-      ) : view === 'items' ? (
+      {view === 'items' ? (
         <ProductsView categories={categories} products={products} onEdit={setEditing} onReload={reload} onError={setError} onAdd={() => setEditing('new')} onBulk={() => setBulk({ pct: '10', scope: 'all', round: '5' })} />
       ) : view === 'cats' ? (
         <CategoryForm categories={categories} products={products} onChanged={() => { reload(); showToast('Güncellendi'); }} />
@@ -104,6 +96,16 @@ export default function DashboardPage() {
       ) : view === 'home' ? (
         <OverviewView products={products} categories={categories} onQuick={handleQuick} onSaveDaily={handleSaveDaily} />
       ) : null}
+
+      {editing && (
+        <ProductForm
+          product={editing === 'new' ? null : editing}
+          categories={categories}
+          onSaved={() => { reload(); showToast('Kaydedildi'); }}
+          onCancel={() => setEditing(null)}
+          onDeleted={() => { setEditing(null); reload(); showToast('Ürün silindi'); }}
+        />
+      )}
 
       {bulk && (
         <BulkPriceModal
