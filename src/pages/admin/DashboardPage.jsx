@@ -8,6 +8,7 @@ import ProductForm from '../../components/admin/ProductForm';
 import CategoryForm from '../../components/admin/CategoryForm';
 import InfoPanel from '../../components/admin/InfoPanel';
 import OverviewView from '../../components/admin/OverviewView';
+import BulkPriceModal from '../../components/admin/BulkPriceModal';
 import Toast from '../../components/Toast';
 
 const QrPanel = import.meta.env.VITE_STATIC === '1' ? null : lazy(() => import('../../components/admin/QrPanel'));
@@ -103,6 +104,15 @@ export default function DashboardPage() {
       ) : view === 'home' ? (
         <OverviewView products={products} categories={categories} onQuick={handleQuick} onSaveDaily={handleSaveDaily} />
       ) : null}
+
+      {bulk && (
+        <BulkPriceModal
+          products={products}
+          categories={categories}
+          onClose={() => setBulk(null)}
+          onApplied={(n) => { setBulk(null); reload(); showToast(n + ' ürünün fiyatı güncellendi'); }}
+        />
+      )}
 
       <Toast text={toast} />
     </AdminShell>
