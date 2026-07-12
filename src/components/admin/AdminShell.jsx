@@ -104,7 +104,9 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <a
                   href="/menu/"
-                  aria-label="Menüyü Görüntüle"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Menüyü yeni sekmede görüntüle"
                   style={{ width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold-lt)' }}
                 >
                   <MenuLinkIcon size={19} />
@@ -188,6 +190,9 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
             >
               <a
                 href="/menu/"
+                target="_blank"
+                rel="noopener"
+                title="Menüyü yeni sekmede aç"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
