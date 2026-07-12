@@ -11,6 +11,7 @@ import SearchFilters from '../components/SearchFilters';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
+import HomeLink from '../components/HomeLink';
 
 const localize = (field, lang) => (field ? field[lang] || field.en || '' : '');
 
@@ -206,6 +207,10 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         transition: 'background 0.35s ease, color 0.35s ease',
       }}
     >
+      <div className="max-w-[980px] mx-auto px-4 pt-3">
+        <HomeLink label={ui.home} rtl={lang === 'ar'} />
+      </div>
+
       <Header
         ui={ui}
         dark={dark}
