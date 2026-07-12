@@ -15,7 +15,10 @@ function nextPrice(p, pct, rd) {
 // kapsama uyan VE sabit fiyatlı (piyasa fiyatlı olmayan) ürünler
 function bulkAffected(products, scope) {
   return products.filter(
-    (p) => (scope === 'all' || p.category_id === scope) && (p.price != null || (p.variants && p.variants.length))
+    (p) =>
+      (scope === 'all' || p.category_id === scope) &&
+      !p.is_market_price &&
+      (p.price != null || (p.variants && p.variants.length))
   );
 }
 

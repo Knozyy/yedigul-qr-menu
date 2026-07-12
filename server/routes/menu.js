@@ -29,7 +29,8 @@ export function rowToPublicItem(row) {
     id: row.id,
     cat: row.category_id,
     thumb: row.name_en.toUpperCase(),
-    price: row.is_market_price ? null : row.price,
+    // Piyasa ürününe günlük fiyat girildiyse onu göster; girilmediyse "Piyasa Fiyatı" (null).
+    price: row.is_market_price && row.price == null ? null : row.price,
     kcal: row.kcal ?? null,
     portion: row.portion ?? null,
     image_url: row.image_url,
