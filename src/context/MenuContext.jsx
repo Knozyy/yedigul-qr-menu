@@ -1,5 +1,6 @@
 import { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../lib/api';
+import { getDeviceId } from '../lib/deviceId';
 
 const MenuContext = createContext(null);
 const POLL_MS = 30000;
@@ -51,6 +52,13 @@ export function MenuProvider({ children }) {
     const t = setInterval(reload, POLL_MS);
     return () => clearInterval(t);
   }, [reload]);
+
+  // Cihaz başına görüntülenme kaydı: uygulama açılışında bir kez pinglenir.
+  // 6 saatlik tekrarsızlığı sunucu uygular; polling'deki reload SAYMAZ.
+  useEffect(() => {
+    if (IS_STATIC) return;
+    api.post('/menu/view', { id: getDeviceId() }).catch(() => {});
+  }, []);
 
   return (
     <MenuContext.Provider value={{ categories, items, meta, loading, error, reload }}>

@@ -53,6 +53,12 @@ export function openDb(path) {
       n   INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (day, key)
     );
+    -- Cihaz başına menü görüntülenme tekrarsızlığı: son görülme zamanı tutulur.
+    -- Yalnız pencere içindeki (son 6 saat) cihazlar kalır; eskiler temizlenir.
+    CREATE TABLE IF NOT EXISTS menu_views (
+      device_id TEXT PRIMARY KEY,
+      last_at   INTEGER NOT NULL
+    );
   `);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
   // eski data.db'lere eksik kolonları veri kaybı olmadan ekle
@@ -123,6 +129,25 @@ export function bumpStat(db, key) {
     `INSERT INTO stats_daily (day, key, n) VALUES (?, ?, 1)
      ON CONFLICT(day, key) DO UPDATE SET n = n + 1`
   ).run(localDay(), key);
+}
+
+// Aynı cihaz 6 saat içinde tekrar girerse görüntülenme sayılmaz; 6 saat
+// geçince yeniden sayılır. Karar sunucuda verilir (istemci saatine güvenilmez).
+// Pencere dışı kayıtlar her çağrıda temizlenir → tablo sınırsız büyümez.
+// deviceId: istemcinin localStorage'ında tuttuğu rastgele, anonim token.
+const VIEW_WINDOW_MS = 6 * 60 * 60 * 1000;
+
+export function countMenuView(db, deviceId) {
+  const now = Date.now();
+  db.prepare('DELETE FROM menu_views WHERE last_at < ?').run(now - VIEW_WINDOW_MS);
+  const seen = db.prepare('SELECT 1 FROM menu_views WHERE device_id = ?').get(deviceId);
+  if (seen) return false; // 6 saat içinde zaten sayıldı
+  db.prepare(
+    `INSERT INTO menu_views (device_id, last_at) VALUES (?, ?)
+     ON CONFLICT(device_id) DO UPDATE SET last_at = excluded.last_at`
+  ).run(deviceId, now);
+  bumpStat(db, 'menu_view');
+  return true;
 }
 
 // Basit key/value ayar deposu (QR yönlendirmesi, genel adres vb.)

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getSetting, bumpStat } from '../db.js';
+import { getSetting, countMenuView } from '../db.js';
 
 // AR/RU çevirisi boş bırakılabilir: boşsa EN'e, o da boşsa TR'ye düşer
 const fallback = (v, en, tr) => {
@@ -77,8 +77,17 @@ export function publicMeta(db) {
 
 export function createMenuRouter(db) {
   const router = Router();
+
+  // Görüntülenme sayımı BURADA yapılmaz: bu uç nokta 30 sn'de bir yoklanır
+  // (polling) ve her yenilemede çağrılır. Sayım ayrı /view uç noktasında,
+  // cihaz başına 6 saatlik tekrarsızlıkla yapılır.
+  router.post('/view', (req, res) => {
+    const id = typeof req.body?.id === 'string' ? req.body.id.trim().slice(0, 64) : '';
+    if (!id) return res.status(400).json({ counted: false });
+    res.json({ counted: countMenuView(db, id) });
+  });
+
   router.get('/', (req, res) => {
-    bumpStat(db, 'menu_view');
     const categories = db
       .prepare('SELECT id, name_tr, name_en, name_ar, name_ru FROM categories WHERE is_active = 1 ORDER BY sort')
       .all()

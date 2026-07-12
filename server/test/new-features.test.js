@@ -267,15 +267,34 @@ test('history requires auth and honors limit', async () => {
 
 // ---- istatistikler ----
 
+const postView = (id) =>
+  fetch(`${base}/api/menu/view`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ id }),
+  }).then((r) => r.json());
+
 test('menu views and qr scans are counted per day', async () => {
   const before = (await req('GET', '/api/admin/stats')).data;
-  await fetch(`${base}/api/menu`);
+  await postView('device-' + Math.random());
+  await fetch(`${base}/api/menu`); // veri çekmek SAYMAMALI
   await fetch(`${base}/q`, { redirect: 'manual' });
   const after = (await req('GET', '/api/admin/stats')).data;
   assert.equal(after.today.menu_view, before.today.menu_view + 1);
   assert.equal(after.today.qr_scan, before.today.qr_scan + 1);
   assert.ok(after.week.menu_view >= after.today.menu_view);
   assert.ok(after.month.menu_view >= after.week.menu_view);
+});
+
+test('menu view is counted once per device within the 6h window', async () => {
+  const before = (await req('GET', '/api/admin/stats')).data;
+  const dev = 'dedup-' + Math.random();
+  const first = await postView(dev);
+  const second = await postView(dev); // aynı cihaz, 6 saat içinde → saymaz
+  const after = (await req('GET', '/api/admin/stats')).data;
+  assert.equal(first.counted, true);
+  assert.equal(second.counted, false);
+  assert.equal(after.today.menu_view, before.today.menu_view + 1); // yalnız 1 arttı
 });
 
 test('stats aggregate across days (older days count toward month, not today)', () => {
