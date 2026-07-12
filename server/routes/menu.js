@@ -92,7 +92,7 @@ export function createMenuRouter(db) {
       .prepare(
         `SELECT p.* FROM products p
          JOIN categories c ON c.id = p.category_id
-         WHERE p.is_available = 1 AND c.is_active = 1
+         WHERE p.is_available = 1 AND p.is_hidden = 0 AND c.is_active = 1
          ORDER BY p.sort`
       )
       .all();
