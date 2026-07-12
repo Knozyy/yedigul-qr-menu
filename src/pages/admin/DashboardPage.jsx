@@ -7,6 +7,7 @@ import ProductsView from '../../components/admin/ProductsView';
 import ProductForm from '../../components/admin/ProductForm';
 import CategoryForm from '../../components/admin/CategoryForm';
 import InfoPanel from '../../components/admin/InfoPanel';
+import OverviewView from '../../components/admin/OverviewView';
 import Toast from '../../components/Toast';
 
 const QrPanel = import.meta.env.VITE_STATIC === '1' ? null : lazy(() => import('../../components/admin/QrPanel'));
@@ -35,6 +36,7 @@ export default function DashboardPage() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null); // ürün | 'new' | null
+  const [bulk, setBulk] = useState(null); // Toplu Zam modal state — modal Task 7'de gelecek
   const [toast, setToast] = useState('');
   const toastTimer = useRef(null);
 
@@ -51,6 +53,25 @@ export default function DashboardPage() {
   useEffect(() => { reload(); }, [reload]);
 
   async function onLogout() { await logout(); navigate('/admin/login', { replace: true }); }
+
+  function handleQuick(action) {
+    if (action === 'newItem') { setView('items'); setEditing('new'); }
+    else if (action === 'bulk') { setBulk({ pct: '10', scope: 'all', round: '5' }); }
+    else if (action === 'settings') { setView('settings'); }
+    else if (action === 'qr') { setView('qr'); }
+  }
+
+  async function handleSaveDaily(draftMap) {
+    try {
+      for (const id of Object.keys(draftMap)) {
+        if (Number(draftMap[id]) > 0) await api.patch(`/admin/products/${id}`, { price: Number(draftMap[id]) });
+      }
+      await reload();
+      showToast('Günün fiyatları kaydedildi');
+    } catch (e) {
+      setError(e.message);
+    }
+  }
 
   const [pageTitle, pageSub] = TITLES[view] || TITLES.home;
 
@@ -80,7 +101,7 @@ export default function DashboardPage() {
       ) : view === 'qr' && QrPanel ? (
         <Suspense fallback={<p className="text-sm" style={{ color: 'var(--muted)' }}>QR yükleniyor…</p>}><QrPanel /></Suspense>
       ) : view === 'home' ? (
-        <div style={{ padding: '40px 8px', color: 'var(--muted)', fontSize: 14 }}>Genel Bakış hazırlanıyor…</div>
+        <OverviewView products={products} categories={categories} onQuick={handleQuick} onSaveDaily={handleSaveDaily} />
       ) : null}
 
       <Toast text={toast} />
