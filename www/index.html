@@ -306,15 +306,15 @@
           </div>
 
           <div class="contact__map reveal" data-delay="2">
-            <!-- OpenStreetMap embed: Google'ın output=embed iframe'i X-Frame-Options
-                 ile engelleniyor; OSM her zaman çerçevelenebilir. Kesin konum için
-                 alttaki buton Google Haritalar'ı açar. -->
+            <!-- Yandex Haritalar widget'ı: Türkiye'de sokak/bina detayı OSM'den iyi,
+                 API anahtarı gerektirmez ve çerçevelenebilir (Google output=embed
+                 X-Frame-Options ile engelli). Kesin konum: 41.17343, 29.08846. -->
             <iframe
               title="Yedigül Restaurant konumu — Anadolu Kavağı, Beykoz"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=29.073102%2C41.163679%2C29.085102%2C41.169679&layer=mapnik&marker=41.166679%2C29.079102"
+              src="https://yandex.com.tr/map-widget/v1/?ll=29.088460%2C41.173430&z=17&pt=29.088460,41.173430,pm2rdm&l=map"
               loading="lazy"
+              allowfullscreen
               referrerpolicy="no-referrer-when-downgrade"></iframe>
-            <a class="contact__map-attrib" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
             <a class="contact__map-link" target="_blank" rel="noopener"
                href="https://www.google.com/maps/search/?api=1&query=Yedig%C3%BCl%20Restaurant%20Anadolu%20Kava%C4%9F%C4%B1%20Beykoz">
               Google Haritalar'da Aç →
@@ -381,8 +381,8 @@
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 41.166679,
-      "longitude": 29.079102
+      "latitude": 41.173430,
+      "longitude": 29.088460
     },
     "openingHoursSpecification": [
       {
