@@ -18,8 +18,9 @@ export function createApp({ db, uploadsDir, auth }) {
       'Content-Security-Policy',
       "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; " +
         "script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; " +
-        // Ana sitedeki iletişim haritası OpenStreetMap embed iframe'i kullanır.
-        "frame-src 'self' https://www.openstreetmap.org"
+        // Konum haritaları (ana sayfa + /nasil-gelinir/) Yandex Haritalar widget'ı
+        // kullanır; yandex.com.tr yönlenebildiği için .com ve .ru de eklendi.
+        "frame-src 'self' https://yandex.com.tr https://yandex.com https://yandex.ru"
     );
     if (process.env.NODE_ENV === 'production') {
       res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains');
