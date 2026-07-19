@@ -8,8 +8,8 @@ export function AuthProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // static export has no backend (and no admin panel) — skip the session check
-    if (import.meta.env.VITE_STATIC === '1') {
+    // Statik ve public üretim build'lerinde admin yok — oturum kontrolü yapma.
+    if (import.meta.env.VITE_ADMIN_ENABLED !== '1') {
       setReady(true);
       return;
     }

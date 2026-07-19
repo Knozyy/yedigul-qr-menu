@@ -29,6 +29,11 @@ test('foreign keys are enabled', () => {
   assert.equal(db.pragma('foreign_keys', { simple: true }), 1);
 });
 
+test('concurrent public/private processes wait briefly for SQLite writes', () => {
+  const db = openDb(':memory:');
+  assert.equal(db.pragma('busy_timeout', { simple: true }), 5000);
+});
+
 test('openDb migrates a pre-kcal database without losing data', () => {
   const file = join(tmpdir(), `yedigul-mig-${Date.now()}.db`);
   // simulate an old database created before the kcal column existed

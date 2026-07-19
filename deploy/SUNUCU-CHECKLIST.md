@@ -40,20 +40,22 @@ geçerlidir, bu adımı "geçerli" olarak işaretle.
 ## A3. Node süreci yönetici altında
 
 Şu an ne kullanıldığını bul: `pm2 list` veya `systemctl status yedigul`.
-
-- **pm2 ise:** `pm2 save && pm2 startup` çalıştırılmış mı doğrula
-  (reboot sonrası kalkması için).
-- **Hiçbiri yoksa (çıplak `node`/`npm start`):** systemd'ye geçir:
+Canlı yönetim izolasyonu için iki systemd servisine geçir:
 
 ```bash
 sudo cp /root/yedigul/deploy/yedigul.service /etc/systemd/system/yedigul.service
-sudo nano /etc/systemd/system/yedigul.service   # yolları doğrula
+sudo cp /root/yedigul/deploy/yedigul-admin.service /etc/systemd/system/yedigul-admin.service
 sudo systemctl daemon-reload
-sudo systemctl enable --now yedigul
-systemctl status yedigul
+sudo systemctl enable --now yedigul yedigul-admin
+systemctl status yedigul yedigul-admin
 ```
 
-**Kabul:** `enabled` + `active (running)`; `sudo reboot` sonrası kendiliğinden kalkıyor.
+Eski pm2 `yedigul` süreci varsa iki systemd servisi aktif olduktan sonra
+`pm2 delete yedigul && pm2 save` ile kaldır; aynı portta ikinci süreç bırakma.
+
+**Kabul:** iki servis de `enabled` + `active (running)`; `sudo reboot` sonrası
+kendiliğinden kalkıyor. `ss -ltnp` çıktısında `3001` ve `3002` yalnız
+`127.0.0.1` üzerinde dinliyor.
 
 ## A4. Disk doluluğu
 
@@ -72,7 +74,7 @@ Node artık `.env`'de `HOST=127.0.0.1` ile localhost'a bağlanabiliyor
 (repo'da destek eklendi). Nginx kurulumundan SONRA:
 
 ```bash
-# .env'e ekle: HOST=127.0.0.1 ve TRUST_PROXY=1, sonra servisi yeniden başlat
+# .env'e TRUST_PROXY=1 ekle; systemd servisleri HOST'u loopback'e sabitler
 sudo ufw allow 22/tcp && sudo ufw allow 80/tcp && sudo ufw allow 443/tcp
 sudo ufw enable
 sudo ufw status verbose
@@ -109,9 +111,11 @@ https://uptimerobot.com → hesap aç → HTTP(s) monitor:
 ## Deploy sonrası hızlı doğrulama
 
 ```bash
-cd /root/yedigul && git pull && npm ci && npm run build   # devDeps dahil: build vite ister
-sudo systemctl restart yedigul     # veya: pm2 restart yedigul
+cd /root/yedigul && git pull && npm ci && npm run build   # public build
+sudo systemctl restart yedigul yedigul-admin
 curl -s https://www.yedigulrestorant.com/api/menu | head -c 200   # JSON gelmeli
+curl -s http://127.0.0.1:3002/api/health                         # {"ok":true}
+test "$(curl -s -o /dev/null -w '%{http_code}' https://www.yedigulrestorant.com/api/auth/me)" = "404"
 ```
 
 Tarayıcıdan: `/menu/` yeni tasarım + fotoğraflar, ana sayfa `/` değişen head

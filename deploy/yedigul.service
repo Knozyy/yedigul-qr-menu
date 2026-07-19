@@ -1,12 +1,12 @@
 ﻿# Yedigül API — systemd servisi (pm2 kullanmıyorsan).
 # Kurulum: deploy/SUNUCU-CHECKLIST.md → A3.
 [Unit]
-Description=Yedigul Restaurant (site + QR menu + API)
+Description=Yedigul Restaurant public site and menu API
 After=network.target
 
 [Service]
 WorkingDirectory=/root/yedigul
-ExecStart=/usr/bin/node server/index.js
+ExecStart=/usr/bin/env APP_MODE=public HOST=127.0.0.1 PORT=3001 /usr/bin/node server/index.js
 Restart=always
 RestartSec=5
 Environment=NODE_ENV=production

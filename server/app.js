@@ -4,7 +4,16 @@ import { getSetting, bumpStat } from './db.js';
 import { createMenuRouter } from './routes/menu.js';
 import { createAdminRouter } from './routes/admin.js';
 
-export function createApp({ db, uploadsDir, auth }) {
+export function createApp({ db, uploadsDir, auth, mode = 'full' }) {
+  if (!['full', 'public', 'private'].includes(mode)) {
+    throw new Error(`Geçersiz uygulama modu: ${mode}`);
+  }
+  const publicEnabled = mode !== 'private';
+  const adminEnabled = mode !== 'public';
+  if (mode === 'private' && !auth) {
+    throw new Error('Private mod için yönetim kimlik doğrulaması zorunludur.');
+  }
+
   const app = express();
 
   // Güvenlik başlıkları (helmet'e gerek kalmadan, tek yerde).
@@ -30,7 +39,9 @@ export function createApp({ db, uploadsDir, auth }) {
 
   app.use(express.json());
   app.use(cookieParser());
-  if (uploadsDir) app.use('/uploads', express.static(uploadsDir));
+  app.get('/api/health', (_req, res) => res.json({ ok: true }));
+
+  if (publicEnabled && uploadsDir) app.use('/uploads', express.static(uploadsDir));
 
   // Dinamik QR hedefi: QR kodu bu sabit /q yolunu içerir; sunucu GÖRELİ
   // yönlendirme yapar, böylece QR hangi domainde açılırsa o domainin menüsüne
@@ -46,11 +57,12 @@ export function createApp({ db, uploadsDir, auth }) {
     }
     res.redirect(302, path);
   };
-  app.get('/q', qrRedirect);
-  app.get('/qr', qrRedirect);
-
-  app.use('/api/menu', createMenuRouter(db));
-  if (auth) {
+  if (publicEnabled) {
+    app.get('/q', qrRedirect);
+    app.get('/qr', qrRedirect);
+    app.use('/api/menu', createMenuRouter(db));
+  }
+  if (adminEnabled && auth) {
     app.use('/api/auth', auth.router);
     app.use('/api/admin', createAdminRouter({ db, uploadsDir, requireAuth: auth.requireAuth }));
   }

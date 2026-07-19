@@ -20,18 +20,36 @@
    nano .env        # ADMIN_PASSWORD ve JWT_SECRET'a GERÇEK değerler yaz!
    ```
 
-## Çalıştırma
+## Lokal çalıştırma
 - **Linux/Mac:** `./run.sh`   (gerekirse önce: `chmod +x run.sh`)
 - **Windows:**   `run.bat`
 
-Her şey **tek port** üzerinden çalışır:
+Lokal geliştirmede `full` mod kullanılır:
 | Adres | Ne |
 |---|---|
 | `http://SUNUCU_IP:3001` | Ana sayfa (site) |
 | `http://SUNUCU_IP:3001/menu/` | QR menü |
 | `http://SUNUCU_IP:3001/menu/admin` | Yönetim paneli (`/admin` da buraya yönlenir) |
 
-Güvenlik duvarında portu aç: `sudo ufw allow 3001`
+## Canlı çalışma: iki izole süreç
+
+Canlıda web admin yayınlanmaz. Aynı kod ve SQLite dosyası iki süreç tarafından
+kullanılır:
+
+| Süreç | Bind | İçerik |
+|---|---|---|
+| `yedigul` | `127.0.0.1:3001` | Site, QR menü, `/api/menu`, `/uploads` |
+| `yedigul-admin` | `127.0.0.1:3002` | Yalnız `/api/auth` ve `/api/admin` |
+
+```bash
+sudo cp deploy/yedigul.service /etc/systemd/system/yedigul.service
+sudo cp deploy/yedigul-admin.service /etc/systemd/system/yedigul-admin.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now yedigul yedigul-admin
+```
+
+`3001` ve `3002` firewall'da açılmaz. Nginx yalnız `127.0.0.1:3001` hedefine
+proxy yapar; `3002` portuna yalnız kısıtlı SSH tüneli erişir.
 
 Alan adını bağlarken 80/443 → 3001 yönlendirmesi için nginx örneği:
 ```
@@ -59,23 +77,20 @@ Ana sitedeki bülten formu `mgonder2.asp` ile çalışır ve SMTP bilgilerini
 3. FTP ile `www/`'e yükle. Node sunucusunda ASP çalışmaz; bu yalnız hosting içindir.
 
 ## Kapanmadan sürekli çalışsın (Linux)
-```
-npm i -g pm2
-npm run build
-pm2 start server/index.js --name yedigul
-pm2 save && pm2 startup
-```
+
+Üretimde yukarıdaki iki systemd servisini kullan. Her iki servis de çökme veya
+sunucu yeniden başlatma sonrasında otomatik kalkar.
 
 ## Güncelleme (deploy)
 Kod GitHub'a push'landıktan sonra sunucuda tek komut:
 ```
 cd /root/yedigul && ./update.sh
 ```
-Sırasıyla: `git pull` → `npm ci` → `npm run build` (menü/admin derlemesi) →
-servis restart (systemd `yedigul` veya pm2) → `:3001` sağlık kontrolü.
+Sırasıyla: `git pull` → `npm ci` → `npm run build` (yalnız public menü) →
+`yedigul` ve `yedigul-admin` restart → `:3001` ve `:3002` sağlık kontrolü.
 İlk sefer gerekirse: `chmod +x update.sh`.
 
-> Neden restart şart? `server/` değişiklikleri (ör. CSP başlıkları) yalnızca
+> Neden restart şart? `server/` değişiklikleri (ör. erişim modu) yalnızca
 > süreç yeniden başlayınca geçerli olur; `www/` (ana sayfa + rehber sayfaları)
 > statik servis edildiği için pull sonrası anında yansır, `/menu/` ise `dist/`
 > derlemesini gerektirir.

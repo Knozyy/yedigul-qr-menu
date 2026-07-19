@@ -1,0 +1,15 @@
+# Yedigül private admin API — yalnızca SSH tünelinden erişilir.
+[Unit]
+Description=Yedigul Restaurant private admin API
+After=network.target
+
+[Service]
+WorkingDirectory=/root/yedigul
+ExecStart=/usr/bin/env APP_MODE=private HOST=127.0.0.1 PORT=3002 /usr/bin/node server/index.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+EnvironmentFile=/root/yedigul/.env
+
+[Install]
+WantedBy=multi-user.target

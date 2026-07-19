@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => ({
   // (.env.static dosyası yerine derleme sabiti burada tanımlanır.)
   define: {
     'import.meta.env.VITE_STATIC': JSON.stringify(mode === 'static' ? '1' : ''),
+    'import.meta.env.VITE_ADMIN_ENABLED': JSON.stringify(
+      mode === 'static' || mode === 'public' ? '' : '1',
+    ),
   },
   server: {
     proxy: {
