@@ -1,4 +1,4 @@
-﻿# Yedigül API — systemd servisi (pm2 kullanmıyorsan).
+# Yedigül API — systemd servisi (pm2 kullanmıyorsan).
 # Kurulum: deploy/SUNUCU-CHECKLIST.md → A3.
 [Unit]
 Description=Yedigul Restaurant public site and menu API
