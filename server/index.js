@@ -65,11 +65,15 @@ if (runtime.publicEnabled) {
   const distDir = resolve(__dirname, '..', 'dist');
   const siteDir = resolve(__dirname, '..', 'www');
 
-  // Public süreçte eski web panelinin hiçbir yolu SPA fallback'e düşmemeli.
+  // Public süreçte eski web paneli pakette yoktur. Sayfa isteğini ana menüye
+  // döndür; yazma istekleri ve API uçları 404 kalmaya devam etsin.
   if (APP_MODE === 'public') {
     app.use((req, res, next) => {
       const path = req.path.replace(/\/+$/, '');
       if (path === '/admin' || path.startsWith('/admin/') || path === '/menu/admin' || path.startsWith('/menu/admin/')) {
+        if (req.method === 'GET' || req.method === 'HEAD') {
+          return res.redirect(302, '/menu/');
+        }
         return res.status(404).end();
       }
       next();
@@ -78,7 +82,18 @@ if (runtime.publicEnabled) {
 
   if (existsSync(distDir)) {
     app.use('/menu', express.static(distDir));
-    app.get(/^\/menu(\/.*)?$/, (req, res) => res.sendFile(join(distDir, 'index.html')));
+    if (APP_MODE === 'public') {
+      // Public menünün geçerli tek tarayıcı rotası /menu/. Eksik JS/CSS/görsel
+      // isteklerini HTML'e çevirmeden 404 bırak; uzantısız bilinmeyen sayfaları
+      // ise ana menüye yönlendir.
+      app.get(/^\/menu(\/.*)?$/, (req, res) => {
+        const leaf = req.path.split('/').pop() || '';
+        if (leaf.includes('.')) return res.status(404).end();
+        return res.redirect(302, '/menu/');
+      });
+    } else {
+      app.get(/^\/menu(\/.*)?$/, (req, res) => res.sendFile(join(distDir, 'index.html')));
+    }
   }
 
   if (APP_MODE === 'full') {
