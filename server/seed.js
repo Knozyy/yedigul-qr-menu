@@ -1,4 +1,5 @@
 import { CATEGORIES, ITEMS } from './seed-data.js';
+import { backfillMenuTranslations } from './translation-backfill.js';
 
 export function seed(db) {
   const existing = db.prepare('SELECT COUNT(*) n FROM categories').get().n;
@@ -45,4 +46,5 @@ export function seed(db) {
     });
   });
   tx();
+  backfillMenuTranslations(db);
 }

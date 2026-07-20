@@ -106,6 +106,7 @@ test('public menu exposes variants with localized names', async () => {
 
 test('AR/RU fields persist and public menu falls back empty → EN → TR', async () => {
   const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const originalCategoryTranslations = { name_ar: cat.name_ar, name_ru: cat.name_ru };
   const created = await req('POST', '/api/admin/products', {
     category_id: cat.id,
     name_tr: 'Çevirili', name_en: 'Translated',
@@ -117,7 +118,7 @@ test('AR/RU fields persist and public menu falls back empty → EN → TR', asyn
   assert.equal(created.data.name_ar, 'مترجم');
   assert.deepEqual(created.data.ing_ru, ['помидор']);
 
-  const catAr = await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: 'فئة' });
+  const catAr = await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: 'فئة', name_ru: '' });
   assert.equal(catAr.data.name_ar, 'فئة');
 
   const menu = await (await fetch(`${base}/api/menu`)).json();
@@ -131,7 +132,7 @@ test('AR/RU fields persist and public menu falls back empty → EN → TR', asyn
   assert.equal(pubCat.ar, 'فئة');
   assert.equal(pubCat.ru, pubCat.en); // boş RU → EN
 
-  await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: '' });
+  await req('PATCH', `/api/admin/categories/${cat.id}`, originalCategoryTranslations);
   await req('DELETE', `/api/admin/products/${created.data.id}`);
 });
 

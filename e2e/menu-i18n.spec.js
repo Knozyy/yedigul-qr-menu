@@ -20,14 +20,15 @@ test('TR/EN/AR/RU geçişi HTML dili ve RTL yönünü günceller', async ({ page
   await expect(root).toHaveAttribute('lang', 'ar');
   await expect(root).toHaveAttribute('dir', 'rtl');
   await expect(page.getByRole('textbox', { name: 'ابحث في القائمة…' })).toBeVisible();
-  // Seed verisinde AR boşsa müşteri boş metin görmez; EN → TR fallback çalışır.
-  await expect(page.getByRole('button', { name: 'Fresh Fish', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'الأسماك الطازجة', exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'اختيار اللغة: Русский', exact: true }).click();
   await expect(root).toHaveAttribute('lang', 'ru');
   await expect(root).toHaveAttribute('dir', 'ltr');
   await expect(page.getByRole('textbox', { name: 'Поиск по меню…' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Категории' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Свежая рыба', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Сибас на гриле', level: 3 })).toBeVisible();
 });
 
 test('arama seçili dilde büyük-küçük harf ve aksan farkını tolere eder', async ({ page }) => {

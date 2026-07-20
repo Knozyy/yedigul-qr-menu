@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import { backfillMenuTranslations } from './translation-backfill.js';
 
 export function openDb(path) {
   const db = new Database(path);
@@ -101,6 +102,7 @@ export function openDb(path) {
       ALTER TABLE categories ADD COLUMN name_ru TEXT NOT NULL DEFAULT '';
     `);
   }
+  backfillMenuTranslations(db);
   return db;
 }
 
