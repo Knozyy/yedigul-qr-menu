@@ -25,12 +25,12 @@ export default defineConfig({
       command: 'npm run dev:server',
       port: 3001,
       reuseExistingServer: !process.env.CI,
-      env: { ADMIN_PASSWORD: 'e2e-pass', JWT_SECRET: 'e2e-secret', DB_PATH: ':memory:', UPLOADS_DIR: 'server/uploads' },
+      env: { APP_MODE: 'public', DB_PATH: ':memory:', UPLOADS_DIR: 'server/uploads' },
     },
     {
       // yalnız Vite (npm run dev artık API'yi de başlatıyor; burada API'yi
       // yukarıdaki webServer başlattığı için 3001 çakışmasın diye ayrık)
-      command: 'npm run dev:vite',
+      command: 'npm run dev:vite -- --mode public',
       port: 5173,
       reuseExistingServer: !process.env.CI,
     },

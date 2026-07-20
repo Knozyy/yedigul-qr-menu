@@ -9,10 +9,19 @@ const POLL_MS = 30000;
 const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 
 const EMPTY_META = {
-  announcement: { tr: '', en: '' },
+  announcement: { tr: '', en: '', ar: '', ru: '' },
   info: { phone: '', hours: '', wifi: '', instagram: '' },
   price_updated_at: '',
 };
+
+function normalizeMeta(meta) {
+  return {
+    ...EMPTY_META,
+    ...(meta || {}),
+    announcement: { ...EMPTY_META.announcement, ...(meta?.announcement || {}) },
+    info: { ...EMPTY_META.info, ...(meta?.info || {}) },
+  };
+}
 
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
@@ -32,9 +41,9 @@ export function MenuProvider({ children }) {
       } else {
         data = await api.get('/menu');
       }
-      setCategories(data.categories);
-      setItems(data.products);
-      setMeta(data.meta || EMPTY_META);
+      setCategories(Array.isArray(data.categories) ? data.categories : []);
+      setItems(Array.isArray(data.products) ? data.products : []);
+      setMeta(normalizeMeta(data.meta));
       setError(null);
     } catch (e) {
       setError(e.message);

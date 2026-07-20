@@ -1,6 +1,6 @@
 # Yedigül — QR Menü & Yönetim Paneli
 
-Anadolukavağı'ndaki **Yedigül Balık Lokantası** için tek statik QR menü, TR/EN dil desteği
+Anadolukavağı'ndaki **Yedigül Balık Lokantası** için tek statik QR menü, TR/EN/AR/RU dil desteği
 ve ürün/fiyat/kalori yönetimi yapılan bir admin paneli.
 
 ## Hızlı Başlangıç
@@ -43,7 +43,7 @@ Menünün tek gerçek kaynağı veritabanıdır; ürünler **yönetim panelinden
 
 ```bash
 npm run test:server    # backend (node --test)
-npm run test:e2e       # Playwright, iPhone 12 viewport
+npm run test:e2e       # Playwright, iPhone 12 + masaüstü dil/RTL akışları
 ```
 
 ## Sunucu Kurulumu

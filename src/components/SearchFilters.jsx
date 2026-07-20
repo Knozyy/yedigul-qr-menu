@@ -27,7 +27,7 @@ export default function SearchFilters({
   search, onSearchChange, placeholder,
   gf, veg, fav,
   onToggleGF, onToggleVeg, onToggleFav,
-  gfLabel, vegLabel, favLabel,
+  gfLabel, vegLabel, favLabel, clearLabel,
 }) {
   return (
     <>
@@ -56,7 +56,7 @@ export default function SearchFilters({
         {search !== '' && (
           <button
             onClick={() => onSearchChange('')}
-            aria-label="Temizle"
+            aria-label={clearLabel}
             className="absolute top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-transparent border-none cursor-pointer"
             style={{ insetInlineEnd: 4, color: 'var(--muted)' }}
           >

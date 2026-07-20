@@ -1,4 +1,4 @@
-const LANGS = ['tr', 'en', 'ar', 'ru'];
+import { LANGUAGES } from '../lib/i18n.js';
 
 // Boğaz dalgası süsü — marka satırının iki yanında.
 function Wave() {
@@ -19,16 +19,20 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
         <div className="flex items-center justify-between gap-3">
           <div
             role="group"
-            aria-label="Dil / Language"
+            aria-label={ui.language}
             className="flex overflow-hidden rounded-full border"
             style={{ borderColor: 'var(--faint-strong)' }}
           >
-            {LANGS.map((code) => {
+            {LANGUAGES.map(({ code, dir, nativeName }) => {
               const active = lang === code;
               return (
                 <button
                   key={code}
                   onClick={() => onSetLang(code)}
+                  lang={code}
+                  dir={dir}
+                  aria-label={`${ui.language}: ${nativeName}`}
+                  aria-pressed={active}
                   className="min-w-[46px] h-11 px-1.5 border-none cursor-pointer text-[13px] tracking-[.5px] transition-colors duration-200"
                   style={{
                     background: active ? 'var(--accent-text)' : 'transparent',
@@ -43,7 +47,7 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
           </div>
           <button
             onClick={onToggleTheme}
-            aria-label="Tema / Theme"
+            aria-label={dark ? ui.useLightTheme : ui.useDarkTheme}
             className="flex-none w-11 h-11 flex items-center justify-center rounded-full border cursor-pointer bg-transparent"
             style={{ borderColor: 'var(--faint-strong)', color: 'var(--text)' }}
           >
@@ -75,7 +79,7 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
           >
             <img
               src={`${import.meta.env.BASE_URL}logo-mark.png`}
-              alt="Yedigül logosu"
+              alt={ui.logoAlt}
               width="56"
               height="56"
               className="w-full h-full object-cover"
@@ -91,7 +95,7 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
             <div className="flex items-center gap-[9px]" style={{ color: 'var(--accent-text)' }}>
               <Wave />
               <span className="text-[11px] tracking-[1.2px]" style={{ color: 'var(--muted)' }}>
-                Anadolukavağı · İstanbul
+                {ui.locationShort}
               </span>
               <Wave />
             </div>

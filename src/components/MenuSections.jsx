@@ -5,7 +5,7 @@ export default function MenuSections({
   ui,
   register,
   scrollMargin,
-  countWord,
+  countLabel,
   onItemClick,
   favorites,
   onToggleFav,
@@ -36,7 +36,7 @@ export default function MenuSections({
                 {section.title}
               </h2>
               <span className="flex-none text-[12.5px] tracking-[.5px] font-normal" style={{ color: 'var(--muted2)' }}>
-                {section.items.length} {countWord}
+                {countLabel(section.items.length)}
               </span>
               <span className="flex-1" style={{ borderTop: '1px solid var(--faint)' }} />
               <svg

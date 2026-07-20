@@ -78,7 +78,7 @@ export default function ProductCard({ item, ui, onClick, isFav, onToggleFav }) {
           e.stopPropagation();
           onToggleFav(item.id);
         }}
-        aria-label="Favori"
+        aria-label={isFav ? ui.removeFavorite : ui.addFavorite}
         aria-pressed={isFav}
         className="flex-none w-11 h-11 -mt-1.5 flex items-center justify-center bg-transparent border-none cursor-pointer"
         style={{ marginInlineEnd: -10, color: isFav ? 'var(--accent)' : 'var(--muted2)' }}

@@ -64,7 +64,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
           <div className="px-5 pt-1 pb-9 flex flex-col gap-4">
             <div
               role="img"
-              aria-label={sheet.name}
+              aria-label={`${ui.dishImage}: ${sheet.name}`}
               className="w-full h-[216px] rounded-[14px]"
               style={{ backgroundImage: `url('${hero}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             />
@@ -108,7 +108,7 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
               </div>
               <button
                 onClick={() => onToggleFav(sheet.id)}
-                aria-label="Favori"
+                aria-label={isFav ? ui.removeFavorite : ui.addFavorite}
                 aria-pressed={isFav}
                 className="flex-none w-12 h-12 rounded-full flex items-center justify-center bg-transparent cursor-pointer"
                 style={{ border: '1px solid var(--faint)', color: isFav ? 'var(--accent)' : 'var(--muted2)' }}

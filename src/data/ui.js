@@ -1,3 +1,5 @@
+import { formatNumber } from '../lib/i18n.js';
+
 // Menü arayüzünün TR/EN/AR/RU sözlüğü. Ürün/kategori verisi burada DEĞİL:
 // asıl kaynak server/data.db (yönetim paneli), ilk kurulum tohumları
 // server/seed-data.js dosyasındadır.
@@ -19,6 +21,11 @@ export const UI = {
     loading: 'Menü yükleniyor…', home: 'Ana Sayfa', close: 'Kapat', toTop: 'Başa dön',
     hours: 'Çalışma Saatleri', phone: 'Telefon', wifi: 'Wi-Fi',
     kcalUnit: 'kcal',
+    language: 'Dil seçimi', useLightTheme: 'Açık temaya geç', useDarkTheme: 'Koyu temaya geç',
+    logoAlt: 'Yedigül logosu', locationShort: 'Anadolukavağı · İstanbul',
+    locationLong: 'Anadolukavağı, Beykoz — İstanbul', categories: 'Kategoriler',
+    clearSearch: 'Aramayı temizle', addFavorite: 'Favorilere ekle', removeFavorite: 'Favorilerden çıkar',
+    loadError: 'Menü şu anda yüklenemiyor.', retry: 'Yeniden dene', dishImage: 'Ürün görseli',
   },
   en: {
     sub: 'Fish Restaurant', tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…',
@@ -37,6 +44,11 @@ export const UI = {
     loading: 'Loading menu…', home: 'Home', close: 'Close', toTop: 'Back to top',
     hours: 'Opening Hours', phone: 'Phone', wifi: 'Wi-Fi',
     kcalUnit: 'kcal',
+    language: 'Language selection', useLightTheme: 'Switch to light theme', useDarkTheme: 'Switch to dark theme',
+    logoAlt: 'Yedigül logo', locationShort: 'Anadolukavağı · Istanbul',
+    locationLong: 'Anadolukavağı, Beykoz — Istanbul', categories: 'Categories',
+    clearSearch: 'Clear search', addFavorite: 'Add to favourites', removeFavorite: 'Remove from favourites',
+    loadError: 'The menu could not be loaded right now.', retry: 'Try again', dishImage: 'Dish image',
   },
   ar: {
     sub: 'مطعم أسماك', tagline: 'مطعم أسماك البوسفور', search: 'ابحث في القائمة…',
@@ -55,6 +67,11 @@ export const UI = {
     loading: 'جارٍ تحميل القائمة…', home: 'الصفحة الرئيسية', close: 'إغلاق', toTop: 'العودة إلى الأعلى',
     hours: 'ساعات العمل', phone: 'الهاتف', wifi: 'واي فاي',
     kcalUnit: 'سعرة',
+    language: 'اختيار اللغة', useLightTheme: 'التبديل إلى الوضع الفاتح', useDarkTheme: 'التبديل إلى الوضع الداكن',
+    logoAlt: 'شعار Yedigül', locationShort: 'أناضولو كافاغي · إسطنبول',
+    locationLong: 'أناضولو كافاغي، بيكوز — إسطنبول', categories: 'الفئات',
+    clearSearch: 'مسح البحث', addFavorite: 'إضافة إلى المفضلة', removeFavorite: 'إزالة من المفضلة',
+    loadError: 'تعذر تحميل القائمة الآن.', retry: 'إعادة المحاولة', dishImage: 'صورة الطبق',
   },
   ru: {
     sub: 'Рыбный ресторан', tagline: 'Рыбный ресторан на Босфоре', search: 'Поиск по меню…',
@@ -73,21 +90,29 @@ export const UI = {
     loading: 'Загрузка меню…', home: 'Главная', close: 'Закрыть', toTop: 'Наверх',
     hours: 'Часы работы', phone: 'Телефон', wifi: 'Wi-Fi',
     kcalUnit: 'ккал',
+    language: 'Выбор языка', useLightTheme: 'Включить светлую тему', useDarkTheme: 'Включить тёмную тему',
+    logoAlt: 'Логотип Yedigül', locationShort: 'Анадолукавагы · Стамбул',
+    locationLong: 'Анадолукавагы, Бейкоз — Стамбул', categories: 'Категории',
+    clearSearch: 'Очистить поиск', addFavorite: 'Добавить в избранное', removeFavorite: 'Удалить из избранного',
+    loadError: 'Сейчас не удалось загрузить меню.', retry: 'Повторить', dishImage: 'Фото блюда',
   },
 };
 
 // Fiyat biçimi referans tasarımdan: TR "650 TL", EN "₺650", AR "650 ل.ت", RU "650 ₺".
 export function fmtPrice(n, lang) {
-  if (lang === 'tr') return `${n} TL`;
-  if (lang === 'ar') return `${n} ل.ت`;
-  if (lang === 'ru') return `${n} ₺`;
-  return `₺${n}`;
+  const number = formatNumber(n, lang);
+  if (lang === 'tr') return `${number} TL`;
+  if (lang === 'ar') return `${number} ل.ت`;
+  if (lang === 'ru') return `${number} ₺`;
+  return `₺${number}`;
 }
 
 export function fmtPriceRange(a, b, lang) {
   if (a === b) return fmtPrice(a, lang);
-  if (lang === 'tr') return `${a}–${b} TL`;
-  if (lang === 'ar') return `${a}–${b} ل.ت`;
-  if (lang === 'ru') return `${a}–${b} ₺`;
-  return `₺${a}–${b}`;
+  const start = formatNumber(a, lang);
+  const end = formatNumber(b, lang);
+  if (lang === 'tr') return `${start}–${end} TL`;
+  if (lang === 'ar') return `${start}–${end} ل.ت`;
+  if (lang === 'ru') return `${start}–${end} ₺`;
+  return `₺${start}–${end}`;
 }

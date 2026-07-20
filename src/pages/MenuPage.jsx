@@ -4,6 +4,13 @@ import { useMenu } from '../context/MenuContext';
 import { getMenuThemeVars } from '../lib/theme';
 import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';
+import {
+  LANGUAGE_CODES,
+  foldForSearch,
+  formatItemCount,
+  getLanguage,
+  localize,
+} from '../lib/i18n.js';
 import useScrollSpy from '../lib/useScrollSpy';
 import Header from '../components/Header';
 import CategoryBar from '../components/CategoryBar';
@@ -12,8 +19,6 @@ import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
 import HomeLink from '../components/HomeLink';
-
-const localize = (field, lang) => (field ? field[lang] || field.en || '' : '');
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
@@ -49,11 +54,10 @@ const passesDiet = (it, gf, veg) => {
 };
 
 export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
-  const { categories: CATEGORIES, items: ITEMS, meta, loading } = useMenu();
-  const LANGS = ['tr', 'en', 'ar', 'ru'];
+  const { categories: CATEGORIES, items: ITEMS, meta, loading, error, reload } = useMenu();
   const [lang, setLang] = useState(() => {
-    const stored = readStorage('lang', LANGS.includes(defaultLang) ? defaultLang : 'tr');
-    return LANGS.includes(stored) ? stored : 'tr';
+    const stored = readStorage('lang', LANGUAGE_CODES.includes(defaultLang) ? defaultLang : 'tr');
+    return LANGUAGE_CODES.includes(stored) ? stored : 'tr';
   });
   const [dark, setDark] = useState(() => readStorage('dark', !!defaultDark));
   const [favorites, setFavorites] = useState(() => readStorage('favorites', []));
@@ -67,11 +71,26 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   const catbarRef = useRef(null);
   const ui = UI[lang];
+  const language = getLanguage(lang);
 
   // persist preferences
   useEffect(() => writeStorage('lang', lang), [lang]);
   useEffect(() => writeStorage('dark', dark), [dark]);
   useEffect(() => writeStorage('favorites', favorites), [favorites]);
+
+  // Ekran okuyucular, yerleşik çeviri araçları ve RTL düzeni sayfanın gerçek
+  // dilini kök HTML öğesinden okuyabilsin.
+  useEffect(() => {
+    const root = document.documentElement;
+    const previousLang = root.lang;
+    const previousDir = root.dir;
+    root.lang = lang;
+    root.dir = language.dir;
+    return () => {
+      root.lang = previousLang;
+      root.dir = previousDir;
+    };
+  }, [lang, language.dir]);
 
   // Sayfa arka planı (overscroll dahil) temayı takip etsin; admin'e sızmasın.
   useEffect(() => {
@@ -102,7 +121,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     });
   }, []);
 
-  const q = search.trim().toLocaleLowerCase('tr');
+  const q = foldForSearch(search.trim(), lang);
 
   // Arama ve tüm filtreler bölümlerin İÇİNİ süzer (düz liste modu yok);
   // boşalan kategori hem bölümden hem çip şeridinden düşer.
@@ -115,7 +134,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         if (it.cat !== c.id || !passesDiet(it, gf, veg)) return false;
         if (fav && !favSet.has(it.id)) return false;
         if (!q) return true;
-        const hay = `${localize(it.name, lang)} ${localize(it.desc, lang)}`.toLocaleLowerCase('tr');
+        const hay = foldForSearch(`${localize(it.name, lang)} ${localize(it.desc, lang)}`, lang);
         return hay.includes(q);
       }).map((it) => mapItem(it, lang, ui, dark)),
     })).filter((s) => s.items.length > 0);
@@ -170,9 +189,10 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   }, []);
 
   const themeVars = getMenuThemeVars(dark, accent);
-  const showEmpty = !loading && sections.length === 0;
+  const showLoadError = !loading && !!error && CATEGORIES.length === 0 && ITEMS.length === 0;
+  const showEmpty = !loading && !showLoadError && sections.length === 0;
   const favEmpty = fav && favorites.length === 0;
-  const announcement = (meta.announcement[lang] || meta.announcement.en || '').trim();
+  const announcement = String(localize(meta.announcement, lang) || '').trim();
   const instagram = (meta.info.instagram || '').trim();
 
   // Balık fiyatı oynak; menüde son fiyat güncelleme tarihi güven verir.
@@ -180,24 +200,36 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     if (!meta.price_updated_at) return '';
     const d = new Date(meta.price_updated_at);
     if (Number.isNaN(d.getTime())) return '';
-    const locale = { tr: 'tr-TR', en: 'en-GB', ar: 'ar', ru: 'ru-RU' }[lang] || 'tr-TR';
-    return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+    return d.toLocaleDateString(language.locale, { day: 'numeric', month: 'long', year: 'numeric' });
   })();
 
-  if (loading) {
+  if (loading || showLoadError) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center text-[15px]"
+        lang={lang}
+        dir={language.dir}
+        className="min-h-screen flex flex-col gap-4 items-center justify-center text-[15px] px-6 text-center"
         style={{ ...themeVars, background: 'var(--bg)', color: 'var(--muted)' }}
       >
-        {ui.loading}
+        <span>{loading ? ui.loading : ui.loadError}</span>
+        {showLoadError && (
+          <button
+            type="button"
+            onClick={reload}
+            className="min-h-11 px-5 rounded-full cursor-pointer"
+            style={{ border: '1px solid var(--accent-text)', color: 'var(--accent-text)', background: 'transparent' }}
+          >
+            {ui.retry}
+          </button>
+        )}
       </div>
     );
   }
 
   return (
     <div
-      dir={lang === 'ar' ? 'rtl' : 'ltr'}
+      lang={lang}
+      dir={language.dir}
       className="min-h-screen text-[15px]"
       style={{
         ...themeVars,
@@ -208,7 +240,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       }}
     >
       <div className="max-w-[980px] mx-auto px-4 pt-3">
-        <HomeLink label={ui.home} rtl={lang === 'ar'} />
+        <HomeLink label={ui.home} rtl={language.dir === 'rtl'} />
       </div>
 
       <Header
@@ -268,6 +300,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
           gfLabel={ui.gf}
           vegLabel={ui.veg}
           favLabel={ui.favorites}
+          clearLabel={ui.clearSearch}
         />
       </div>
 
@@ -283,7 +316,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
             transition: 'background 0.35s ease',
           }}
         >
-          <CategoryBar categories={categories} activeCat={activeCat} onSelect={onSelectCategory} />
+          <CategoryBar categories={categories} activeCat={activeCat} onSelect={onSelectCategory} label={ui.categories} />
         </div>
       )}
 
@@ -322,7 +355,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
           ui={ui}
           register={register}
           scrollMargin={catbarH}
-          countWord={ui.items}
+          countLabel={(count) => formatItemCount(count, lang)}
           onItemClick={setSelectedId}
           favorites={favorites}
           onToggleFav={toggleFav}
@@ -358,7 +391,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
             )}
             <a href="/" style={{ color: 'var(--accent-text)' }}>{ui.home}</a>
           </div>
-          <span className="text-[12px]" style={{ color: 'var(--muted2)' }}>Anadolukavağı, Beykoz — İstanbul</span>
+          <span className="text-[12px]" style={{ color: 'var(--muted2)' }}>{ui.locationLong}</span>
           <span className="text-[11.5px] mt-1.5 max-w-[420px] leading-[1.5]" style={{ color: 'var(--muted2)' }}>
             {ui.vat}
           </span>
