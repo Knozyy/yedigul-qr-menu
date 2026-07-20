@@ -94,7 +94,7 @@ export default function DashboardPage() {
       ) : view === 'qr' && QrPanel ? (
         <Suspense fallback={<p className="text-sm" style={{ color: 'var(--muted)' }}>QR yükleniyor…</p>}><QrPanel /></Suspense>
       ) : view === 'home' ? (
-        <OverviewView products={products} categories={categories} onQuick={handleQuick} onSaveDaily={handleSaveDaily} />
+        <OverviewView products={products} onQuick={handleQuick} onSaveDaily={handleSaveDaily} />
       ) : null}
 
       {editing && (

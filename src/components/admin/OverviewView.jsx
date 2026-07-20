@@ -29,7 +29,7 @@ const cardStyle = {
   boxShadow: '0 1px 2px rgba(10,31,53,0.04)',
 };
 
-export default function OverviewView({ products, categories, onQuick, onSaveDaily }) {
+export default function OverviewView({ products, onQuick, onSaveDaily }) {
   const [stats, setStats] = useState(null);
   const [draft, setDraft] = useState({});
   const [saving, setSaving] = useState(false);

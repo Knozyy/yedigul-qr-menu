@@ -1,8 +1,7 @@
-import { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../lib/api';
 import { getDeviceId } from '../lib/deviceId';
-
-const MenuContext = createContext(null);
+import { MenuContext } from './menu-context.js';
 const POLL_MS = 30000;
 // static export mode: menu data is baked into the bundle as a JSON file
 // (no backend on the shared host), so there is nothing to poll
@@ -74,10 +73,4 @@ export function MenuProvider({ children }) {
       {children}
     </MenuContext.Provider>
   );
-}
-
-export function useMenu() {
-  const ctx = useContext(MenuContext);
-  if (!ctx) throw new Error('useMenu must be used within MenuProvider');
-  return ctx;
 }

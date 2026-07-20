@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { UI, fmtPrice, fmtPriceRange } from '../data/ui';
-import { useMenu } from '../context/MenuContext';
+import { useMenu } from '../context/menu-context.js';
 import { getMenuThemeVars } from '../lib/theme';
 import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';

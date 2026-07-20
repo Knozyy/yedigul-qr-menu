@@ -11,7 +11,7 @@ const NAVD = {
   qr: 'M4 4 H9.5 V9.5 H4 Z M14.5 4 H20 V9.5 H14.5 Z M4 14.5 H9.5 V20 H4 Z M13.5 13.5 H16 V16 H13.5 Z M18 13.5 H20 M18 17 H20 V20 M13.5 18 V20 H16',
 };
 
-export const NAV_ITEMS = [
+const NAV_ITEMS = [
   { id: 'home', label: 'Genel Bakış', d: NAVD.home },
   { id: 'items', label: 'Ürünler', d: NAVD.items },
   { id: 'cats', label: 'Kategoriler', d: NAVD.cats },
