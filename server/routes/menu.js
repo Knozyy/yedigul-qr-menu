@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getSetting, countMenuView } from '../db.js';
+import { getSetting, countMenuView, countProductView } from '../db.js';
 
 const cleanText = (value) => (typeof value === 'string' ? value.trim() : '');
 
@@ -179,6 +179,15 @@ export function createMenuRouter(db) {
     const id = typeof req.body?.id === 'string' ? req.body.id.trim().slice(0, 64) : '';
     if (!id) return res.status(400).json({ counted: false });
     res.json({ counted: countMenuView(db, id) });
+  });
+
+  // Ürün detayının açılması. Menü açılışından ayrı bir olay: hangi ürünlerin
+  // merak edildiğini ölçer. Aynı cihaz farklı ürünlere bakınca hepsi sayılır.
+  router.post('/product-view', (req, res) => {
+    const id = typeof req.body?.id === 'string' ? req.body.id.trim().slice(0, 64) : '';
+    const product = typeof req.body?.product === 'string' ? req.body.product.trim().slice(0, 64) : '';
+    if (!id || !product) return res.status(400).json({ counted: false });
+    res.json({ counted: countProductView(db, id, product) });
   });
 
   router.get('/', (req, res) => {

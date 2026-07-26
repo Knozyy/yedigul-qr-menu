@@ -4,6 +4,7 @@ import { useMenu } from '../context/menu-context.js';
 import { getMenuThemeVars } from '../lib/theme';
 import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';
+import { trackProductView } from '../lib/track';
 import {
   LANGUAGE_CODES,
   foldForSearch,
@@ -110,6 +111,13 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   const toggleFav = useCallback((id) => {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }, []);
+
+  // Detayın açılması "bu ürün merak edildi" sinyalidir; panoda en çok bakılan
+  // ürünler bundan türer. Sayım ateşle-unut, alt sayfa beklemeden açılır.
+  const openItem = useCallback((id) => {
+    setSelectedId(id);
+    trackProductView(id);
   }, []);
 
   const toggleSection = useCallback((id) => {
@@ -398,7 +406,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
           register={register}
           scrollMargin={catbarH}
           countLabel={(count) => formatItemCount(count, lang)}
-          onItemClick={setSelectedId}
+          onItemClick={openItem}
           favorites={favorites}
           onToggleFav={toggleFav}
           collapsedIds={collapsedIds}

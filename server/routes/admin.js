@@ -743,6 +743,26 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     });
   });
 
+  // ---- İstatistik: en çok bakılan ürünler ----
+  // İki pencere TEK istekte döner (days parametresi yok): panel 7 gün ile
+  // 30 gün arasında geçiş yaparken ağa çıkmasın. Pencereler /stats ile aynı.
+  router.get('/stats/products', (req, res) => {
+    const enCok = (gunSayisi) =>
+      db
+        .prepare(
+          `SELECT v.product_id AS id, p.name_tr, SUM(v.n) AS views
+             FROM product_views_daily v
+             JOIN products p ON p.id = v.product_id
+            WHERE v.day >= date('now', 'localtime', ?)
+            GROUP BY v.product_id
+            ORDER BY views DESC, p.name_tr
+            LIMIT 10`
+        )
+        .all(`-${gunSayisi - 1} days`);
+
+    res.json({ week: enCok(7), month: enCok(30) });
+  });
+
   // ---- Pano anlık görüntüleri ----
   // Panel dış API'leri kendi çeker (anahtarlar orada kalır) ve sonucu buraya
   // gönderir. Burada tutulur çünkü: tek geçmiş olur, iki bilgisayar aynı

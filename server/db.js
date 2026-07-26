@@ -106,6 +106,25 @@ export function openDb(path) {
       device_id TEXT PRIMARY KEY,
       last_at   INTEGER NOT NULL
     );
+    -- Ürün detayının açılması. menu_views menüye girişi sayar, bu ürün ilgisini;
+    -- iki farklı olay, iki ayrı tablo.
+    -- CASCADE, fix menüdeki RESTRICT'in bilinçli tersi: geçmişte bakılmış olmak
+    -- ürünü silinemez yapmamalı. Silinince geçmişi de gider ve listeden düşer.
+    CREATE TABLE IF NOT EXISTS product_views_daily (
+      day        TEXT NOT NULL,
+      product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+      n          INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (day, product_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_product_views_daily_gun ON product_views_daily(day);
+    -- Tekrarsızlık anahtarı cihaz DEĞİL (cihaz, ürün): bir misafirin baktığı
+    -- ikinci ürün de sayılmalı, yalnız aynı ürünü tekrar açması sayılmamalı.
+    CREATE TABLE IF NOT EXISTS product_views (
+      device_id  TEXT NOT NULL,
+      product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+      last_at    INTEGER NOT NULL,
+      PRIMARY KEY (device_id, product_id)
+    );
   `);
   migratePanoSnapshots(db);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
@@ -257,6 +276,36 @@ export function countMenuView(db, deviceId) {
      ON CONFLICT(device_id) DO UPDATE SET last_at = excluded.last_at`
   ).run(deviceId, now);
   bumpStat(db, 'menu_view');
+  return true;
+}
+
+// Ürün detayının açılması. countMenuView ile aynı 6 saatlik pencere, ama
+// anahtar (cihaz, ürün) ikilisi — aynı misafirin baktığı her AYRI ürün sayılır,
+// yalnız aynı ürünü tekrar açması sayılmaz.
+//
+// Olmayan ürün sessizce yoksayılır (false döner): bu bir izleme çağrısıdır,
+// menü yenilenirken silinmiş bir ürüne tıklamak misafire hata göstermemeli.
+// Kontrol açıkça yapılır; foreign_keys = ON olduğu için yoksa anlaşılmaz bir
+// SQLite hatası ve 500 dönerdi.
+export function countProductView(db, deviceId, productId) {
+  const urunVar = db.prepare('SELECT 1 FROM products WHERE id = ?').get(productId);
+  if (!urunVar) return false;
+
+  const now = Date.now();
+  db.prepare('DELETE FROM product_views WHERE last_at < ?').run(now - VIEW_WINDOW_MS);
+  const seen = db
+    .prepare('SELECT 1 FROM product_views WHERE device_id = ? AND product_id = ?')
+    .get(deviceId, productId);
+  if (seen) return false; // 6 saat içinde bu ürün zaten sayıldı
+
+  db.prepare(
+    `INSERT INTO product_views (device_id, product_id, last_at) VALUES (?, ?, ?)
+     ON CONFLICT(device_id, product_id) DO UPDATE SET last_at = excluded.last_at`
+  ).run(deviceId, productId, now);
+  db.prepare(
+    `INSERT INTO product_views_daily (day, product_id, n) VALUES (?, ?, 1)
+     ON CONFLICT(day, product_id) DO UPDATE SET n = n + 1`
+  ).run(localDay(), productId);
   return true;
 }
 
