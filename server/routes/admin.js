@@ -140,7 +140,9 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   router.get('/menu', (req, res) => {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort').all();
     const products = db.prepare('SELECT * FROM products ORDER BY sort').all().map(hydrate);
-    res.json({ categories, products });
+    // Setler de burada döner: panel tek istekle menünün tamamını alır ve
+    // fiyat toplayıcı fix menü satış fiyatını (menu.setPrice) görebilir.
+    res.json({ categories, products, sets: readSets() });
   });
 
   // ---- Ayarlar: QR / adres + duyuru + restoran bilgileri ----

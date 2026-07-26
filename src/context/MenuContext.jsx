@@ -25,6 +25,7 @@ function normalizeMeta(meta) {
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
+  const [sets, setSets] = useState([]);
   const [meta, setMeta] = useState(EMPTY_META);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,6 +43,7 @@ export function MenuProvider({ children }) {
       }
       setCategories(Array.isArray(data.categories) ? data.categories : []);
       setItems(Array.isArray(data.products) ? data.products : []);
+      setSets(Array.isArray(data.sets) ? data.sets : []);
       setMeta(normalizeMeta(data.meta));
       setError(null);
     } catch (e) {
@@ -69,7 +71,7 @@ export function MenuProvider({ children }) {
   }, []);
 
   return (
-    <MenuContext.Provider value={{ categories, items, meta, loading, error, reload }}>
+    <MenuContext.Provider value={{ categories, items, sets, meta, loading, error, reload }}>
       {children}
     </MenuContext.Provider>
   );

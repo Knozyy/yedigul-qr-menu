@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { UI, fmtPrice, fmtPriceRange } from '../data/ui';
 import { useMenu } from '../context/menu-context.js';
 import { getMenuThemeVars } from '../lib/theme';
+import FixMenuCard from '../components/FixMenuCard';
 import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';
 import {
@@ -54,7 +55,7 @@ const passesDiet = (it, gf, veg) => {
 };
 
 export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
-  const { categories: CATEGORIES, items: ITEMS, meta, loading, error, reload } = useMenu();
+  const { categories: CATEGORIES, items: ITEMS, sets: SETS, meta, loading, error, reload } = useMenu();
   const [lang, setLang] = useState(() => {
     const stored = readStorage('lang', LANGUAGE_CODES.includes(defaultLang) ? defaultLang : 'tr');
     return LANGUAGE_CODES.includes(stored) ? stored : 'tr';
@@ -139,6 +140,20 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       }).map((it) => mapItem(it, lang, ui, dark)),
     })).filter((s) => s.items.length > 0);
   }, [CATEGORIES, ITEMS, lang, ui, dark, gf, veg, fav, favorites, q]);
+
+  // Fix menüler menünün en üstünde durur: paket menü, tek tek ürünlerden önce
+  // görülmeli. Arama/filtre bunları süzmez — filtre ürünler içindir, fix menü
+  // kapalı bir pakettir ve içeriği ayrı ayrı aranabilir değildir.
+  const fixMenus = useMemo(
+    () => (SETS || []).map((set) => ({
+      id: set.id,
+      name: localize(set.name, lang),
+      desc: localize(set.desc, lang),
+      priceText: set.price == null ? '' : fmtPrice(set.price, lang),
+      items: (set.items || []).map((item) => ({ qty: item.qty, name: localize(item.name, lang) })),
+    })),
+    [SETS, lang],
+  );
 
   const categories = useMemo(
     () => sections.map((s) => ({ id: s.id, label: s.title })),
@@ -348,6 +363,27 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
               {ui.clear}
             </button>
           </div>
+        )}
+
+        {fixMenus.length > 0 && (
+          <section style={{ paddingTop: 14 }}>
+            <h2
+              className="m-0 mb-4 font-outfit text-[27px] font-semibold leading-[1.1] tracking-[.2px]"
+              style={{ color: 'var(--text)' }}
+            >
+              {ui.fixMenus}
+            </h2>
+            <div className="flex flex-col gap-4">
+              {fixMenus.map((set) => (
+                <FixMenuCard
+                  key={set.id}
+                  set={set}
+                  priceText={set.priceText}
+                  perPersonLabel={ui.perPerson}
+                />
+              ))}
+            </div>
+          </section>
         )}
 
         <MenuSections
