@@ -4,6 +4,7 @@ import multer from 'multer';
 import { resolve, sep } from 'node:path';
 import { existsSync, unlinkSync, readFileSync } from 'node:fs';
 import { getSetting, setSetting, logChange, localDay } from '../db.js';
+import { isKnownMetric, isValidEntity } from '../snapshot-metrics.js';
 
 // Yüklenen dosyanın gerçekten resim olduğunu magic-byte ile doğrula —
 // multer'ın fileFilter'ı yalnız istemci Content-Type'ına bakar, o sahtelenebilir.
@@ -473,6 +474,83 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       month: { menu_view: sum(ago(29), 'menu_view'), qr_scan: sum(ago(29), 'qr_scan') },
       days,
     });
+  });
+
+  // ---- Pano anlık görüntüleri ----
+  // Panel dış API'leri kendi çeker (anahtarlar orada kalır) ve sonucu buraya
+  // gönderir. Burada tutulur çünkü: tek geçmiş olur, iki bilgisayar aynı
+  // seriye yazar ve db-backup.sh data.db ile birlikte yedekler.
+  // Bu ölçütlerin geçmişi API'den ALINAMAZ; kaybolursa geri getirilemez.
+  router.get('/snapshots', (req, res) => {
+    const metric = String(req.query.metric || '');
+    if (!isKnownMetric(metric)) return res.status(400).json({ error: 'Bilinmeyen ölçüt.' });
+
+    const GUN = /^\d{4}-\d{2}-\d{2}$/;
+    const to = GUN.test(String(req.query.to || '')) ? String(req.query.to) : localDay();
+    // Aralık verilmezse son 90 gün; yıllık analiz from/to ile açıkça ister.
+    const from = GUN.test(String(req.query.from || ''))
+      ? String(req.query.from)
+      : localDay(new Date(Date.now() - 89 * 86400000));
+    const limit = Math.min(Math.max(Number(req.query.limit) || 5000, 1), 5000);
+
+    // entity parametresi hiç verilmemişse o ölçütün TÜM varlıkları döner
+    // (ör. bir günün bütün ürün fiyatları).
+    const rows = req.query.entity !== undefined
+      ? db
+          .prepare(
+            `SELECT day, entity, value FROM pano_snapshots
+             WHERE metric = ? AND entity = ? AND day BETWEEN ? AND ?
+             ORDER BY day ASC LIMIT ?`
+          )
+          .all(metric, String(req.query.entity), from, to, limit)
+      : db
+          .prepare(
+            `SELECT day, entity, value FROM pano_snapshots
+             WHERE metric = ? AND day BETWEEN ? AND ?
+             ORDER BY day ASC, entity ASC LIMIT ?`
+          )
+          .all(metric, from, to, limit);
+
+    res.json({ metric, from, to, rows });
+  });
+
+  router.post('/snapshots', (req, res) => {
+    const items = Array.isArray(req.body?.items) ? req.body.items : [];
+    if (!items.length) return res.status(400).json({ error: 'Gönderilecek kayıt yok.' });
+    if (items.length > 2000) return res.status(413).json({ error: 'Tek seferde en çok 2000 kayıt.' });
+
+    const today = localDay();
+    const write = db.prepare(
+      `INSERT INTO pano_snapshots (day, metric, entity, value) VALUES (?, ?, ?, ?)
+       ON CONFLICT(day, metric, entity) DO UPDATE SET value = excluded.value`
+    );
+
+    let yazilan = 0;
+    const bilinmeyen = new Set();
+    const run = db.transaction((rows) => {
+      for (const row of rows) {
+        const day = String(row?.day || '');
+        const metric = String(row?.metric || '');
+        const entity = String(row?.entity ?? '');
+        const value = Number(row?.value);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
+        // Gelecek tarih kabul edilmez: saati yanlış kurulmuş bir istemci
+        // seriyi ileri taşıyıp grafiği kalıcı olarak bozabilirdi.
+        if (day > today) continue;
+        if (!isKnownMetric(metric)) {
+          // Panel ayrı depo; ayrışma olursa sessiz kalmasın diye adı bildirilir.
+          if (bilinmeyen.size < 10) bilinmeyen.add(metric);
+          continue;
+        }
+        if (!isValidEntity(metric, entity)) continue;
+        if (!Number.isFinite(value)) continue;
+        write.run(day, metric, entity, value);
+        yazilan += 1;
+      }
+    });
+    run(items);
+
+    res.json({ written: yazilan, skipped: items.length - yazilan, unknown: [...bilinmeyen] });
   });
 
   return router;

@@ -55,6 +55,20 @@ export function openDb(path) {
       n   INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (day, key)
     );
+    -- Pano anlık görüntüleri: Instagram takipçi sayısı, Google puanı, ürün
+    -- fiyatı gibi API'nin yalnızca "şu an"ını verdiği, geçmişi ALINAMAYAN
+    -- ölçütler. Panelden gönderilir; burada tutulmasının sebebi tek bir geçmiş
+    -- olması ve db-backup.sh'ın data.db ile birlikte yedeklemesi.
+    -- entity: varlık başına ölçütler için (ör. ürün fiyatı). '' = global ölçüt.
+    CREATE TABLE IF NOT EXISTS pano_snapshots (
+      day    TEXT NOT NULL,
+      metric TEXT NOT NULL,
+      entity TEXT NOT NULL DEFAULT '',
+      value  REAL NOT NULL,
+      PRIMARY KEY (day, metric, entity)
+    );
+    CREATE INDEX IF NOT EXISTS idx_pano_snapshots_seri
+      ON pano_snapshots(metric, entity, day);
     -- Cihaz başına menü görüntülenme tekrarsızlığı: son görülme zamanı tutulur.
     -- Yalnız pencere içindeki (son 6 saat) cihazlar kalır; eskiler temizlenir.
     CREATE TABLE IF NOT EXISTS menu_views (
@@ -62,6 +76,7 @@ export function openDb(path) {
       last_at   INTEGER NOT NULL
     );
   `);
+  migratePanoSnapshots(db);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
   // eski data.db'lere eksik kolonları veri kaybı olmadan ekle
   const cols = db.prepare('PRAGMA table_info(products)').all().map((c) => c.name);
@@ -104,6 +119,35 @@ export function openDb(path) {
   }
   backfillMenuTranslations(db);
   return db;
+}
+
+/**
+ * pano_snapshots'a entity sütununu ekler.
+ *
+ * ALTER TABLE birincil anahtarı genişletemez, CREATE TABLE IF NOT EXISTS de
+ * mevcut tabloyu değiştirmez. Bu yüzden tablo yeniden kurulur: satırlar
+ * entity='' ile kopyalanır, sonra eskisi düşürülür. Kopyalayarak yapılır —
+ * bu verinin geri getirilme yolu yok, DROP ile atılamaz.
+ */
+export function migratePanoSnapshots(db) {
+  const cols = db.prepare('PRAGMA table_info(pano_snapshots)').all().map((c) => c.name);
+  if (cols.includes('entity')) return;
+
+  db.exec(`
+    CREATE TABLE pano_snapshots_yeni (
+      day    TEXT NOT NULL,
+      metric TEXT NOT NULL,
+      entity TEXT NOT NULL DEFAULT '',
+      value  REAL NOT NULL,
+      PRIMARY KEY (day, metric, entity)
+    );
+    INSERT INTO pano_snapshots_yeni (day, metric, entity, value)
+      SELECT day, metric, '', value FROM pano_snapshots;
+    DROP TABLE pano_snapshots;
+    ALTER TABLE pano_snapshots_yeni RENAME TO pano_snapshots;
+    CREATE INDEX IF NOT EXISTS idx_pano_snapshots_seri
+      ON pano_snapshots(metric, entity, day);
+  `);
 }
 
 // ---------------------------------------------------------------------------
