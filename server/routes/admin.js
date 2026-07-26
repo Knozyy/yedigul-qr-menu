@@ -366,6 +366,48 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   });
 
   /**
+   * Bir kategorinin ürün sırasını toplu yazar.
+   *
+   * `products.sort` TEK BİR GLOBAL DİZİDİR (0..N) ve kategoriler bu dizide
+   * bitişik bloklar tutar (fish 0-16, hot 17-30, ...). Kategoriyi 0'dan
+   * numaralasaydık bloklar iç içe geçer ve menü baştan sona karışırdı.
+   *
+   * Bu yüzden kategorinin MEVCUT SIRA YUVALARI korunur: o kategorinin sort
+   * değerleri artan sırada toplanır, yeni diziliş aynı yuvalara yerleştirilir.
+   * Kategori küresel konumunu aynen korur, yalnız içindeki ürünler yer değişir.
+   */
+  router.put('/products/order', (req, res) => {
+    const categoryId = String(req.body?.category_id || '');
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : null;
+    if (!categoryId || !ids || !ids.length) {
+      return res.status(400).json({ error: 'category_id ve ids listesi gerekli.' });
+    }
+    const kategori = db.prepare('SELECT id FROM categories WHERE id = ?').get(categoryId);
+    if (!kategori) return res.status(400).json({ error: 'Geçersiz kategori' });
+
+    const mevcut = db
+      .prepare('SELECT id, sort FROM products WHERE category_id = ? ORDER BY sort')
+      .all(categoryId);
+    const benzersiz = new Set(ids);
+    if (benzersiz.size !== ids.length) {
+      return res.status(400).json({ error: 'Listede tekrar eden ürün var.' });
+    }
+    if (ids.length !== mevcut.length || mevcut.some((row) => !benzersiz.has(row.id))) {
+      return res.status(400).json({ error: 'Liste kategorideki tüm ürünleri tam olarak içermeli.' });
+    }
+
+    // Yuvalar: kategorinin hâlihazırda kapladığı sort değerleri, artan sırada.
+    const yuvalar = mevcut.map((row) => row.sort).sort((a, b) => a - b);
+    const write = db.prepare('UPDATE products SET sort = ? WHERE id = ?');
+    db.transaction((sirali) => {
+      sirali.forEach((id, index) => write.run(yuvalar[index], id));
+    })(ids);
+
+    log('update', 'product', null, `Ürün sırası değiştirildi (${categoryId}, ${ids.length} ürün)`);
+    res.json({ ok: true, count: ids.length });
+  });
+
+  /**
    * Kategori sırasını toplu yazar.
    *
    * Tek tek PATCH yerine tek uç: sıra yarım uygulanamaz. `sort` sütunu
