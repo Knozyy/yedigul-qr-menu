@@ -1,4 +1,5 @@
 import ProductCard from './ProductCard';
+import FixMenuCard from './FixMenuCard';
 
 export default function MenuSections({
   sections,
@@ -51,18 +52,32 @@ export default function MenuSections({
             {!isCollapsed && (
               <div
                 className="grid items-start"
-                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 330px), 1fr))', gap: '0 44px' }}
+                style={{
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 330px), 1fr))',
+                  // Paket menüler kart olduğu için satır arası boşluk ister;
+                  // ürün satırları kendi ayraçlarıyla zaten ayrılıyor.
+                  gap: section.kind === 'sets' ? '18px 44px' : '0 44px',
+                }}
               >
-                {section.items.map((item) => (
-                  <ProductCard
-                    key={item.id}
-                    item={item}
-                    ui={ui}
-                    onClick={() => onItemClick(item.id)}
-                    isFav={favorites.includes(item.id)}
-                    onToggleFav={onToggleFav}
-                  />
-                ))}
+                {section.kind === 'sets'
+                  ? section.items.map((set) => (
+                    <FixMenuCard
+                      key={set.id}
+                      set={set}
+                      priceText={set.priceText}
+                      perPersonLabel={ui.perPerson}
+                    />
+                  ))
+                  : section.items.map((item) => (
+                    <ProductCard
+                      key={item.id}
+                      item={item}
+                      ui={ui}
+                      onClick={() => onItemClick(item.id)}
+                      isFav={favorites.includes(item.id)}
+                      onToggleFav={onToggleFav}
+                    />
+                  ))}
               </div>
             )}
           </section>

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { UI, fmtPrice, fmtPriceRange } from '../data/ui';
 import { useMenu } from '../context/menu-context.js';
 import { getMenuThemeVars } from '../lib/theme';
-import FixMenuCard from '../components/FixMenuCard';
 import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';
 import {
@@ -126,7 +125,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   // Arama ve tüm filtreler bölümlerin İÇİNİ süzer (düz liste modu yok);
   // boşalan kategori hem bölümden hem çip şeridinden düşer.
-  const sections = useMemo(() => {
+  const urunBolumleri = useMemo(() => {
     const favSet = new Set(favorites);
     return CATEGORIES.map((c) => ({
       id: c.id,
@@ -141,9 +140,9 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     })).filter((s) => s.items.length > 0);
   }, [CATEGORIES, ITEMS, lang, ui, dark, gf, veg, fav, favorites, q]);
 
-  // Fix menüler menünün en üstünde durur: paket menü, tek tek ürünlerden önce
-  // görülmeli. Arama/filtre bunları süzmez — filtre ürünler içindir, fix menü
-  // kapalı bir pakettir ve içeriği ayrı ayrı aranabilir değildir.
+  // Fix menüler kendi kategorisidir: çip şeridinde yerini alır ve diğer
+  // bölümler gibi kaydırılır. Diyet/favori süzgeçleri ÜRÜN niteliğidir, sette
+  // karşılığı yok — açıkken bölüm düşer. Arama ise set adında çalışır.
   const fixMenus = useMemo(
     () => (SETS || []).map((set) => ({
       id: set.id,
@@ -154,6 +153,21 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     })),
     [SETS, lang],
   );
+
+  // Paket menüler ilk bölüm: sofranın tamamı, tek tek ürünlerden önce okunur.
+  const sections = useMemo(() => {
+    const gorunur = fixMenus.filter((set) => {
+      // Diyet ve favori süzgeçleri ürün niteliğidir; sette karşılığı yok.
+      if (gf || veg || fav) return false;
+      if (!q) return true;
+      return foldForSearch(`${set.name} ${set.desc}`, lang).includes(q);
+    });
+    if (!gorunur.length) return urunBolumleri;
+    return [
+      { id: 'fix-menus', title: ui.fixMenus, kind: 'sets', items: gorunur },
+      ...urunBolumleri,
+    ];
+  }, [fixMenus, urunBolumleri, ui.fixMenus, gf, veg, fav, q, lang]);
 
   const categories = useMemo(
     () => sections.map((s) => ({ id: s.id, label: s.title })),
@@ -363,27 +377,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
               {ui.clear}
             </button>
           </div>
-        )}
-
-        {fixMenus.length > 0 && (
-          <section style={{ paddingTop: 14 }}>
-            <h2
-              className="m-0 mb-4 font-outfit text-[27px] font-semibold leading-[1.1] tracking-[.2px]"
-              style={{ color: 'var(--text)' }}
-            >
-              {ui.fixMenus}
-            </h2>
-            <div className="flex flex-col gap-4">
-              {fixMenus.map((set) => (
-                <FixMenuCard
-                  key={set.id}
-                  set={set}
-                  priceText={set.priceText}
-                  perPersonLabel={ui.perPerson}
-                />
-              ))}
-            </div>
-          </section>
         )}
 
         <MenuSections
