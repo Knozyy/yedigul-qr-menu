@@ -365,6 +365,36 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     res.status(204).end();
   });
 
+  /**
+   * Kategori sırasını toplu yazar.
+   *
+   * Tek tek PATCH yerine tek uç: sıra yarım uygulanamaz. `sort` sütunu
+   * benzersiz DEĞİL — eksik bir liste iki kategoriye aynı değeri verir ve
+   * ORDER BY sort ikisi arasında rastgele karar verir, sıra her yüklemede
+   * değişir. Bu yüzden liste TAM PERMÜTASYON olmak zorunda.
+   */
+  router.put('/categories/order', (req, res) => {
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : null;
+    if (!ids || !ids.length) return res.status(400).json({ error: 'ids listesi gerekli.' });
+
+    const mevcut = db.prepare('SELECT id FROM categories').all().map((row) => row.id);
+    const benzersiz = new Set(ids);
+    if (benzersiz.size !== ids.length) {
+      return res.status(400).json({ error: 'Listede tekrar eden kategori var.' });
+    }
+    if (ids.length !== mevcut.length || mevcut.some((id) => !benzersiz.has(id))) {
+      return res.status(400).json({ error: 'Liste tüm kategorileri tam olarak içermeli.' });
+    }
+
+    const write = db.prepare('UPDATE categories SET sort = ? WHERE id = ?');
+    db.transaction((sirali) => {
+      sirali.forEach((id, index) => write.run(index, id));
+    })(ids);
+
+    log('update', 'category', null, `Kategori sırası değiştirildi (${ids.length} kategori)`);
+    res.json({ ok: true, count: ids.length });
+  });
+
   // ---- Görseller ----
   // Kapak değiştir (eski tek-görsel davranışıyla uyumlu): images[0] yenisiyle değişir.
   router.post('/products/:id/image', (req, res) => {
