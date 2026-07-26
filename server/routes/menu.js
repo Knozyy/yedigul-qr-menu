@@ -115,7 +115,56 @@ export function readPublicMenu(db) {
        ORDER BY p.sort`
     )
     .all();
-  return { categories, products: rows.map(rowToPublicItem), meta: publicMeta(db) };
+  return {
+    categories,
+    products: rows.map(rowToPublicItem),
+    sets: readPublicSets(db),
+    meta: publicMeta(db),
+  };
+}
+
+/**
+ * Müşteriye açık fix menüler.
+ *
+ * Yalnız kind='fix_menu' ve aktif olanlar. İçerik METİN olarak yazılır, ürün
+ * kartına bağlanmaz: fix menü sabit bir paket, içindeki ürün tükendi/gizli
+ * olsa bile paketin kendisi satılmaya devam eder.
+ */
+export function readPublicSets(db) {
+  const sets = db
+    .prepare(
+      `SELECT * FROM product_sets
+       WHERE kind = 'fix_menu' AND is_active = 1 ORDER BY sort`
+    )
+    .all();
+  if (!sets.length) return [];
+
+  const items = db
+    .prepare(
+      `SELECT i.set_id, i.qty,
+              p.name_tr, p.name_en, p.name_ar, p.name_ru
+       FROM product_set_items i
+       JOIN products p ON p.id = i.product_id
+       ORDER BY i.sort`
+    )
+    .all();
+
+  const dil = (row, alan) => ({
+    tr: fallbackText(row[`${alan}_tr`], row[`${alan}_en`], row[`${alan}_tr`]),
+    en: fallbackText(row[`${alan}_en`], row[`${alan}_tr`], row[`${alan}_tr`]),
+    ar: fallbackText(row[`${alan}_ar`], row[`${alan}_en`], row[`${alan}_tr`]),
+    ru: fallbackText(row[`${alan}_ru`], row[`${alan}_en`], row[`${alan}_tr`]),
+  });
+
+  return sets.map((set) => ({
+    id: set.id,
+    name: dil(set, 'name'),
+    desc: dil(set, 'desc'),
+    price: set.price,
+    items: items
+      .filter((item) => item.set_id === set.id)
+      .map((item) => ({ qty: item.qty, name: dil(item, 'name') })),
+  }));
 }
 
 export function createMenuRouter(db) {

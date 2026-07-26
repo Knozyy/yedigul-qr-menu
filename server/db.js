@@ -69,6 +69,33 @@ export function openDb(path) {
     );
     CREATE INDEX IF NOT EXISTS idx_pano_snapshots_seri
       ON pano_snapshots(metric, entity, day);
+    -- Ürün setleri: adetli ürün listesi. Bugün fix menü (müşteriye açık, kendi
+    -- satış fiyatı), ileride masa senaryosu (içeride, fiyatlardan toplanır).
+    -- İkisi aynı ilkeli paylaştığı için tek şema; kind sütunu ayırır.
+    CREATE TABLE IF NOT EXISTS product_sets (
+      id        TEXT PRIMARY KEY,
+      kind      TEXT NOT NULL DEFAULT 'fix_menu',
+      name_tr   TEXT NOT NULL,
+      name_en   TEXT NOT NULL,
+      name_ar   TEXT NOT NULL DEFAULT '',
+      name_ru   TEXT NOT NULL DEFAULT '',
+      desc_tr   TEXT NOT NULL DEFAULT '',
+      desc_en   TEXT NOT NULL DEFAULT '',
+      desc_ar   TEXT NOT NULL DEFAULT '',
+      desc_ru   TEXT NOT NULL DEFAULT '',
+      price     REAL,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      sort      INTEGER NOT NULL DEFAULT 0
+    );
+    -- Ürün sette BİR KEZ bulunur; "2 acılı ezme" ikinci satır değil, qty = 2.
+    -- RESTRICT: fix menüde kullanılan ürün silinemez (kategorilerdeki desen).
+    CREATE TABLE IF NOT EXISTS product_set_items (
+      set_id     TEXT NOT NULL REFERENCES product_sets(id) ON DELETE CASCADE,
+      product_id TEXT NOT NULL REFERENCES products(id)     ON DELETE RESTRICT,
+      qty        INTEGER NOT NULL DEFAULT 1,
+      sort       INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (set_id, product_id)
+    );
     -- Cihaz başına menü görüntülenme tekrarsızlığı: son görülme zamanı tutulur.
     -- Yalnız pencere içindeki (son 6 saat) cihazlar kalır; eskiler temizlenir.
     CREATE TABLE IF NOT EXISTS menu_views (

@@ -309,6 +309,19 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   router.delete('/products/:id', (req, res) => {
     const existing = getProduct(db, req.params.id);
     if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    // Fix menüde kullanılan ürün silinemez. FK zaten RESTRICT ama açıkça
+    // kontrol edilir: yoksa kullanıcıya 500 ve anlaşılmaz SQLite hatası döner.
+    const setler = db
+      .prepare(
+        `SELECT s.name_tr FROM product_set_items i
+         JOIN product_sets s ON s.id = i.set_id WHERE i.product_id = ?`
+      )
+      .all(req.params.id);
+    if (setler.length) {
+      return res.status(409).json({
+        error: `Ürün şu menülerde kullanılıyor: ${setler.map((s) => s.name_tr).join(', ')}`,
+      });
+    }
     for (const url of existing.images) removeImageFile(url);
     db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
     log('delete', 'product', req.params.id, existing.name_tr);
@@ -363,6 +376,176 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
     log('delete', 'category', req.params.id, existing.name_tr);
     res.status(204).end();
+  });
+
+  // ---- Ürün setleri (fix menü; ileride masa senaryosu) ----
+
+  const SET_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+  const SET_TEXTS = [
+    'name_tr', 'name_en', 'name_ar', 'name_ru',
+    'desc_tr', 'desc_en', 'desc_ar', 'desc_ru',
+  ];
+
+  function readSets(kind = null) {
+    const rows = kind
+      ? db.prepare('SELECT * FROM product_sets WHERE kind = ? ORDER BY sort').all(kind)
+      : db.prepare('SELECT * FROM product_sets ORDER BY sort').all();
+    const items = db
+      .prepare('SELECT set_id, product_id, qty, sort FROM product_set_items ORDER BY sort')
+      .all();
+    return rows.map((row) => ({
+      ...row,
+      items: items.filter((item) => item.set_id === row.id)
+        .map(({ set_id: _s, ...rest }) => rest),
+    }));
+  }
+
+  /**
+   * Gövdeden set alanlarını çıkarır. Hata varsa mesaj döner, yoksa null.
+   * items verilmemişse (PATCH) `items: null` olur ve içerik korunur.
+   */
+  function readSetBody(body, { yeni }) {
+    const out = { hata: null, alanlar: {}, items: null };
+    for (const key of SET_TEXTS) {
+      if (body[key] !== undefined) out.alanlar[key] = String(body[key] ?? '').trim();
+    }
+    if (yeni || body.name_tr !== undefined || body.name_en !== undefined) {
+      if (!out.alanlar.name_tr || !out.alanlar.name_en) {
+        out.hata = 'name_tr ve name_en zorunlu';
+        return out;
+      }
+    }
+    if (body.price !== undefined) {
+      const price = body.price === null || body.price === '' ? null : Number(body.price);
+      if (price !== null && (!Number.isFinite(price) || price < 0)) {
+        out.hata = 'Geçersiz fiyat';
+        return out;
+      }
+      out.alanlar.price = price;
+    }
+    if (body.is_active !== undefined) out.alanlar.is_active = body.is_active ? 1 : 0;
+    if (body.kind !== undefined) out.alanlar.kind = String(body.kind) === 'senaryo' ? 'senaryo' : 'fix_menu';
+
+    if (body.items !== undefined) {
+      if (!Array.isArray(body.items)) { out.hata = 'items dizi olmalı'; return out; }
+      const gorulen = new Set();
+      const temiz = [];
+      for (const item of body.items) {
+        const productId = String(item?.product_id || '');
+        const qty = Number(item?.qty ?? 1);
+        if (!productId || gorulen.has(productId)) {
+          out.hata = 'Ürün listede bir kez bulunabilir (adet için qty kullanın)';
+          return out;
+        }
+        if (!Number.isInteger(qty) || qty < 1) { out.hata = 'qty en az 1 olmalı'; return out; }
+        if (!db.prepare('SELECT 1 FROM products WHERE id = ?').get(productId)) {
+          out.hata = `Geçersiz ürün: ${productId}`;
+          return out;
+        }
+        gorulen.add(productId);
+        temiz.push({ product_id: productId, qty });
+      }
+      out.items = temiz;
+    }
+    return out;
+  }
+
+  function writeItems(setId, items) {
+    db.prepare('DELETE FROM product_set_items WHERE set_id = ?').run(setId);
+    const ekle = db.prepare(
+      'INSERT INTO product_set_items (set_id, product_id, qty, sort) VALUES (?, ?, ?, ?)'
+    );
+    items.forEach((item, index) => ekle.run(setId, item.product_id, item.qty, index));
+  }
+
+  router.get('/sets', (req, res) => {
+    const kind = req.query.kind ? String(req.query.kind) : null;
+    res.json({ sets: readSets(kind) });
+  });
+
+  router.post('/sets', (req, res) => {
+    const body = req.body ?? {};
+    const id = String(body.id || randomUUID().slice(0, 8));
+    if (!SET_ID_RE.test(id)) {
+      return res.status(400).json({ error: 'Geçersiz id (yalnızca harf, rakam, tire, alt çizgi)' });
+    }
+    if (db.prepare('SELECT 1 FROM product_sets WHERE id = ?').get(id)) {
+      return res.status(409).json({ error: 'Bu id zaten kullanılıyor' });
+    }
+    const { hata, alanlar, items } = readSetBody(body, { yeni: true });
+    if (hata) return res.status(400).json({ error: hata });
+
+    const sonSort = db.prepare('SELECT COALESCE(MAX(sort), -1) AS n FROM product_sets').get().n;
+    db.transaction(() => {
+      db.prepare(
+        `INSERT INTO product_sets
+           (id, kind, name_tr, name_en, name_ar, name_ru,
+            desc_tr, desc_en, desc_ar, desc_ru, price, is_active, sort)
+         VALUES (@id, @kind, @name_tr, @name_en, @name_ar, @name_ru,
+                 @desc_tr, @desc_en, @desc_ar, @desc_ru, @price, @is_active, @sort)`
+      ).run({
+        id,
+        kind: alanlar.kind ?? 'fix_menu',
+        name_ar: '', name_ru: '', desc_tr: '', desc_en: '', desc_ar: '', desc_ru: '',
+        price: null, is_active: 1,
+        ...alanlar,
+        sort: sonSort + 1,
+      });
+      if (items) writeItems(id, items);
+    })();
+
+    log('create', 'set', id, alanlar.name_tr);
+    res.status(201).json(readSets().find((s) => s.id === id));
+  });
+
+  router.patch('/sets/:id', (req, res) => {
+    const existing = db.prepare('SELECT * FROM product_sets WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Set bulunamadı' });
+
+    const { hata, alanlar, items } = readSetBody(req.body ?? {}, { yeni: false });
+    if (hata) return res.status(400).json({ error: hata });
+
+    db.transaction(() => {
+      const anahtarlar = Object.keys(alanlar);
+      if (anahtarlar.length) {
+        db.prepare(
+          `UPDATE product_sets SET ${anahtarlar.map((k) => `${k} = @${k}`).join(', ')} WHERE id = @id`
+        ).run({ ...alanlar, id: req.params.id });
+      }
+      // items verilmemişse içerik korunur; verilmişse TAMAMEN değişir.
+      if (items) writeItems(req.params.id, items);
+    })();
+
+    log('update', 'set', req.params.id, alanlar.name_tr ?? existing.name_tr);
+    res.json(readSets().find((s) => s.id === req.params.id));
+  });
+
+  router.delete('/sets/:id', (req, res) => {
+    const existing = db.prepare('SELECT * FROM product_sets WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Set bulunamadı' });
+    db.prepare('DELETE FROM product_sets WHERE id = ?').run(req.params.id);
+    log('delete', 'set', req.params.id, existing.name_tr);
+    res.status(204).end();
+  });
+
+  /** Set sırasını toplu yazar — kategori sıralamasıyla aynı permütasyon şartı. */
+  router.put('/sets/order', (req, res) => {
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : null;
+    if (!ids || !ids.length) return res.status(400).json({ error: 'ids listesi gerekli.' });
+
+    const mevcut = db.prepare('SELECT id FROM product_sets').all().map((row) => row.id);
+    const benzersiz = new Set(ids);
+    if (benzersiz.size !== ids.length) {
+      return res.status(400).json({ error: 'Listede tekrar eden set var.' });
+    }
+    if (ids.length !== mevcut.length || mevcut.some((id) => !benzersiz.has(id))) {
+      return res.status(400).json({ error: 'Liste tüm setleri tam olarak içermeli.' });
+    }
+
+    const write = db.prepare('UPDATE product_sets SET sort = ? WHERE id = ?');
+    db.transaction((sirali) => sirali.forEach((id, index) => write.run(index, id)))(ids);
+    log('update', 'set', null, `Set sırası değiştirildi (${ids.length} set)`);
+    res.json({ ok: true, count: ids.length });
   });
 
   /**
