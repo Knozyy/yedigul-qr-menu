@@ -127,7 +127,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   // boşalan kategori hem bölümden hem çip şeridinden düşer.
   const urunBolumleri = useMemo(() => {
     const favSet = new Set(favorites);
-    return CATEGORIES.map((c) => ({
+    return CATEGORIES.filter((c) => c.kind !== 'sets').map((c) => ({
       id: c.id,
       title: localize(c, lang),
       items: ITEMS.filter((it) => {
@@ -154,20 +154,33 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     [SETS, lang],
   );
 
-  // Paket menüler ilk bölüm: sofranın tamamı, tek tek ürünlerden önce okunur.
+  // Fix menü bölümü normal bir kategori satırıdır: nereye konacağını kendi
+  // sort değeri söyler, panelde diğer kategorilerle birlikte sürüklenerek
+  // değiştirilir. Burada yalnızca kategori sırasına yerleştiriyoruz.
   const sections = useMemo(() => {
+    const setKategorisi = CATEGORIES.find((c) => c.kind === 'sets');
     const gorunur = fixMenus.filter((set) => {
       // Diyet ve favori süzgeçleri ürün niteliğidir; sette karşılığı yok.
       if (gf || veg || fav) return false;
       if (!q) return true;
       return foldForSearch(`${set.name} ${set.desc}`, lang).includes(q);
     });
-    if (!gorunur.length) return urunBolumleri;
-    return [
-      { id: 'fix-menus', title: ui.fixMenus, kind: 'sets', items: gorunur },
-      ...urunBolumleri,
-    ];
-  }, [fixMenus, urunBolumleri, ui.fixMenus, gf, veg, fav, q, lang]);
+    if (!setKategorisi || !gorunur.length) return urunBolumleri;
+
+    // CATEGORIES sort'a göre gelir; sırayla gezip her kategorinin bölümünü
+    // yerine koyarız. Boş kategoriler urunBolumleri'nden düştüğü için indeks
+    // eşlemesi yapılamaz — kimliğe göre eşleştirmek tek doğru yol.
+    const urunlerById = new Map(urunBolumleri.map((s) => [s.id, s]));
+    const out = [];
+    for (const category of CATEGORIES) {
+      if (category.kind === 'sets') {
+        out.push({ id: category.id, title: localize(category, lang), kind: 'sets', items: gorunur });
+      } else if (urunlerById.has(category.id)) {
+        out.push(urunlerById.get(category.id));
+      }
+    }
+    return out;
+  }, [CATEGORIES, fixMenus, urunBolumleri, gf, veg, fav, q, lang]);
 
   const categories = useMemo(
     () => sections.map((s) => ({ id: s.id, label: s.title })),

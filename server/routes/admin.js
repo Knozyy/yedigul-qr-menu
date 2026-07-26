@@ -198,8 +198,10 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     if (!b.category_id || !b.name_tr || !b.name_en) {
       return res.status(400).json({ error: 'category_id, name_tr, name_en zorunlu' });
     }
-    const cat = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.category_id);
+    const cat = db.prepare('SELECT id, kind FROM categories WHERE id = ?').get(b.category_id);
     if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
+    // Fix menü bölümü setleri gösterir; içine tek tek ürün konulamaz.
+    if (cat.kind === 'sets') return res.status(400).json({ error: 'Fix menü bölümüne ürün eklenemez' });
     const variants = normalizeVariants(b.variants);
     if (variants === null) {
       return res.status(400).json({ error: 'Geçersiz varyantlar (name_tr, name_en, price ≥ 0 zorunlu, en çok 8)' });
@@ -266,6 +268,11 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const before = getProduct(db, req.params.id);
     if (!before) return res.status(404).json({ error: 'Ürün bulunamadı' });
     const b = req.body ?? {};
+    if ('category_id' in b) {
+      const cat = db.prepare('SELECT id, kind FROM categories WHERE id = ?').get(b.category_id);
+      if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
+      if (cat.kind === 'sets') return res.status(400).json({ error: 'Fix menü bölümüne ürün taşınamaz' });
+    }
     if ('variants' in b) {
       const v = normalizeVariants(b.variants);
       if (v === null) {
@@ -373,6 +380,9 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   router.delete('/categories/:id', (req, res) => {
     const existing = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Kategori bulunamadı' });
+    if (existing.kind === 'sets') {
+      return res.status(409).json({ error: 'Fix menü bölümü silinemez; gizlemek için pasife alın.' });
+    }
     const count = db.prepare('SELECT COUNT(*) n FROM products WHERE category_id = ?').get(req.params.id).n;
     if (count > 0) return res.status(409).json({ error: 'Kategoride ürün var, önce ürünleri taşı/sil' });
     db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);

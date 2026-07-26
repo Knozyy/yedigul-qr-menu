@@ -7,8 +7,12 @@ export function openDb(path) {
   db.pragma('busy_timeout = 5000');
   db.pragma('foreign_keys = ON');
   db.exec(`
+    -- kind: 'products' normal kategori, 'sets' fix menü bölümü. Fix menü de
+    -- bir kategori satırı olduğu için sıralama, aktiflik ve çeviri kuralları
+    -- hiç değişmeden ona da uygulanır; ayrı bir yerleştirme mekanizması yok.
     CREATE TABLE IF NOT EXISTS categories (
       id        TEXT PRIMARY KEY,
+      kind      TEXT NOT NULL DEFAULT 'products',
       name_tr   TEXT NOT NULL,
       name_en   TEXT NOT NULL,
       sort      INTEGER NOT NULL DEFAULT 0,
@@ -144,8 +148,40 @@ export function openDb(path) {
       ALTER TABLE categories ADD COLUMN name_ru TEXT NOT NULL DEFAULT '';
     `);
   }
+  if (!catCols.includes('kind')) {
+    db.exec("ALTER TABLE categories ADD COLUMN kind TEXT NOT NULL DEFAULT 'products'");
+  }
+  ensureSetsCategory(db);
   backfillMenuTranslations(db);
   return db;
+}
+
+/** Fix menü bölümünün kategori satırı. Sıralaması buradan yönetilir. */
+export const SETS_CATEGORY_ID = 'fix-menus';
+
+/**
+ * Fix menü kategorisini garanti eder.
+ *
+ * Fix menüler ayrı bir yerleştirme mekanizmasıyla değil, normal bir kategori
+ * satırıyla konumlanır: sürükleyerek sıralama, aktiflik ve çeviri kuralları
+ * hiç değişmeden ona da uygular. Satır silinemez (rota engeller) ve ürün
+ * atanamaz; yalnız kind='sets' olduğu için menüde setleri gösterir.
+ */
+export function ensureSetsCategory(db) {
+  const existing = db.prepare("SELECT id FROM categories WHERE kind = 'sets'").get();
+  if (existing) return existing.id;
+
+  // Boş veritabanında bu satır seed'den ÖNCE kurulur; MAX(sort)+1 kullanılsaydı
+  // 0 alır ve menünün başına geçerdi. Yüksek bir başlangıç değeri, gerçek
+  // kategoriler yüklendiğinde sona düşmesini sağlar. Kullanıcı sürükleyince
+  // sıralama ucu zaten hepsini 0..N olarak yeniden numaralar.
+  const varOlan = db.prepare('SELECT COALESCE(MAX(sort), -1) AS n FROM categories').get().n;
+  const sort = varOlan < 0 ? 1000 : varOlan + 1;
+  db.prepare(
+    `INSERT INTO categories (id, kind, name_tr, name_en, name_ar, name_ru, sort, is_active)
+     VALUES (?, 'sets', 'Fix Menüler', 'Set Menus', 'قوائم ثابتة', 'Комплексные меню', ?, 1)`
+  ).run(SETS_CATEGORY_ID, sort);
+  return SETS_CATEGORY_ID;
 }
 
 /**

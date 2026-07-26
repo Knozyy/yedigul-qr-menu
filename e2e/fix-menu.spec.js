@@ -49,9 +49,29 @@ test('fix menü kendi kategorisi olarak görünür ve çip şeridine girer', asy
     await expect(page.getByText(a.name_tr, { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Kişi Başı')).toBeVisible();
 
-    // Ürünlerden ÖNCE gelir
-    const basliklar = await page.getByRole('heading', { level: 2 }).allInnerTexts();
-    expect(basliklar[0]).toContain('Fix Menüler');
+    // Sayfada bölüm başlıkları dışında da h2 var (alt bilgi); konumu kategori
+    // başlıkları ARASINDA ölçeriz.
+    const yeri = async () => {
+      const hepsi = await page.getByRole('heading', { level: 2 }).allInnerTexts();
+      return hepsi.findIndex((t) => t.includes('Fix Menüler'));
+    };
+    expect(await yeri()).toBeGreaterThan(0); // varsayılan: ilk sırada değil
+
+    // Kategori sırası değişince menüdeki yeri de değişir
+    const menuAdmin = await (await request.get(`${API}/api/admin/menu`, { headers: auth })).json();
+    const ids = menuAdmin.categories.map((c) => c.id);
+    const basa = ['fix-menus', ...ids.filter((id) => id !== 'fix-menus')];
+    const sirala = await request.put(`${API}/api/admin/categories/order`, {
+      headers: auth, data: { ids: basa },
+    });
+    expect(sirala.ok()).toBeTruthy();
+
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Fix Menüler', level: 2 })).toBeVisible();
+    expect(await yeri()).toBe(0); // başa taşındı
+
+    // Eski sıraya dön
+    await request.put(`${API}/api/admin/categories/order`, { headers: auth, data: { ids } });
 
     // Dil değişince set de çevrilir
     await page.getByRole('button', { name: 'Dil seçimi: English', exact: true }).click();

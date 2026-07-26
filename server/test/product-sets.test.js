@@ -133,3 +133,64 @@ test('setlere oturumsuz erişilemez', async () => {
   });
   assert.equal(yazma.status, 401);
 });
+
+// ---- Fix menü kategorisi (kind='sets') ----
+
+test('fix menü kategorisi otomatik oluşur ve sıralanabilir', async () => {
+  const menu = await (await fetch(`${base}/api/admin/menu`, { headers: h() })).json();
+  const setCat = menu.categories.find((c) => c.kind === 'sets');
+  assert.ok(setCat, 'kind=sets kategorisi olmalı');
+  assert.equal(setCat.id, 'fix-menus');
+
+  // Kategori sıralamasına normal bir satır gibi katılır
+  const ids = menu.categories.map((c) => c.id);
+  const yeni = [setCat.id, ...ids.filter((id) => id !== setCat.id)];
+  const res = await fetch(`${base}/api/admin/categories/order`, {
+    method: 'PUT', headers: h(), body: JSON.stringify({ ids: yeni }),
+  });
+  assert.equal(res.status, 200);
+
+  const sonra = await (await fetch(`${base}/api/admin/menu`, { headers: h() })).json();
+  assert.equal(sonra.categories[0].id, setCat.id, 'başa taşınabilmeli');
+
+  // Sona taşı ve genel menüde de sıranın yansıdığını doğrula
+  const sona = [...ids.filter((id) => id !== setCat.id), setCat.id];
+  await fetch(`${base}/api/admin/categories/order`, {
+    method: 'PUT', headers: h(), body: JSON.stringify({ ids: sona }),
+  });
+  const genel = await (await fetch(`${base}/api/menu`)).json();
+  assert.equal(genel.categories.at(-1).id, setCat.id, 'genel menüde de sonda olmalı');
+  assert.equal(genel.categories.at(-1).kind, 'sets', 'kind genel menüde açığa çıkmalı');
+});
+
+test('fix menü kategorisi silinemez', async () => {
+  const res = await fetch(`${base}/api/admin/categories/fix-menus`, { method: 'DELETE', headers: h() });
+  assert.equal(res.status, 409);
+  const menu = await (await fetch(`${base}/api/admin/menu`, { headers: h() })).json();
+  assert.ok(menu.categories.some((c) => c.kind === 'sets'), 'satır yerinde kalmalı');
+});
+
+test('fix menü kategorisine ürün eklenemez veya taşınamaz', async () => {
+  const olustur = await fetch(`${base}/api/admin/products`, {
+    method: 'POST', headers: h(),
+    body: JSON.stringify({ id: 'sizinti', category_id: 'fix-menus', name_tr: 'Sızıntı', name_en: 'Leak' }),
+  });
+  assert.equal(olustur.status, 400, 'yeni ürün fix menü bölümüne konulamaz');
+
+  const tasi = await fetch(`${base}/api/admin/products/levrek`, {
+    method: 'PATCH', headers: h(), body: JSON.stringify({ category_id: 'fix-menus' }),
+  });
+  assert.equal(tasi.status, 400, 'mevcut ürün fix menü bölümüne taşınamaz');
+});
+
+test('fix menü kategorisi pasife alınınca setler menüden kalkar', async () => {
+  await fetch(`${base}/api/admin/categories/fix-menus`, {
+    method: 'PATCH', headers: h(), body: JSON.stringify({ is_active: 0 }),
+  });
+  const gizli = await (await fetch(`${base}/api/menu`)).json();
+  assert.equal(gizli.categories.some((c) => c.kind === 'sets'), false, 'pasif kategori görünmemeli');
+
+  await fetch(`${base}/api/admin/categories/fix-menus`, {
+    method: 'PATCH', headers: h(), body: JSON.stringify({ is_active: 1 }),
+  });
+});

@@ -2,7 +2,12 @@ import { CATEGORIES, ITEMS } from './seed-data.js';
 import { backfillMenuTranslations } from './translation-backfill.js';
 
 export function seed(db) {
-  const existing = db.prepare('SELECT COUNT(*) n FROM categories').get().n;
+  // Fix menü kategorisi (kind='sets') openDb tarafından her zaman kurulur;
+  // "menü zaten dolu mu" sorusunda sayılmaz, yoksa boş bir veritabanı
+  // kurulmuş sayılır ve gerçek menü hiç yüklenmez.
+  const existing = db
+    .prepare("SELECT COUNT(*) n FROM categories WHERE kind != 'sets'")
+    .get().n;
   if (existing > 0) return;
 
   const insertCat = db.prepare(

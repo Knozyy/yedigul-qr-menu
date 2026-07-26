@@ -46,7 +46,9 @@ function i18nList(row, base) {
 }
 
 export function rowToPublicCategory(row) {
-  return { id: row.id, ...i18nText(row, 'name') };
+  // kind: 'sets' kategorisi ürün değil fix menüleri gösterir. İstemci bölümü
+  // buna göre çizer; sırası normal kategorilerle birlikte sort'tan gelir.
+  return { id: row.id, kind: row.kind || 'products', ...i18nText(row, 'name') };
 }
 
 export function rowToPublicItem(row) {
@@ -104,7 +106,7 @@ export function publicMeta(db) {
 
 export function readPublicMenu(db) {
   const categories = db
-    .prepare('SELECT id, name_tr, name_en, name_ar, name_ru FROM categories WHERE is_active = 1 ORDER BY sort')
+    .prepare('SELECT id, kind, name_tr, name_en, name_ar, name_ru FROM categories WHERE is_active = 1 ORDER BY sort')
     .all()
     .map(rowToPublicCategory);
   const rows = db
