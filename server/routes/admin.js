@@ -718,28 +718,76 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   });
 
   // ---- İstatistik: günlük menü görüntülenme + QR tarama ----
+  // İsteğe bağlı from/to YALNIZCA days[]'i etkiler. Parametresiz çağrı son 30
+  // günü döndürür — panonun siteStats konektörü bu ucu böyle çağırıyor ve
+  // today/week/month alanlarına bel bağlıyor; onların anlamı aralıktan bağımsız.
+  const GUN_BICIMI = /^\d{4}-\d{2}-\d{2}$/;
+  const MAX_ARALIK_GUN = 730;
+
   router.get('/stats', (req, res) => {
+    const ago = (n) => {
+      const d = new Date();
+      d.setDate(d.getDate() - n);
+      return localDay(d);
+    };
+
+    const ham = { from: req.query.from, to: req.query.to };
+    const istendi = ham.from !== undefined || ham.to !== undefined;
+    let from = ago(29);
+    let to = localDay();
+
+    if (istendi) {
+      // Boş dize de hata: '?to=' yazan istemci bir şey demek istemiştir,
+      // sessizce bugüne düşürmek yanlış aralık göstermek olur.
+      for (const [ad, deger] of Object.entries(ham)) {
+        if (deger !== undefined && !GUN_BICIMI.test(String(deger))) {
+          return res.status(400).json({ error: `Geçersiz ${ad} tarihi (YYYY-AA-GG bekleniyor).` });
+        }
+      }
+      from = ham.from ?? '0000-01-01';
+      to = ham.to ?? localDay();
+      if (from > to) return res.status(400).json({ error: 'from, to tarihinden büyük olamaz.' });
+
+      const gun = Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000) + 1;
+      if (gun > MAX_ARALIK_GUN) {
+        return res.status(400).json({ error: `Aralık en fazla ${MAX_ARALIK_GUN} gün olabilir.` });
+      }
+    }
+
     const rows = db
-      .prepare("SELECT day, key, n FROM stats_daily WHERE day >= date('now', 'localtime', '-29 days') ORDER BY day")
-      .all();
+      .prepare('SELECT day, key, n FROM stats_daily WHERE day >= ? AND day <= ? ORDER BY day')
+      .all(from, to);
     const byDay = new Map();
     for (const r of rows) {
       if (!byDay.has(r.day)) byDay.set(r.day, { day: r.day, menu_view: 0, qr_scan: 0 });
       byDay.get(r.day)[r.key] = r.n;
     }
     const days = [...byDay.values()];
+
+    // today/week/month HER ZAMAN gerçek bugüne göre hesaplanır, seçili aralığa
+    // göre değil — bu yüzden kendi sorgularını yaparlar.
+    const bugunAraligi = db
+      .prepare('SELECT day, key, n FROM stats_daily WHERE day >= ? ORDER BY day')
+      .all(ago(29));
+    const guncelByDay = new Map();
+    for (const r of bugunAraligi) {
+      if (!guncelByDay.has(r.day)) guncelByDay.set(r.day, { day: r.day, menu_view: 0, qr_scan: 0 });
+      guncelByDay.get(r.day)[r.key] = r.n;
+    }
+    const guncel = [...guncelByDay.values()];
     const today = localDay();
-    const sum = (from, key) => days.filter((d) => d.day >= from).reduce((a, d) => a + d[key], 0);
-    const ago = (n) => {
-      const d = new Date();
-      d.setDate(d.getDate() - n);
-      return localDay(d);
-    };
+    const sum = (baslangic, key) => guncel.filter((d) => d.day >= baslangic).reduce((a, d) => a + d[key], 0);
+
+    // Panel sayacın ne zaman başladığını bilmeli: veri olmayan bir dönem
+    // "iş kötü gitti" değil "henüz sayılmıyordu" demek olabilir.
+    const enEski = db.prepare('SELECT MIN(day) AS gun FROM stats_daily').get();
+
     res.json({
-      today: byDay.get(today) || { day: today, menu_view: 0, qr_scan: 0 },
+      today: guncelByDay.get(today) || { day: today, menu_view: 0, qr_scan: 0 },
       week: { menu_view: sum(ago(6), 'menu_view'), qr_scan: sum(ago(6), 'qr_scan') },
       month: { menu_view: sum(ago(29), 'menu_view'), qr_scan: sum(ago(29), 'qr_scan') },
       days,
+      firstDay: enEski?.gun ?? null,
     });
   });
 
