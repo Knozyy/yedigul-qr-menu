@@ -4,7 +4,7 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---- Galeri/iletişim içeriğini kapatmaması için sabit WhatsApp'ı gizle ---- */
-  var floatQuietZones = Array.prototype.slice.call(document.querySelectorAll(".gallery, .contact"));
+  var floatQuietZones = Array.prototype.slice.call(document.querySelectorAll(".hero, .specials, .menuband, .gallery, .contact"));
   var waFloat = document.querySelector(".wa-float");
   var visibleQuietZones = [];
   if (floatQuietZones.length && waFloat && "IntersectionObserver" in window) {
@@ -21,9 +21,22 @@
 
   /* ---- Sticky nav scroll state ---- */
   var nav = document.querySelector(".nav");
+  var navAnchorLinks = Array.prototype.slice.call(document.querySelectorAll(".nav__links .nav__link[href^='#']"));
+  var trackedSections = Array.prototype.slice.call(document.querySelectorAll("#tarihce, #spesiyaller, #galeri, #iletisim"));
+  function updateActiveNav() {
+    var activeHref = "#top";
+    var marker = window.innerHeight * 0.42;
+    trackedSections.forEach(function (section) {
+      if (section.getBoundingClientRect().top <= marker) activeHref = "#" + section.id;
+    });
+    navAnchorLinks.forEach(function (link) {
+      link.classList.toggle("is-active", link.getAttribute("href") === activeHref);
+    });
+  }
   function onScroll() {
     if (!nav) return;
     nav.classList.toggle("is-scrolled", window.scrollY > 40);
+    updateActiveNav();
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
@@ -44,6 +57,7 @@
   /* ---- Hero slider ---- */
   var slides = Array.prototype.slice.call(document.querySelectorAll(".hero__slide"));
   var dots = Array.prototype.slice.call(document.querySelectorAll(".hero__dot"));
+  var slideCount = document.querySelector(".hero__slide-count b");
   var idx = 0, timer = null, DUR = 6000;
   function show(n) {
     idx = (n + slides.length) % slides.length;
@@ -52,6 +66,7 @@
       d.classList.remove("is-active");
       if (i === idx) { void d.offsetWidth; d.classList.add("is-active"); }
     });
+    if (slideCount) slideCount.textContent = String(idx + 1).padStart(2, "0");
   }
   function next() { show(idx + 1); }
   function start() { if (reduceMotion || slides.length < 2) return; stop(); timer = setInterval(next, DUR); }
@@ -69,6 +84,16 @@
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealEls.forEach(function (el) { el.classList.add("is-in"); });
   } else {
+    function revealVisible() {
+      revealEls.forEach(function (el) {
+        if (el.classList.contains("is-in")) return;
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.94 && rect.bottom > 0) {
+          el.classList.add("is-in");
+          io.unobserve(el);
+        }
+      });
+    }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -80,6 +105,8 @@
     // rootMargin üst değeri büyük: çapa ile aşağı atlanınca viewport'un
     // ÜSTÜNDE kalan bölümler de "görüldü" sayılır, gizli kalmazlar
     revealEls.forEach(function (el) { io.observe(el); });
+    window.addEventListener("scroll", revealVisible, { passive: true });
+    requestAnimationFrame(revealVisible);
   }
 
   /* ---- Gallery lightbox ---- */

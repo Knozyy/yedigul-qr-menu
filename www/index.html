@@ -86,7 +86,8 @@
     </div>
   </div>
 
-  <main id="top">
+  <span class="top-anchor" id="top" aria-hidden="true"></span>
+  <main>
 
     <!-- ===================== HERO ===================== -->
     <section class="hero" aria-label="Yedigül Restaurant'a hoş geldiniz">
@@ -103,31 +104,42 @@
       </div>
 
       <div class="hero__inner">
-        <p class="hero__eyebrow eyebrow">Anadolukavağı · Boğaziçi</p>
-        <h1 class="hero__title">
-          <span class="line"><span>Boğaz'da</span></span>
-          <span class="line"><span>balık <em>keyfi</em></span></span>
-        </h1>
-        <p class="hero__caption">Doğa ile denizin kesiştiği sahil şeridinde, Boğaz'ın o muhteşem silüeti eşliğinde sizleri ağırlıyoruz. Yedigül Restaurant'a hoş geldiniz.</p>
-        <div class="hero__actions">
-          <a class="btn btn--gold" href="menu/">Menümüz <span class="arrow" aria-hidden="true">→</span></a>
-          <a class="btn btn--ghost" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener">Rezervasyon</a>
+        <div class="hero__content">
+          <p class="hero__eyebrow eyebrow">Anadolu Kavağı'nda 30+ yıllık sofra</p>
+          <h1 class="hero__title">
+            <span class="line"><span>Boğaz'ın kıyısında</span></span>
+            <span class="line"><span>iyi balık, <em>uzun sohbet.</em></span></span>
+          </h1>
+          <p class="hero__caption">Günlük balık, Yedigül usulü tatlar ve hemen yanı başınızda Boğaz. Anadolu Kavağı'nda aceleye gelmeyen bir sofraya bekliyoruz.</p>
+          <div class="hero__actions">
+            <a class="btn btn--gold" href="menu/">Menüyü keşfet <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn--ghost" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener">Masa ayırt</a>
+          </div>
+        </div>
+
+        <aside class="hero__visit" aria-label="Bugünün ziyaret bilgileri">
+          <div class="hero__visit-status"><span aria-hidden="true"></span> Bugün açığız</div>
+          <p class="hero__visit-label">Sofranız hazır</p>
+          <strong class="hero__visit-hours">11:00 — 00:00</strong>
+          <p class="hero__visit-copy">Anadolu Kavağı İskelesi'ne birkaç adım mesafede.</p>
+          <a href="#iletisim">Yol tarifi ve iletişim <span aria-hidden="true">↗</span></a>
+        </aside>
+      </div>
+
+      <div class="hero__quickbar" aria-label="Yedigül öne çıkan özellikleri">
+        <div><span>01</span><strong>Günlük taze seçim</strong><small>Denizden sofraya</small></div>
+        <div><span>02</span><strong>İskeleye birkaç adım</strong><small>Boğaz'ın tam kıyısında</small></div>
+        <div><span>03</span><strong>4 dilde dijital menü</strong><small>TR · EN · AR · RU</small></div>
+      </div>
+
+      <div class="hero__controls">
+        <span class="hero__slide-count" aria-hidden="true"><b>01</b><i></i><span>03</span></span>
+        <div class="hero__dots" role="tablist" aria-label="Slayt seçimi">
+          <button class="hero__dot is-active" type="button" aria-label="1. slayt"></button>
+          <button class="hero__dot" type="button" aria-label="2. slayt"></button>
+          <button class="hero__dot" type="button" aria-label="3. slayt"></button>
         </div>
       </div>
-
-      <div class="hero__meta" aria-hidden="true">
-        <span class="label">Est.</span>
-        <span class="val">1990'lar</span>
-        <span class="label">30+ yıl</span>
-      </div>
-
-      <div class="hero__dots" role="tablist" aria-label="Slayt seçimi">
-        <button class="hero__dot is-active" type="button" aria-label="1. slayt"></button>
-        <button class="hero__dot" type="button" aria-label="2. slayt"></button>
-        <button class="hero__dot" type="button" aria-label="3. slayt"></button>
-      </div>
-
-      <span class="hero__scroll" aria-hidden="true">Keşfet</span>
     </section>
 
     <!-- ===================== TARİHÇE ===================== -->
@@ -137,17 +149,27 @@
           <img src="images/about/home-about.jpg" alt="Yedigül Restaurant'ın Boğaz manzaralı sahil şeridi" loading="lazy">
           <div class="about__stamp">
             <b>30<span style="font-size:1.2rem">+</span></b>
-            <span>Yıllık Lezzet</span>
+            <span>Yıllık Boğaz sofrası</span>
+          </div>
+          <div class="about__location-card">
+            <span>Kıyıda</span>
+            <strong>Boğaz'a sıfır</strong>
           </div>
         </div>
 
         <div class="about__body">
-          <p class="eyebrow reveal">Tarihçemiz</p>
-          <h2 class="about__title reveal" data-delay="1">30 yılı aşkın süredir devam eden bir <em>lezzet hikâyesi</em></h2>
-          <p class="about__text reveal" data-delay="2">Doğa ile denizin kesiştiği ve buram buram tarih kokan Anadolukavağı'nın en güzel sahil şeridinde bulunan restaurantımız, sizleri <strong>Boğaz'ın o muhteşem silüeti</strong> eşliğinde ağırlamaktadır.</p>
-          <p class="about__text reveal" data-delay="3">Yıllardan beri balığı bir sanat hâline dönüştüren Yedigül Restaurant'ın ustaları, babadan oğula geçen bu lezzeti siz misafirlerine sunmaktan mutluluk duymaktadır. Klasik tarifler yerine lezzete lezzet katacak farklı tarifleriyle, Boğaz'da balık lezzetine yepyeni bir boyut kazandırmaktadır.</p>
+          <p class="eyebrow reveal">Bizim hikâyemiz</p>
+          <h2 class="about__title reveal" data-delay="1">Anadolu Kavağı'nda <em>30 yılı aşkın</em> bir Boğaz sofrası.</h2>
+          <p class="about__lead reveal" data-delay="2">Yedigül'de değişmeyen şey basit: balık günlük, sofra özenli, manzara hep Boğaz.</p>
+          <p class="about__text reveal" data-delay="3">Babadan oğula aktarılan mutfak deneyimimizi, klasik tariflere Yedigül dokunuşu ekleyerek sürdürüyoruz. Burada yemek, manzaraya karşı uzayan güzel bir sohbetin bahanesi.</p>
+          <div class="about__features reveal" data-delay="3" aria-label="Yedigül özellikleri">
+            <span>Günlük balık</span>
+            <span>Yedigül usulü</span>
+            <span>Boğaz manzarası</span>
+          </div>
           <div class="about__cta reveal" data-delay="4">
-            <a class="btn btn--dark" href="#spesiyaller">Spesiyallerimiz <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn--dark" href="#spesiyaller">Mutfağı keşfet <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="about__text-link" href="#galeri">Mekândan kareler <span aria-hidden="true">↘</span></a>
           </div>
         </div>
       </div>
@@ -158,18 +180,21 @@
       <div class="wrap">
         <div class="specials__head">
           <div>
-            <p class="eyebrow reveal">Spesiyallerimiz</p>
-            <h2 class="specials__title reveal" data-delay="1">Yedigül <em>usulü</em></h2>
+            <p class="eyebrow reveal">Mutfağın imzası</p>
+            <h2 class="specials__title reveal" data-delay="1">İlk lokmada <em>Yedigül.</em></h2>
           </div>
-          <p class="specials__intro reveal" data-delay="2">Yapım şekli Yedigül Restaurant'a tescilli, birbirinden lezzetli spesiyallerimiz — her biri Boğaz'ın sofrasına özenle taşınır.</p>
+          <div class="specials__aside reveal" data-delay="2">
+            <p class="specials__intro">Günlük deniz ürünleri, yıllardır değişmeyen tarifler ve sofraya sıcak gelen Yedigül spesiyalleri.</p>
+            <a href="menu/">Tüm menüyü gör <span aria-hidden="true">→</span></a>
+          </div>
         </div>
 
         <div class="specials__grid">
-          <figure class="dish dish--wide reveal">
+          <figure class="dish dish--feature reveal">
             <img src="images/dish/9.png" alt="Levrek Buğulama" loading="lazy">
             <figcaption class="dish__body"><span class="dish__num">01</span><span class="dish__name">Levrek Buğulama</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
-          <figure class="dish reveal" data-delay="1">
+          <figure class="dish dish--tall reveal" data-delay="1">
             <img src="images/dish/6.png" alt="Kalkan Izgara" loading="lazy">
             <figcaption class="dish__body"><span class="dish__num">02</span><span class="dish__name">Kalkan Izgara</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
@@ -177,29 +202,17 @@
             <img src="images/dish/1.png" alt="Midye Tava" loading="lazy">
             <figcaption class="dish__body"><span class="dish__num">03</span><span class="dish__name">Midye Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
-          <figure class="dish dish--tall reveal">
+          <figure class="dish reveal">
             <img src="images/dish/2.png" alt="Lakerda" loading="lazy">
             <figcaption class="dish__body"><span class="dish__num">04</span><span class="dish__name">Lakerda</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
-          <figure class="dish reveal" data-delay="1">
+          <figure class="dish dish--landscape reveal" data-delay="1">
             <img src="images/dish/3.png" alt="Hamsi Tava" loading="lazy">
             <figcaption class="dish__body"><span class="dish__num">05</span><span class="dish__name">Hamsi Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
-          <figure class="dish reveal" data-delay="2">
+          <figure class="dish dish--landscape reveal" data-delay="2">
             <img src="images/dish/8.png" alt="Midye Dolma" loading="lazy">
             <figcaption class="dish__body"><span class="dish__num">06</span><span class="dish__name">Midye Dolma</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
-          </figure>
-          <figure class="dish reveal">
-            <img src="images/dish/5.png" alt="İstavrit Tava" loading="lazy">
-            <figcaption class="dish__body"><span class="dish__num">07</span><span class="dish__name">İstavrit Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
-          </figure>
-          <figure class="dish reveal" data-delay="1">
-            <img src="images/dish/7.png" alt="Sardalya Tava" loading="lazy">
-            <figcaption class="dish__body"><span class="dish__num">08</span><span class="dish__name">Sardalya Tava</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
-          </figure>
-          <figure class="dish reveal" data-delay="2">
-            <img src="images/dish/4.png" alt="Kabak Tatlısı" loading="lazy">
-            <figcaption class="dish__body"><span class="dish__num">09</span><span class="dish__name">Kabak Tatlısı</span><span class="dish__tag">Yedigül Usulü</span></figcaption>
           </figure>
         </div>
         <div class="scroll-hint" aria-hidden="true"></div>
@@ -208,14 +221,28 @@
 
     <!-- ===================== MENU TEASER BAND ===================== -->
     <section class="menuband" aria-label="Dijital menümüz">
-      <div class="menuband__bg">
-        <img src="images/slider/2.jpg" alt="" aria-hidden="true" loading="lazy">
-      </div>
-      <div class="wrap menuband__inner">
-        <p class="menuband__rule reveal"><span>Menümüz</span></p>
-        <h2 class="menuband__title reveal" data-delay="1">Boğaz'ın <em>tüm sofrası</em>, cebinizde</h2>
-        <p class="menuband__text reveal" data-delay="2">Birbirinden güzel deniz ürünleri ve onlara en çok yakışan mezeler, çorbalar ve salatalar — hepsi güncel dijital menümüzde. Türkçe ve İngilizce olarak keşfedin.</p>
-        <a class="btn btn--gold reveal" data-delay="3" href="menu/">Menüyü Aç <span class="arrow" aria-hidden="true">→</span></a>
+      <div class="wrap">
+        <div class="menuband__shell">
+          <div class="menuband__visual reveal">
+            <img src="images/slider/2.jpg" alt="Yedigül Restaurant'ta taş kâsede ızgara kalamar" loading="lazy">
+            <span><b>Güncel</b> dijital menü</span>
+          </div>
+          <div class="menuband__inner">
+            <p class="menuband__rule reveal"><span>Menümüz</span></p>
+            <h2 class="menuband__title reveal" data-delay="1">Boğaz'ın <em>tüm sofrası</em>, cebinizde.</h2>
+            <p class="menuband__text reveal" data-delay="2">Günün balıklarından mezelere, Yedigül spesiyallerinden tatlılara kadar tüm seçenekleri güncel fiyatlarıyla inceleyin.</p>
+            <div class="menuband__pills reveal" data-delay="2" aria-label="Menü kategorileri">
+              <span>Günlük balık</span>
+              <span>Mezeler</span>
+              <span>Spesiyaller</span>
+              <span>Tatlılar</span>
+            </div>
+            <div class="menuband__actions reveal" data-delay="3">
+              <a class="btn btn--gold" href="menu/">Menüyü aç <span class="arrow" aria-hidden="true">→</span></a>
+              <span class="menuband__languages"><b>TR</b><b>EN</b><b>AR</b><b>RU</b></span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -471,7 +498,7 @@
   <div class="lightbox" role="dialog" aria-modal="true" aria-label="Galeri görüntüleyici" aria-hidden="true">
     <button class="lightbox__close" type="button" aria-label="Kapat">×</button>
     <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Önceki">‹</button>
-    <img src="" alt="">
+    <img alt="">
     <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Sonraki">›</button>
   </div>
 
