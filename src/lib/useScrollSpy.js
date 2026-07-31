@@ -56,8 +56,12 @@ export default function useScrollSpy(ids, offset, enabled) {
     const el = refs.current[id];
     if (!el) return;
     setActive(id);
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+    const top = window.scrollY + el.getBoundingClientRect().top - offset - 10;
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: 'auto',
+    });
+  }, [offset]);
 
   return { active, register, scrollTo };
 }

@@ -12,12 +12,7 @@
 export default function FixMenuCard({ set, priceText, perPersonLabel }) {
   return (
     <article
-      className="px-5 py-6 sm:px-7 sm:py-7"
-      style={{
-        border: '1px solid var(--faint-strong)',
-        borderRadius: 4,
-        background: 'var(--card, transparent)',
-      }}
+      className="yg-fix-menu-card"
     >
       <h3
         className="m-0 font-outfit text-[25px] sm:text-[28px] font-semibold leading-[1.15]"

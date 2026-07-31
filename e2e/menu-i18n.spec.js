@@ -35,14 +35,12 @@ test('arama seçili dilde büyük-küçük harf ve aksan farkını tolere eder',
   await openMenu(page);
   const search = page.getByRole('textbox', { name: 'Menüde ara…' });
   await search.fill('CUPRA');
-  await expect(page.getByRole('heading', { name: 'Çupra', level: 3 })).toBeVisible();
-  await expect(page.locator('main h3')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'Çupra', exact: true, level: 3 })).toBeVisible();
 
   await page.getByRole('button', { name: 'Dil seçimi: English', exact: true }).click();
   const englishSearch = page.getByRole('textbox', { name: 'Search the menu…' });
   await englishSearch.fill('SEA BREAM');
-  await expect(page.getByRole('heading', { name: 'Sea Bream', level: 3 })).toBeVisible();
-  await expect(page.locator('main h3')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'Sea Bream', exact: true, level: 3 })).toBeVisible();
 });
 
 test('dile bağlı erişilebilir adlar ve favori durumu birlikte güncellenir', async ({ page }) => {

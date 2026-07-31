@@ -14,36 +14,34 @@ export default function MenuSections({
   onToggleSection,
 }) {
   return (
-    <>
+    <div className="yg-menu-sections">
       {sections.map((section) => {
         const isCollapsed = collapsedIds.has(section.id);
         return (
           <section
             key={section.id}
             ref={register(section.id)}
-            style={{ scrollMarginTop: scrollMargin + 8, paddingTop: 14 }}
+            className="yg-menu-section"
+            style={{ scrollMarginTop: scrollMargin + 12 }}
           >
             <button
               type="button"
               onClick={() => onToggleSection(section.id)}
               aria-expanded={!isCollapsed}
-              className="w-full min-h-12 flex items-center gap-3 bg-transparent border-none cursor-pointer text-start py-2.5 px-0"
-              style={{ color: 'inherit' }}
+              className="yg-menu-section__toggle"
             >
               <h2
-                className="m-0 font-outfit text-[27px] font-semibold leading-[1.1] tracking-[.2px]"
-                style={{ color: 'var(--text)' }}
+                className="yg-menu-section__title"
               >
                 {section.title}
               </h2>
-              <span className="flex-none text-[12.5px] tracking-[.5px] font-normal" style={{ color: 'var(--muted2)' }}>
+              <span className="yg-menu-section__count">
                 {countLabel(section.items.length)}
               </span>
-              <span className="flex-1" style={{ borderTop: '1px solid var(--faint)' }} />
+              <span className="yg-menu-section__rule" />
               <svg
                 width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"
-                className={`flex-none transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
-                style={{ color: 'var(--muted2)' }}
+                className={`yg-menu-section__chevron ${isCollapsed ? 'is-collapsed' : ''}`}
               >
                 <path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -51,13 +49,7 @@ export default function MenuSections({
 
             {!isCollapsed && (
               <div
-                className="grid items-start"
-                style={{
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 330px), 1fr))',
-                  // Paket menüler kart olduğu için satır arası boşluk ister;
-                  // ürün satırları kendi ayraçlarıyla zaten ayrılıyor.
-                  gap: section.kind === 'sets' ? '18px 44px' : '0 44px',
-                }}
+                className={`yg-menu-section__grid${section.kind === 'sets' ? ' yg-menu-section__grid--sets' : ''}`}
               >
                 {section.kind === 'sets'
                   ? section.items.map((set) => (
@@ -83,6 +75,6 @@ export default function MenuSections({
           </section>
         );
       })}
-    </>
+    </div>
   );
 }

@@ -49,10 +49,9 @@ test('fix menü kendi kategorisi olarak görünür ve çip şeridine girer', asy
     await expect(page.getByText(a.name_tr, { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Kişi Başı')).toBeVisible();
 
-    // Sayfada bölüm başlıkları dışında da h2 var (alt bilgi); konumu kategori
-    // başlıkları ARASINDA ölçeriz.
+    // Editoryal girişte de h2 var; konumu yalnızca kategori başlıkları arasında ölçeriz.
     const yeri = async () => {
-      const hepsi = await page.getByRole('heading', { level: 2 }).allInnerTexts();
+      const hepsi = await page.locator('.yg-menu-sections h2').allInnerTexts();
       return hepsi.findIndex((t) => t.includes('Fix Menüler'));
     };
     expect(await yeri()).toBeGreaterThan(0); // varsayılan: ilk sırada değil

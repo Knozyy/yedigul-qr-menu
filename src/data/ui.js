@@ -6,6 +6,8 @@ import { formatNumber } from '../lib/i18n.js';
 export const UI = {
   tr: {
     sub: 'Balık Lokantası', tagline: 'Boğaz Balık Restoranı', search: 'Menüde ara…',
+    menuLabel: 'Günün menüsü', menuLead: 'Denizden sofraya, Yedigül usulü.',
+    menuIntro: 'Günün taze balıkları, klasik mezeler ve Boğaz sofrasının vazgeçilmezleri.',
     gf: 'Glutensiz', veg: 'Vejetaryen', favorites: 'Favorilerim',
     market: 'Piyasa Fiyatı',
     marketNote: 'Mevsimlik üründür; günün fiyatını servis ekibimizden öğrenebilirsiniz.',
@@ -30,6 +32,8 @@ export const UI = {
   },
   en: {
     sub: 'Fish Restaurant', tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…',
+    menuLabel: "Today's menu", menuLead: 'From the sea to your table, the Yedigül way.',
+    menuIntro: "Today's fresh catch, classic meze and Bosphorus table favourites.",
     gf: 'Gluten-free', veg: 'Vegetarian', favorites: 'Favourites',
     market: 'Market Price',
     marketNote: 'Seasonal catch — please ask our team for today’s price.',
@@ -54,6 +58,8 @@ export const UI = {
   },
   ar: {
     sub: 'مطعم أسماك', tagline: 'مطعم أسماك البوسفور', search: 'ابحث في القائمة…',
+    menuLabel: 'قائمة اليوم', menuLead: 'من البحر إلى مائدتكم، على طريقة Yedigül.',
+    menuIntro: 'صيد اليوم الطازج والمقبلات الكلاسيكية وأطباق مائدة البوسفور.',
     gf: 'خالٍ من الغلوتين', veg: 'نباتي', favorites: 'المفضلة',
     market: 'سعر السوق',
     marketNote: 'صيد موسمي — يرجى سؤال فريق الخدمة عن سعر اليوم.',
@@ -78,6 +84,8 @@ export const UI = {
   },
   ru: {
     sub: 'Рыбный ресторан', tagline: 'Рыбный ресторан на Босфоре', search: 'Поиск по меню…',
+    menuLabel: 'Меню дня', menuLead: 'Из моря к вашему столу — в стиле Yedigül.',
+    menuIntro: 'Свежий улов дня, классические мезе и любимые блюда Босфора.',
     gf: 'Без глютена', veg: 'Вегетарианское', favorites: 'Избранное',
     market: 'Цена дня',
     marketNote: 'Сезонная рыба — уточните цену дня у официанта.',

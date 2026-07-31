@@ -19,7 +19,6 @@ import SearchFilters from '../components/SearchFilters';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
-import HomeLink from '../components/HomeLink';
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
@@ -244,6 +243,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const favEmpty = fav && favorites.length === 0;
   const announcement = String(localize(meta.announcement, lang) || '').trim();
   const instagram = (meta.info.instagram || '').trim();
+  const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
 
   // Balık fiyatı oynak; menüde son fiyat güncelleme tarihi güven verir.
   const priceUpdatedText = (() => {
@@ -280,7 +280,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     <div
       lang={lang}
       dir={language.dir}
-      className="min-h-screen text-[15px]"
+      className="yg-menu-page min-h-screen text-[15px]"
       style={{
         ...themeVars,
         background: 'var(--bg)',
@@ -289,22 +289,19 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         transition: 'background 0.35s ease, color 0.35s ease',
       }}
     >
-      <div className="max-w-[980px] mx-auto px-4 pt-3">
-        <HomeLink label={ui.home} rtl={language.dir === 'rtl'} />
-      </div>
-
       <Header
         ui={ui}
         dark={dark}
         onToggleTheme={() => setDark((d) => !d)}
         lang={lang}
         onSetLang={setLang}
+        rtl={language.dir === 'rtl'}
       />
 
-      <div className="max-w-[980px] mx-auto px-4 pt-4 pb-1 flex flex-col gap-3">
+      <div className="yg-menu-controls">
         {announcement !== '' && (
           <div
-            className="flex items-center gap-[11px] rounded-[14px] px-3.5 py-[11px] text-[13.5px] leading-[1.45]"
+            className="yg-menu-notice"
             style={{ background: 'var(--ann-bg)', border: '1px solid var(--ann-border)', color: 'var(--accent-text)' }}
           >
             <svg width="21" height="21" viewBox="0 0 24 24" className="flex-none" aria-hidden="true">
@@ -320,8 +317,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
         {meta.info.wifi && (
           <div
-            className="flex items-center gap-3.5 rounded-[14px] px-4 py-[11px]"
-            style={{ border: '1.5px dashed var(--faint-strong)' }}
+            className="yg-menu-wifi"
           >
             <svg width="23" height="23" viewBox="0 0 24 24" className="flex-none" style={{ color: 'var(--accent-text)' }} aria-hidden="true">
               <path
@@ -357,20 +353,24 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       {categories.length > 0 && (
         <div
           ref={catbarRef}
-          className="sticky top-0 z-30"
-          style={{
-            background: 'var(--sticky-bg)',
-            backdropFilter: 'blur(14px)',
-            WebkitBackdropFilter: 'blur(14px)',
-            borderBottom: '1px solid var(--faint)',
-            transition: 'background 0.35s ease',
-          }}
+          className="yg-category-dock sticky top-0 z-30"
         >
           <CategoryBar categories={categories} activeCat={activeCat} onSelect={onSelectCategory} label={ui.categories} />
         </div>
       )}
 
-      <main className="max-w-[980px] mx-auto px-4 pt-1.5 pb-12">
+      <main className="yg-menu-main">
+        {!showEmpty && (
+          <div className="yg-menu-intro">
+            <div>
+              <p className="yg-overline">{ui.menuLabel}</p>
+              <h2>{ui.menuLead}</h2>
+              <p>{ui.menuIntro}</p>
+            </div>
+            <span className="yg-menu-intro__count">{formatItemCount(visibleItemCount, lang)}</span>
+          </div>
+        )}
+
         {showEmpty && (
           <div className="pt-14 pb-10 px-6 flex flex-col items-center gap-4 text-center">
             <div
@@ -414,8 +414,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         />
 
         <footer
-          className="mt-8 px-2 pt-7 pb-1.5 flex flex-col items-center gap-2 text-center"
-          style={{ borderTop: '1px solid var(--faint)' }}
+          className="yg-menu-footer"
         >
           <span className="font-outfit text-[21px] font-semibold">Yedigül</span>
           {meta.info.hours && (

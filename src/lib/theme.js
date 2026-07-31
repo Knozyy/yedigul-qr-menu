@@ -33,6 +33,16 @@ export function getMenuThemeVars(dark, accent) {
       '--chip-soft': 'rgba(242,233,214,0.09)',
       '--scrim-btn': 'rgba(10,31,53,0.72)',
       '--sheet-bg': '#0F2A46',
+      '--surface': '#102942',
+      '--surface-raised': '#15334F',
+      '--surface-muted': 'rgba(242,233,214,0.07)',
+      '--shadow': '0 22px 60px rgba(2,10,20,0.34)',
+      '--hero': '#071A2E',
+      '--hero-text': '#F7F0E2',
+      '--hero-muted': '#AEBACA',
+      '--hero-line': 'rgba(242,233,214,0.18)',
+      '--home-bg': 'rgba(255,255,255,0.07)',
+      '--card-hover': '#183A59',
     };
   }
   return {
@@ -57,6 +67,16 @@ export function getMenuThemeVars(dark, accent) {
     '--chip-soft': 'rgba(22,41,61,0.07)',
     '--scrim-btn': 'rgba(251,247,237,0.9)',
     '--sheet-bg': '#FDFAF2',
+    '--surface': '#FFFDF7',
+    '--surface-raised': '#FFFFFF',
+    '--surface-muted': '#F4EEDF',
+    '--shadow': '0 22px 60px rgba(12,31,50,0.11)',
+    '--hero': '#071A2E',
+    '--hero-text': '#F7F0E2',
+    '--hero-muted': '#AEBACA',
+    '--hero-line': 'rgba(242,233,214,0.18)',
+    '--home-bg': 'rgba(255,255,255,0.07)',
+    '--card-hover': '#FFF9EC',
   };
 }
 
