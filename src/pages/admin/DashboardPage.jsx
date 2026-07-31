@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/auth-context.js';
 import { api } from '../../lib/api';
 import AdminShell from '../../components/admin/AdminShell';
 import ProductsView from '../../components/admin/ProductsView';

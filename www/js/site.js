@@ -3,6 +3,22 @@
   "use strict";
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---- Galeri/iletişim içeriğini kapatmaması için sabit WhatsApp'ı gizle ---- */
+  var floatQuietZones = Array.prototype.slice.call(document.querySelectorAll(".gallery, .contact"));
+  var waFloat = document.querySelector(".wa-float");
+  var visibleQuietZones = [];
+  if (floatQuietZones.length && waFloat && "IntersectionObserver" in window) {
+    var floatObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var position = visibleQuietZones.indexOf(entry.target);
+        if (entry.isIntersecting && position === -1) visibleQuietZones.push(entry.target);
+        if (!entry.isIntersecting && position !== -1) visibleQuietZones.splice(position, 1);
+      });
+      waFloat.classList.toggle("is-hidden-over-section", visibleQuietZones.length > 0);
+    }, { threshold: 0.08, rootMargin: "-5% 0px -5% 0px" });
+    floatQuietZones.forEach(function (section) { floatObserver.observe(section); });
+  }
+
   /* ---- Sticky nav scroll state ---- */
   var nav = document.querySelector(".nav");
   function onScroll() {
