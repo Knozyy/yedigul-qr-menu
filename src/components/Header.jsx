@@ -1,7 +1,6 @@
 import { LANGUAGES } from '../lib/i18n.js';
 import HomeLink from './HomeLink';
 
-// Boğaz dalgası süsü — marka satırının iki yanında.
 function Wave() {
   return (
     <svg width="34" height="10" viewBox="0 0 38 10" className="flex-none" aria-hidden="true">
@@ -73,8 +72,6 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang, rtl =
         </div>
 
         <div className="yg-menu-hero__brand">
-          {/* Gerçek amblem (www/images/logo/logo.png'den kırpılmış balık-Y);
-              zemini lacivert olduğundan madalyon gibi daire içinde kullanılır. */}
           <div className="yg-menu-hero__mark">
             <img
               src={`${import.meta.env.BASE_URL}logo-mark.png`}

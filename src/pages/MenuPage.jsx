@@ -22,8 +22,6 @@ import ScrollTopButton from '../components/ScrollTopButton';
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
-// Varyantlı ürünlerde kart fiyatı aralık olarak gösterilir (650–1100 TL);
-// varyantı da fiyatı da olmayan ürün "Piyasa Fiyatı" sayılır.
 const priceLabel = (it, lang, ui) => {
   if (hasVariants(it)) {
     const ps = it.variants.map((v) => v.price);
@@ -73,13 +71,10 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const ui = UI[lang];
   const language = getLanguage(lang);
 
-  // persist preferences
   useEffect(() => writeStorage('lang', lang), [lang]);
   useEffect(() => writeStorage('dark', dark), [dark]);
   useEffect(() => writeStorage('favorites', favorites), [favorites]);
 
-  // Ekran okuyucular, yerleşik çeviri araçları ve RTL düzeni sayfanın gerçek
-  // dilini kök HTML öğesinden okuyabilsin.
   useEffect(() => {
     const root = document.documentElement;
     const previousLang = root.lang;
@@ -92,13 +87,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     };
   }, [lang, language.dir]);
 
-  // Sayfa arka planı (overscroll dahil) temayı takip etsin; admin'e sızmasın.
   useEffect(() => {
     document.body.style.background = dark ? '#0A1F35' : '#FBF7ED';
     return () => { document.body.style.background = ''; };
   }, [dark]);
 
-  // Yalnız kategori çubuğu yapışkan; scroll-spy ofseti onun yüksekliği.
   useLayoutEffect(() => {
     const measure = () => {
       if (catbarRef.current) setCatbarH(catbarRef.current.offsetHeight);
@@ -112,8 +105,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
 
-  // Detayın açılması "bu ürün merak edildi" sinyalidir; panoda en çok bakılan
-  // ürünler bundan türer. Sayım ateşle-unut, alt sayfa beklemeden açılır.
   const openItem = useCallback((id) => {
     setSelectedId(id);
     trackProductView(id);
@@ -130,8 +121,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   const q = foldForSearch(search.trim(), lang);
 
-  // Arama ve tüm filtreler bölümlerin İÇİNİ süzer (düz liste modu yok);
-  // boşalan kategori hem bölümden hem çip şeridinden düşer.
   const urunBolumleri = useMemo(() => {
     const favSet = new Set(favorites);
     return CATEGORIES.filter((c) => c.kind !== 'sets').map((c) => ({
@@ -147,9 +136,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     })).filter((s) => s.items.length > 0);
   }, [CATEGORIES, ITEMS, lang, ui, dark, gf, veg, fav, favorites, q]);
 
-  // Fix menüler kendi kategorisidir: çip şeridinde yerini alır ve diğer
-  // bölümler gibi kaydırılır. Diyet/favori süzgeçleri ÜRÜN niteliğidir, sette
-  // karşılığı yok — açıkken bölüm düşer. Arama ise set adında çalışır.
   const fixMenus = useMemo(
     () => (SETS || []).map((set) => ({
       id: set.id,
@@ -161,22 +147,15 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     [SETS, lang],
   );
 
-  // Fix menü bölümü normal bir kategori satırıdır: nereye konacağını kendi
-  // sort değeri söyler, panelde diğer kategorilerle birlikte sürüklenerek
-  // değiştirilir. Burada yalnızca kategori sırasına yerleştiriyoruz.
   const sections = useMemo(() => {
     const setKategorisi = CATEGORIES.find((c) => c.kind === 'sets');
     const gorunur = fixMenus.filter((set) => {
-      // Diyet ve favori süzgeçleri ürün niteliğidir; sette karşılığı yok.
       if (gf || veg || fav) return false;
       if (!q) return true;
       return foldForSearch(`${set.name} ${set.desc}`, lang).includes(q);
     });
     if (!setKategorisi || !gorunur.length) return urunBolumleri;
 
-    // CATEGORIES sort'a göre gelir; sırayla gezip her kategorinin bölümünü
-    // yerine koyarız. Boş kategoriler urunBolumleri'nden düştüğü için indeks
-    // eşlemesi yapılamaz — kimliğe göre eşleştirmek tek doğru yol.
     const urunlerById = new Map(urunBolumleri.map((s) => [s.id, s]));
     const out = [];
     for (const category of CATEGORIES) {
@@ -216,7 +195,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     };
   }, [ITEMS, selectedId, lang, ui, dark]);
 
-  // kapalı bölüme kaydırılıyorsa önce aç
   const onSelectCategory = useCallback(
     (id) => {
       setCollapsedIds((prev) => {
@@ -245,7 +223,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const instagram = (meta.info.instagram || '').trim();
   const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
 
-  // Balık fiyatı oynak; menüde son fiyat güncelleme tarihi güven verir.
   const priceUpdatedText = (() => {
     if (!meta.price_updated_at) return '';
     const d = new Date(meta.price_updated_at);

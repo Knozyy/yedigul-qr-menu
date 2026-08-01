@@ -1,9 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Shared "Boğaz'da akşam" type system (mirrors public_html/css/site.css).
-     Utility names kept as font-outfit (display) / font-inter (body) so every
-     component + admin page inherits the new families with no churn. */
   --font-outfit: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-inter: "Jost", "Segoe UI", system-ui, sans-serif;
 }
@@ -25,14 +22,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Cormorant is a high-contrast display serif — enable discretionary polish
-   and lean on heavier weights so hierarchy stays crisp at menu sizes. */
 .font-outfit {
   font-feature-settings: "liga" 1, "kern" 1;
 }
 
-/* Editorial gold overline: small-caps letterspaced label with a hairline rule,
-   echoing the homepage .eyebrow / section labels. */
 .yg-overline {
   font-family: "Jost", "Segoe UI", system-ui, sans-serif;
   font-weight: 500;
@@ -49,9 +42,6 @@ body {
   scrollbar-width: none;
 }
 
-/* ==========================================================================
-   2026 QR MENÜ MODERNİZASYONU
-   ========================================================================== */
 .yg-menu-page {
   overflow-x: clip;
   background: var(--bg);

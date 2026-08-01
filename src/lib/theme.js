@@ -4,8 +4,6 @@ export const ACCENTS = [
   { id: 'teal', label: 'Teal', value: '#1F6F6B' },
 ];
 
-// QR menü ("Boğaz'da Akşam" editoryal tasarım) token'ları.
-// Admin sayfaları aşağıdaki eski getThemeVars'ı kullanmaya devam eder.
 const ACCENT_ON_CREAM = { '#C8902F': '#8F6318', '#B0653A': '#8A4A28', '#2F7E6D': '#1F5A4C' };
 const ACCENT_ON_NAVY = { '#C8902F': '#E2B45C', '#B0653A': '#E09B72', '#2F7E6D': '#7FC5B2' };
 
@@ -121,8 +119,6 @@ export function getThemeVars(dark, accent) {
   };
 }
 
-// Yönetim paneli ("Boğaz" editoryal) token'ları — tek mod (krem sayfa + lacivert kabuk).
-// Menü getMenuThemeVars ve eski getThemeVars'a dokunulmaz.
 export function getAdminThemeVars() {
   const gold = '#C8902F';
   return {

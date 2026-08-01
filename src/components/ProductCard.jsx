@@ -1,6 +1,5 @@
 import Badges from './Badges';
 
-// Hızlı taranan QR menü kartı: güçlü görsel, net fiyat ve tek dokunuşla detay.
 export default function ProductCard({ item, ui, onClick, isFav, onToggleFav }) {
   return (
     <article

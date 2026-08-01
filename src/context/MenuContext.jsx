@@ -3,8 +3,6 @@ import { api } from '../lib/api';
 import { getDeviceId } from '../lib/deviceId';
 import { MenuContext } from './menu-context.js';
 const POLL_MS = 30000;
-// static export mode: menu data is baked into the bundle as a JSON file
-// (no backend on the shared host), so there is nothing to poll
 const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 
 const EMPTY_META = {
@@ -63,8 +61,6 @@ export function MenuProvider({ children }) {
     return () => clearInterval(t);
   }, [reload]);
 
-  // Cihaz başına görüntülenme kaydı: uygulama açılışında bir kez pinglenir.
-  // 6 saatlik tekrarsızlığı sunucu uygular; polling'deki reload SAYMAZ.
   useEffect(() => {
     if (IS_STATIC) return;
     api.post('/menu/view', { id: getDeviceId() }).catch(() => {});

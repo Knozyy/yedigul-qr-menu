@@ -36,8 +36,8 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
-  const [editing, setEditing] = useState(null); // ürün | 'new' | null
-  const [bulk, setBulk] = useState(null); // Toplu Zam modal state — modal Task 7'de gelecek
+  const [editing, setEditing] = useState(null);
+  const [bulk, setBulk] = useState(null);
   const [toast, setToast] = useState('');
   const toastTimer = useRef(null);
 

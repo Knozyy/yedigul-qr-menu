@@ -1,14 +1,3 @@
-/**
- * Prix-fixe bloğu.
- *
- * Ürünler açık satırlar hâlinde, aralarında kıl payı çizgiyle akar
- * (ProductCard). Fix menü ise ÇERÇEVELİ bir blok: basılı menülerde paket
- * menünün kutuya alınmasının aynısı. Bu karşıtlık gerçek farkı taşıyor —
- * ürün listedeki bir kalem, fix menü kendi içinde kapalı bir paket.
- *
- * İçerik satırlarında noktalı kılavuz çizgisi KULLANILMAZ: o çizgi "bu
- * kalemin fiyatı şu" demektir, fix menü içeriğinin tek tek fiyatı yoktur.
- */
 export default function FixMenuCard({ set, priceText, perPersonLabel }) {
   return (
     <article

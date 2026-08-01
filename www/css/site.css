@@ -1,23 +1,15 @@
-/* ==========================================================================
-   Yedigül Restaurant — "Boğaz'da Akşam" homepage
-   Editorial-luxury redesign. Palette harmonized with the QR menu app
-   (src/lib/theme.js). Plain CSS, no build step. — 2026
-   ========================================================================== */
-
-/* ---------- Design tokens ------------------------------------------------ */
 :root {
-  /* Marin / Bosphorus palette (mirrors the QR menu app) */
-  --ink:        #0A192F;   /* deepest navy, night Bosphorus */
-  --ink-2:      #12213E;   /* raised ink panels */
-  --navy:       #15294D;   /* body ink text on cream */
-  --navy-royal: #1E3A8A;   /* accent navy */
-  --cream:      #F4F2EC;   /* sea-salt cream, page ground */
-  --cream-2:    #FBFAF6;   /* raised cream */
+  --ink:        #0A192F;
+  --ink-2:      #12213E;
+  --navy:       #15294D;
+  --navy-royal: #1E3A8A;
+  --cream:      #F4F2EC;
+  --cream-2:    #FBFAF6;
   --paper:      #FFFFFF;
-  --gold:       #C8902F;   /* warm gold accent */
-  --gold-soft:  #E0B25E;   /* lit gold for dark grounds */
+  --gold:       #C8902F;
+  --gold-soft:  #E0B25E;
   --muted:      #6E7787;
-  --muted-ink:  #9DB0D0;   /* muted text on ink */
+  --muted-ink:  #9DB0D0;
 
   --line:        rgba(21, 41, 77, .12);
   --line-strong: rgba(21, 41, 77, .20);
@@ -38,7 +30,6 @@
   --nav-h: 74px;
 }
 
-/* ---------- Reset -------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
 
@@ -67,7 +58,6 @@ ul { list-style: none; padding: 0; }
   border-radius: 2px;
 }
 
-/* Layered paper texture on the cream ground */
 body::before {
   content: "";
   position: fixed;
@@ -371,9 +361,6 @@ body.nav-open .nav__panel-links a {
 
 @keyframes panelIn { to { opacity: 1; transform: translateY(0); } }
 
-/* ==========================================================================
-   HERO
-   ========================================================================== */
 .hero {
   position: relative;
   min-height: 100svh;
@@ -454,7 +441,6 @@ body.nav-open .nav__panel-links a {
 .hero__meta .label { font-size: .68rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-soft); }
 .hero__meta .val   { font-family: var(--serif); font-size: 1.4rem; font-style: italic; }
 
-/* slide dots */
 .hero__dots {
   position: absolute;
   left: var(--gutter);
@@ -500,10 +486,6 @@ body.nav-open .nav__panel-links a {
 @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes dotFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-/* Yatay telefon / kısa ekranlar: başlık 12vw ile ölçeklenince tek başına
-   ekranı aşıyor, mutlak konumlu .hero__meta da butonların üstüne biniyordu.
-   Kısa ekranda başlık yüksekliğe göre ölçeklenir, dekoratif rozet ve
-   "Keşfet" ipucu gizlenir. */
 @media (max-height: 560px) {
   .hero__inner { padding-top: calc(var(--nav-h) + .8rem); padding-bottom: 4.2rem; }
   .hero__title { font-size: clamp(2.1rem, 10vh, 3.4rem); margin-block: .7rem .4rem; }
@@ -513,9 +495,6 @@ body.nav-open .nav__panel-links a {
   .hero__dots { bottom: 1rem; }
 }
 
-/* ==========================================================================
-   TARİHÇE / ABOUT
-   ========================================================================== */
 .about { background: var(--cream); }
 .about__grid {
   display: grid;
@@ -564,9 +543,6 @@ body.nav-open .nav__panel-links a {
 .about__text strong { color: var(--navy); font-weight: 500; }
 .about__cta { margin-top: 1.4rem; }
 
-/* ==========================================================================
-   SPESİYALLER
-   ========================================================================== */
 .specials { background: var(--ink); color: var(--cream); position: relative; overflow: hidden; }
 .specials::before {
   content: "";
@@ -644,11 +620,6 @@ body.nav-open .nav__panel-links a {
 .dish:hover img { transform: scale(1.06); }
 .dish:hover .dish__tag { opacity: 1; transform: translateY(0); }
 
-/* Make a couple of dishes span for editorial asymmetry on wide screens */
-
-/* ==========================================================================
-   MENU TEASER BAND
-   ========================================================================== */
 .menuband { position: relative; overflow: hidden; background: var(--navy-royal); color: var(--cream); }
 .menuband__bg { position: absolute; inset: 0; z-index: 0; }
 .menuband__bg img { width: 100%; height: 100%; object-fit: cover; opacity: .28; }
@@ -675,9 +646,6 @@ body.nav-open .nav__panel-links a {
 .menuband__rule span { font-family: var(--serif); font-style: italic; font-size: 1.1rem; }
 .menuband__rule::before, .menuband__rule::after { content: ""; width: 46px; height: 1px; background: var(--gold-soft); opacity: .6; }
 
-/* ==========================================================================
-   GALERİ
-   ========================================================================== */
 .gallery {
   overflow: hidden;
   background:
@@ -923,7 +891,6 @@ body.nav-open .nav__panel-links a {
 .gallery__foot-note { display: inline-flex; align-items: center; gap: .75rem; }
 .gallery__foot-note::before { content: ""; width: 36px; height: 1px; background: var(--gold); }
 
-/* Lightbox */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -957,9 +924,6 @@ body.nav-open .nav__panel-links a {
 .lightbox__nav--prev { left: clamp(.5rem, 3vw, 2rem); }
 .lightbox__nav--next { right: clamp(.5rem, 3vw, 2rem); }
 
-/* ==========================================================================
-   İLETİŞİM / FOOTER
-   ========================================================================== */
 .contact {
   background:
     radial-gradient(75% 70% at 8% 5%, rgba(200,144,47,.13), transparent 57%),
@@ -1280,9 +1244,6 @@ body.nav-open .nav__panel-links a {
   70%, 100% { box-shadow: 0 0 0 10px rgba(224,178,94,0); }
 }
 
-/* ==========================================================================
-   FLOATING WHATSAPP
-   ========================================================================== */
 .wa-float {
   position: fixed;
   right: clamp(1rem, 3vw, 1.6rem);
@@ -1312,10 +1273,6 @@ body.nav-open .nav__panel-links a {
 .wa-float__pulse { position: absolute; inset: 0; border-radius: 100px; box-shadow: 0 0 0 0 rgba(31,168,85,.55); animation: waPulse 2.4s var(--ease) infinite; }
 @keyframes waPulse { to { box-shadow: 0 0 0 16px rgba(31,168,85,0); } }
 
-/* ==========================================================================
-   SCROLL REVEAL
-   ========================================================================== */
-/* .js guard: JavaScript yoksa sayfa tamamen görünür kalmalı */
 .js .reveal { opacity: 0; transform: translateY(30px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
 .js .reveal.is-in { opacity: 1; transform: translateY(0); }
 .js .reveal[data-delay="1"] { transition-delay: .08s; }
@@ -1324,11 +1281,6 @@ body.nav-open .nav__panel-links a {
 .js .reveal[data-delay="4"] { transition-delay: .32s; }
 .js .reveal[data-delay="5"] { transition-delay: .40s; }
 
-/* ==========================================================================
-   RESPONSIVE
-   ========================================================================== */
-
-/* ---- Mobilde yatay kaydırma (< 620px) ---- */
 @media (max-width: 619px) {
   .gallery { padding-block: 4.75rem 4.25rem; }
   .gallery::before {
@@ -1372,16 +1324,15 @@ body.nav-open .nav__panel-links a {
     -webkit-overflow-scrolling: touch;
     gap: .85rem;
     padding-bottom: 1.2rem;
-    scrollbar-width: none;              /* Firefox */
+    scrollbar-width: none;
   }
-  .specials__grid::-webkit-scrollbar { display: none; }  /* Chrome/Safari */
+  .specials__grid::-webkit-scrollbar { display: none; }
   .specials__grid > .dish {
     flex: 0 0 72vw;
     max-width: 72vw;
     scroll-snap-align: start;
     aspect-ratio: 3 / 4;
   }
-  /* Scroll indicator dots */
   .specials__grid + .scroll-hint,
   .gallery__grid + .scroll-hint {
     display: flex;
@@ -1464,7 +1415,6 @@ body.nav-open .nav__panel-links a {
   .contact__map { min-height: 100%; }
 }
 
-/* Mobile nav switch */
 @media (max-width: 899px) {
   .nav__links { display: none; }
   .nav__toggle { display: flex; }
@@ -1475,7 +1425,6 @@ body.nav-open .nav__panel-links a {
   .contact__grid { gap: 5.5rem; }
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -1490,9 +1439,6 @@ body.nav-open .nav__panel-links a {
   .nav__panel-links a { opacity: 1 !important; transform: none !important; }
 }
 
-/* ==========================================================================
-   2026 ANA SAYFA MODERNİZASYONU
-   ========================================================================== */
 body::after { opacity: .24; }
 .top-anchor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 .section { padding-block: clamp(5rem, 8vw, 7.5rem); }
@@ -1502,7 +1448,6 @@ body::after { opacity: .24; }
   border-radius: 12px;
 }
 
-/* Floating glass navigation */
 .nav {
   height: auto;
   padding: .85rem 0;
@@ -1552,7 +1497,6 @@ body::after { opacity: .24; }
 .nav__link--cta.is-active,
 .nav.is-scrolled .nav__link--cta.is-active { color: var(--ink); }
 
-/* Layered, visit-focused hero */
 .hero {
   min-height: min(960px, 100svh);
   align-items: center;
@@ -1724,7 +1668,6 @@ body::after { opacity: .24; }
 .hero__dots { position: static; opacity: 1; animation: none; }
 .hero__dot { width: 28px; height: 2px; }
 
-/* Shorter, more useful story section */
 .about { overflow: hidden; background: linear-gradient(180deg, var(--cream-2), var(--cream)); }
 .about__grid {
   grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
@@ -1815,7 +1758,6 @@ body::after { opacity: .24; }
 .about__text-link span { color: var(--gold); transition: transform .35s var(--ease); }
 .about__text-link:hover span { transform: translate(3px, 3px); }
 
-/* Compact culinary showcase */
 .specials {
   background:
     radial-gradient(58% 45% at 88% -5%, rgba(200,144,47,.16), transparent 70%),
@@ -1895,7 +1837,6 @@ body::after { opacity: .24; }
 .dish:hover::before { inset: 11px; border-color: rgba(224,178,94,.5); }
 .dish:hover img { transform: scale(1.045); }
 
-/* A menu section that reads like a modern product card */
 .menuband {
   padding-block: clamp(1.5rem, 4vw, 4.5rem);
   background: var(--cream);
@@ -2098,10 +2039,6 @@ body::after { opacity: .24; }
   .hero__controls { bottom: 92px; }
 }
 
-/* ==========================================================================
-   Rehber sayfaları (/nasil-gelinir/, /anadolukavagi-nerede-yemek-yenir/,
-   /bogazda-balik-raki/) — ana sayfa bileşenlerinden bağımsız, .page-* önekli.
-   ========================================================================== */
 .page-nav {
   position: sticky; top: 0; z-index: 50;
   background: rgba(244, 242, 236, .92);

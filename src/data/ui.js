@@ -1,8 +1,5 @@
 import { formatNumber } from '../lib/i18n.js';
 
-// Menü arayüzünün TR/EN/AR/RU sözlüğü. Ürün/kategori verisi burada DEĞİL:
-// asıl kaynak server/data.db (yönetim paneli), ilk kurulum tohumları
-// server/seed-data.js dosyasındadır.
 export const UI = {
   tr: {
     sub: 'Balık Lokantası', tagline: 'Boğaz Balık Restoranı', search: 'Menüde ara…',
@@ -110,7 +107,6 @@ export const UI = {
   },
 };
 
-// Fiyat biçimi referans tasarımdan: TR "650 TL", EN "₺650", AR "650 ل.ت", RU "650 ₺".
 export function fmtPrice(n, lang) {
   const number = formatNumber(n, lang);
   if (lang === 'tr') return `${number} TL`;

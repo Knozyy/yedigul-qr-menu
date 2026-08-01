@@ -83,7 +83,6 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
     >
       {isMobile ? (
         <>
-          {/* Mobil üst bar */}
           <header
             style={{
               background: 'var(--ink)',
@@ -134,7 +133,6 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
 
           <main style={{ padding: '18px 16px 110px' }}>{children}</main>
 
-          {/* Sabit alt gezinme */}
           <nav
             aria-label="Bölümler"
             style={{
@@ -150,7 +148,6 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
         </>
       ) : (
         <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch' }}>
-          {/* Masaüstü lacivert yan menü */}
           <aside
             style={{
               width: 238,

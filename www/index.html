@@ -13,7 +13,6 @@
   <meta name="theme-color" content="#0A192F">
   <link rel="canonical" href="https://www.yedigulrestorant.com/">
 
-  <!-- Open Graph -->
   <meta property="og:type" content="restaurant">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="Yedigül Restaurant">
@@ -37,7 +36,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap&subset=latin,latin-ext" rel="stylesheet">
 
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YMQXZMRR93"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -51,9 +49,6 @@
 </head>
 <body>
 
-  <!-- ===================== NAV ===================== -->
-  <!-- id="top" nav'da DURMAMALI: .nav position:fixed olduğundan tarayıcı
-       ona kaydırma yapmaz ("Ana Sayfa" linki çalışmaz olur) — id main'de. -->
   <header class="nav">
     <div class="nav__inner">
       <a class="nav__brand" href="/" aria-label="Yedigül Restaurant ana sayfa">
@@ -78,8 +73,6 @@
 
   </header>
 
-  <!-- Mobile slide-in panel — .nav dışında durmalı: kaydırılınca .nav'a gelen
-       backdrop-filter, içindeki position:fixed öğeyi nav'a hapsediyor -->
   <div class="nav__panel" id="navpanel">
     <nav class="nav__panel-links" aria-label="Mobil menü">
       <a href="#top" style="--i:0"><span class="n">01</span> Ana Sayfa</a>
@@ -99,7 +92,6 @@
   <span class="top-anchor" id="top" aria-hidden="true"></span>
   <main>
 
-    <!-- ===================== HERO ===================== -->
     <section class="hero" aria-label="Yedigül Restaurant'a hoş geldiniz">
       <div class="hero__bg">
         <div class="hero__slide is-active">
@@ -152,7 +144,6 @@
       </div>
     </section>
 
-    <!-- ===================== TARİHÇE ===================== -->
     <section class="section about" id="tarihce">
       <div class="wrap about__grid">
         <div class="about__media reveal">
@@ -185,7 +176,6 @@
       </div>
     </section>
 
-    <!-- ===================== SPESİYALLER ===================== -->
     <section class="section specials" id="spesiyaller">
       <div class="wrap">
         <div class="specials__head">
@@ -229,7 +219,6 @@
       </div>
     </section>
 
-    <!-- ===================== MENU TEASER BAND ===================== -->
     <section class="menuband" aria-label="Dijital menümüz">
       <div class="wrap">
         <div class="menuband__shell">
@@ -256,7 +245,6 @@
       </div>
     </section>
 
-    <!-- ===================== GALERİ ===================== -->
     <section class="section gallery" id="galeri">
       <div class="wrap">
         <div class="gallery__head">
@@ -356,7 +344,6 @@
       </div>
     </section>
 
-    <!-- ===================== İLETİŞİM ===================== -->
     <footer class="section contact" id="iletisim">
       <div class="wrap">
         <div class="contact__grid">
@@ -462,9 +449,6 @@
               <span class="contact__map-pin" aria-hidden="true"></span>
               <span><small>Boğaz'ın kıyısında</small><strong>Anadolu Kavağı İskelesi yanı</strong></span>
             </div>
-            <!-- Yandex Haritalar widget'ı: Türkiye'de sokak/bina detayı OSM'den iyi,
-                 API anahtarı gerektirmez ve çerçevelenebilir (Google output=embed
-                 X-Frame-Options ile engelli). Kesin konum: 41.17343, 29.08846. -->
             <iframe
               title="Yedigül Restaurant konumu — Anadolu Kavağı, Beykoz"
               src="https://yandex.com.tr/map-widget/v1/?ll=29.088460%2C41.173430&z=17&pt=29.088460,41.173430,pm2rdm&l=map"
@@ -497,14 +481,12 @@
     </footer>
   </main>
 
-  <!-- ===================== FLOATING WHATSAPP ===================== -->
   <a class="wa-float" href="https://wa.me/905369379280?text=Merhaba%2C%20rezervasyon%20yapt%C4%B1rmak%20istiyorum." target="_blank" rel="noopener" aria-label="WhatsApp ile rezervasyon yaptırın">
     <span class="wa-float__pulse" aria-hidden="true"></span>
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.78 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.18c-.24.68-1.42 1.32-1.95 1.36-.5.05-.5.4-3.15-.66-2.66-1.06-4.32-3.79-4.45-3.97-.13-.18-1.06-1.41-1.06-2.69 0-1.28.67-1.9.91-2.16.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.58.79 2 .86 2.15.07.14.12.31.02.5-.09.18-.14.3-.27.46-.13.15-.28.34-.4.46-.13.13-.27.28-.12.53.15.26.66 1.09 1.42 1.77.98.87 1.8 1.14 2.06 1.27.26.13.4.11.55-.07.15-.18.63-.74.8-.99.16-.26.33-.21.55-.13.22.08 1.42.67 1.66.79.24.12.4.18.46.28.06.1.06.58-.18 1.26Z"/></svg>
     <span>Rezervasyon<br>Yaptır</span>
   </a>
 
-  <!-- ===================== LIGHTBOX ===================== -->
   <div class="lightbox" role="dialog" aria-modal="true" aria-label="Galeri görüntüleyici" aria-hidden="true">
     <button class="lightbox__close" type="button" aria-label="Kapat">×</button>
     <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Önceki">‹</button>
@@ -514,8 +496,6 @@
 
   <script src="js/site.js" defer></script>
 
-  <!-- Yapısal veri: Google'da yıldız/saat/harita/"menüyü gör" zengin sonuçları için.
-       Adres, koordinat ve saatler bu sayfadaki İletişim bölümüyle birebir aynıdır (NAP tutarlılığı). -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

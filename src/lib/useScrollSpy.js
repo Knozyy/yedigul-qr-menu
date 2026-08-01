@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/**
- * Tracks which stacked section is currently under the sticky header.
- *
- * @param {string[]} ids       ordered section ids (top → bottom)
- * @param {number}   offset    sticky header height in px
- * @param {boolean}  enabled   only observe while true (e.g. not during search)
- */
 export default function useScrollSpy(ids, offset, enabled) {
   const [active, setActive] = useState(ids[0] || null);
   const refs = useRef({});

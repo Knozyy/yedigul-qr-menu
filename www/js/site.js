@@ -1,9 +1,7 @@
-/* Yedigül Restaurant — homepage interactions. Vanilla JS, no deps. */
 (function () {
   "use strict";
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---- Galeri/iletişim içeriğini kapatmaması için sabit WhatsApp'ı gizle ---- */
   var floatQuietZones = Array.prototype.slice.call(document.querySelectorAll(".hero, .specials, .menuband, .gallery, .contact"));
   var waFloat = document.querySelector(".wa-float");
   var visibleQuietZones = [];
@@ -19,7 +17,6 @@
     floatQuietZones.forEach(function (section) { floatObserver.observe(section); });
   }
 
-  /* ---- Sticky nav scroll state ---- */
   var nav = document.querySelector(".nav");
   var navAnchorLinks = Array.prototype.slice.call(document.querySelectorAll(".nav__links .nav__link[href^='#']"));
   var trackedSections = Array.prototype.slice.call(document.querySelectorAll("#tarihce, #spesiyaller, #galeri, #iletisim"));
@@ -41,7 +38,6 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---- Mobile nav panel ---- */
   var toggle = document.querySelector(".nav__toggle");
   var panelLinks = document.querySelectorAll(".nav__panel a");
   function closeNav() { document.body.classList.remove("nav-open"); if (toggle) toggle.setAttribute("aria-expanded", "false"); }
@@ -54,7 +50,6 @@
   panelLinks.forEach(function (a) { a.addEventListener("click", closeNav); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeNav(); });
 
-  /* ---- Hero slider ---- */
   var slides = Array.prototype.slice.call(document.querySelectorAll(".hero__slide"));
   var dots = Array.prototype.slice.call(document.querySelectorAll(".hero__dot"));
   var slideCount = document.querySelector(".hero__slide-count b");
@@ -79,7 +74,6 @@
     });
   }
 
-  /* ---- Scroll reveals ---- */
   var revealEls = document.querySelectorAll(".reveal");
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealEls.forEach(function (el) { el.classList.add("is-in"); });
@@ -102,14 +96,11 @@
         }
       });
     }, { threshold: 0.12, rootMargin: "10000px 0px -8% 0px" });
-    // rootMargin üst değeri büyük: çapa ile aşağı atlanınca viewport'un
-    // ÜSTÜNDE kalan bölümler de "görüldü" sayılır, gizli kalmazlar
     revealEls.forEach(function (el) { io.observe(el); });
     window.addEventListener("scroll", revealVisible, { passive: true });
     requestAnimationFrame(revealVisible);
   }
 
-  /* ---- Gallery lightbox ---- */
   var lb = document.querySelector(".lightbox");
   if (lb) {
     var lbImg = lb.querySelector("img");
@@ -146,11 +137,9 @@
     });
   }
 
-  /* ---- Footer year ---- */
   var y = document.getElementById("yr");
   if (y) y.textContent = new Date().getFullYear();
 
-  /* ---- Mobile scroll indicator dots ---- */
   function initScrollDots(gridSelector, hintSelector) {
     var grid = document.querySelector(gridSelector);
     var hint = document.querySelector(gridSelector + " + " + hintSelector);
@@ -159,13 +148,11 @@
     var items = Array.prototype.slice.call(grid.children);
     if (items.length < 2) return;
 
-    // Only activate on mobile
     var mq = window.matchMedia("(max-width: 619px)");
 
     function setup() {
       if (!mq.matches) { hint.innerHTML = ""; return; }
 
-      // Create dots
       hint.innerHTML = "";
       items.forEach(function (_, i) {
         var dot = document.createElement("span");
@@ -175,7 +162,6 @@
 
       var dots = Array.prototype.slice.call(hint.querySelectorAll(".scroll-hint__dot"));
 
-      // Track which item is most visible
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {

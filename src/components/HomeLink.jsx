@@ -1,5 +1,3 @@
-// Ana siteye (/) dönüş linki. QR menünün hem en üstünde hem footer'ında
-// aynı görünümle kullanılır; renkler menü token'larından gelir (tema uyumlu).
 export default function HomeLink({ label = 'Ana Sayfa', rtl = false, inverse = false }) {
   return (
     <a

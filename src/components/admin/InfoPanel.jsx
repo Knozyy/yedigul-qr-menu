@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 
-// Restoran bilgileri + duyuru ayarları. Bu alanlar menüde gösterilir:
-//  - Wi-Fi şifresi menünün EN ÜSTÜNDE belirgin kartta,
-//  - telefon / saat / instagram alt bilgi bloğunda,
-//  - duyuru üstteki şerit.
-// Backend: GET/PUT /admin/settings (server/routes/admin.js TEXT_SETTINGS).
-// info_hours tek bir metin alanıdır ("11:00 – 00:00"); burada açılış/kapanış
-// olarak ikiye bölünüp düzenlenir, kaydederken tekrar birleştirilir.
 const HOURS_SPLIT_RE = /\s*[–-]\s*/;
 const splitHours = (h) => {
   const [open = '', close = ''] = String(h || '').split(HOURS_SPLIT_RE);
@@ -54,7 +47,6 @@ export default function InfoPanel() {
   const [loaded, setLoaded] = useState(false);
   const [loadErr, setLoadErr] = useState('');
 
-  // Duyuru
   const [sTr, setSTr] = useState('');
   const [sEn, setSEn] = useState('');
   const [sAr, setSAr] = useState('');
@@ -63,7 +55,6 @@ export default function InfoPanel() {
   const [annMsg, setAnnMsg] = useState('');
   const [annErr, setAnnErr] = useState('');
 
-  // İşletme bilgileri
   const [sWifi, setSWifi] = useState('');
   const [sPhone, setSPhone] = useState('');
   const [sOpen, setSOpen] = useState('');

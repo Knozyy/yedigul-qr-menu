@@ -2,13 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { api } from '../../lib/api';
 
-// Menünün QR kodunu üretir. QR, sabit `/q` yolunu içerir; sunucu bunu göreli
-// yönlendirmeyle menüye çevirir. Böylece:
-//  - Menü yolu değişirse (ör. /menu/ -> /) sadece ayar güncellenir, QR aynı kalır.
-//  - Aynı QR, sunucunun yayınlandığı her domainde çalışır.
-// "Genel adres" alanı, QR'da hangi domainin kodlanacağını belirler (varsayılan:
-// panele girilen adres). Domaininizi buraya yazın ki basılan QR doğru olsun.
-
 const cardStyle = {
   background: 'var(--card)',
   border: '1px solid rgba(22,41,61,0.10)',
@@ -110,7 +103,6 @@ export default function QrPanel() {
         <img src="${dataUrl}" style="width:320px;height:320px" />
       </div>`);
     w.document.close();
-    // inline script yok (CSP script-src 'self' ile uyumlu); görsel yüklenince yazdır.
     const img = w.document.querySelector('img');
     if (img) img.onload = () => w.print();
     else w.print();

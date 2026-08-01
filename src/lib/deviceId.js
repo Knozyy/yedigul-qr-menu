@@ -1,5 +1,3 @@
-// Kalıcı, anonim cihaz kimliği (localStorage). Menü görüntülenmesini cihaz
-// başına saymak için kullanılır. Kişisel veri DEĞİL — rastgele bir token.
 const KEY = 'device_id';
 
 function randomId() {
@@ -16,7 +14,6 @@ export function getDeviceId() {
     }
     return id;
   } catch {
-    // localStorage kapalıysa (gizli mod vb.) oturumluk kimlikle yetin
     return randomId();
   }
 }

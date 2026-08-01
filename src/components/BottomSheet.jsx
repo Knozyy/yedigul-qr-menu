@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import Badges from './Badges';
 
 export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) {
-  // Çoklu görselde seçili kare; ürün değişince kapağa dön.
   const [imgIdx, setImgIdx] = useState(0);
   useEffect(() => setImgIdx(0), [sheet?.id]);
 
-  // Esc ile kapat + panel açıkken arka planı kaydırmayı kilitle.
   useEffect(() => {
     if (!sheet) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };

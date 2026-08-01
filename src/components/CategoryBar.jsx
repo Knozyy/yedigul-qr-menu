@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-// Alt çizgili (editoryal) kategori sekmeleri. Yapışkan sarmalayıcı ve
-// blur arka plan MenuPage'dedir; burada yalnızca kaydırılabilir şerit var.
 export default function CategoryBar({ categories, activeCat, onSelect, label }) {
   const navRef = useRef(null);
   const btnRefs = useRef({});

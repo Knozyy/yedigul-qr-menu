@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-// Inline SVG ikonlar (CSP: harici kaynak yok). Nav öğeleri tek kaynak.
-// Path'ler mockup'taki NAVD sözlüğünden birebir kopyalandı
-// (docs/superpowers/specs/reference-admin-mockup.dc.html).
 const NAVD = {
   home: 'M4 11.2 L12 4.4 L20 11.2 M6.4 9.6 V19.4 H17.6 V9.6',
   items: 'M2.5 12 C5.5 8.2 11 7 15.2 9.6 C16.6 10.5 17.8 11.3 19.5 12 C17.8 12.7 16.6 13.5 15.2 14.4 C11 17 5.5 15.8 2.5 12 Z M19.5 12 L22 9.4 M19.5 12 L22 14.6',

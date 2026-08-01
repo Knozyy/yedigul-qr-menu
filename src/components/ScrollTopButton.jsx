@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-// QR menüde aşağı kaydırınca beliren "başa dön" butonu. Menü token'larıyla
-// (altın aksan) uyumlu; RTL'de otomatik sola geçer (insetInlineEnd).
 export default function ScrollTopButton({ label = 'Başa dön' }) {
   const [show, setShow] = useState(false);
 

@@ -64,7 +64,6 @@ export default function OverviewView({ products, onQuick, onSaveDaily }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Hızlı işlemler */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {QUICKS.map((qa) => (
           <button
@@ -84,7 +83,6 @@ export default function OverviewView({ products, onQuick, onSaveDaily }) {
         ))}
       </div>
 
-      {/* İstatistik kartları */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
         {statCards.map((st) => (
           <div key={st.label} style={{ ...cardStyle, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 5 }}>
@@ -96,7 +94,6 @@ export default function OverviewView({ products, onQuick, onSaveDaily }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 14, alignItems: 'start' }}>
-        {/* Günün Fiyatları */}
         <div style={{ ...cardStyle, padding: 18 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
             <h3 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 21, fontWeight: 600, color: 'var(--text)' }}>Günün Fiyatları</h3>
@@ -147,7 +144,6 @@ export default function OverviewView({ products, onQuick, onSaveDaily }) {
           </button>
         </div>
 
-        {/* 7 günlük grafik */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ ...cardStyle, padding: 18 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, marginBottom: 14 }}>
