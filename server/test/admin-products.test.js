@@ -138,3 +138,86 @@ test('PATCH to a non-existent category returns 400 not 500', async () => {
   });
   assert.equal(res.status, 400);
 });
+
+// ---- Kategori içi ürün sıralaması ----
+
+const menuOku = async () => (await (await fetch(`${base}/api/admin/menu`, { headers: auth() })).json()).products;
+const sirala = (body) => fetch(`${base}/api/admin/products/order`, {
+  method: 'PUT', headers: auth(), body: JSON.stringify(body),
+});
+
+test('kategori içindeki ürünler yeniden sıralanır', async () => {
+  const once = await menuOku();
+  const fish = once.filter((p) => p.category_id === 'fish');
+  assert.ok(fish.length >= 3, 'test için en az 3 balık ürünü gerekli');
+
+  const yeni = [...fish].reverse().map((p) => p.id);
+  const res = await sirala({ category_id: 'fish', ids: yeni });
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { ok: true, count: yeni.length });
+
+  const sonra = await menuOku();
+  assert.deepEqual(
+    sonra.filter((p) => p.category_id === 'fish').map((p) => p.id), yeni,
+    'GET /menu kategori içinde yeni sırayı vermeli',
+  );
+});
+
+test('sıralama diğer kategorilerin sort değerlerine dokunmaz', async () => {
+  const once = await menuOku();
+  const digerleri = once.filter((p) => p.category_id !== 'hot')
+    .map((p) => `${p.id}:${p.sort}`).join(',');
+  const hot = once.filter((p) => p.category_id === 'hot');
+  const yuvalarOnce = hot.map((p) => p.sort).sort((a, b) => a - b);
+
+  await sirala({ category_id: 'hot', ids: [...hot].reverse().map((p) => p.id) });
+
+  const sonra = await menuOku();
+  assert.equal(
+    sonra.filter((p) => p.category_id !== 'hot').map((p) => `${p.id}:${p.sort}`).join(','),
+    digerleri, 'başka kategorilerin sort değeri değişmemeli',
+  );
+  assert.deepEqual(
+    sonra.filter((p) => p.category_id === 'hot').map((p) => p.sort).sort((a, b) => a - b),
+    yuvalarOnce, 'kategorinin sıra yuvaları aynı kalmalı (blok korunur)',
+  );
+});
+
+test('bozuk ürün listesi reddedilir ve sıra korunur', async () => {
+  const once = await menuOku();
+  const cold = once.filter((p) => p.category_id === 'cold').map((p) => p.id);
+  const baskaKategoriUrunu = once.find((p) => p.category_id === 'meat').id;
+  const oncekiHal = once.map((p) => `${p.id}:${p.sort}`).join(',');
+
+  const tekrarli = [...cold]; tekrarli[1] = tekrarli[0];
+  const yabanci = [...cold]; yabanci[0] = baskaKategoriUrunu;
+
+  assert.equal((await sirala({ category_id: 'cold', ids: cold.slice(1) })).status, 400, 'eksik');
+  assert.equal((await sirala({ category_id: 'cold', ids: tekrarli })).status, 400, 'tekrarlı');
+  assert.equal((await sirala({ category_id: 'cold', ids: yabanci })).status, 400, 'başka kategoriden');
+  assert.equal((await sirala({ category_id: 'cold', ids: [...cold, 'uydurma'] })).status, 400, 'bilinmeyen');
+  assert.equal((await sirala({ category_id: 'cold', ids: [] })).status, 400, 'boş');
+  assert.equal((await sirala({ category_id: 'olmayan', ids: cold })).status, 400, 'bilinmeyen kategori');
+  assert.equal((await sirala({ ids: cold })).status, 400, 'kategori yok');
+
+  const sonra = await menuOku();
+  assert.equal(sonra.map((p) => `${p.id}:${p.sort}`).join(','), oncekiHal, 'hiçbir şey değişmemeli');
+});
+
+test('ürün sıralaması denetim kaydına yazılır', async () => {
+  const urunler = await menuOku();
+  const salad = urunler.filter((p) => p.category_id === 'salad').map((p) => p.id);
+  await sirala({ category_id: 'salad', ids: [...salad].reverse() });
+
+  const log = await (await fetch(`${base}/api/admin/history`, { headers: auth() })).json();
+  assert.ok(log.entries.some((e) => e.entity === 'product' && /sıra/i.test(e.detail)),
+    'denetim kaydında ürün sıralaması olmalı');
+});
+
+test('ürün sıralaması oturumsuz yapılamaz', async () => {
+  const res = await fetch(`${base}/api/admin/products/order`, {
+    method: 'PUT', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ category_id: 'fish', ids: ['levrek'] }),
+  });
+  assert.equal(res.status, 401);
+});

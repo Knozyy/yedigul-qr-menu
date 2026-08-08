@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-// Alt çizgili (editoryal) kategori sekmeleri. Yapışkan sarmalayıcı ve
-// blur arka plan MenuPage'dedir; burada yalnızca kaydırılabilir şerit var.
 export default function CategoryBar({ categories, activeCat, onSelect, label }) {
   const navRef = useRef(null);
   const btnRefs = useRef({});
@@ -18,7 +16,7 @@ export default function CategoryBar({ categories, activeCat, onSelect, label }) 
     <nav
       ref={navRef}
       aria-label={label}
-      className="yg-scroll max-w-[980px] mx-auto flex gap-5 overflow-x-auto px-4 py-2.5"
+      className="yg-category-bar yg-scroll"
     >
       {categories.map((cat) => {
         const active = cat.id === activeCat;
@@ -29,12 +27,7 @@ export default function CategoryBar({ categories, activeCat, onSelect, label }) 
               if (el) btnRefs.current[cat.id] = el;
             }}
             onClick={() => onSelect(cat.id)}
-            className="flex-none min-h-11 px-1 bg-transparent border-none cursor-pointer text-[14px] tracking-[.3px] whitespace-nowrap transition-colors duration-200"
-            style={{
-              color: active ? 'var(--text)' : 'var(--muted)',
-              borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
-              fontWeight: active ? 600 : 400,
-            }}
+            className={`yg-category-pill${active ? ' is-active' : ''}`}
           >
             {cat.label}
           </button>

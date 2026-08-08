@@ -11,15 +11,13 @@ const empty = {
 const listToText = (a) => (Array.isArray(a) ? a.join(', ') : '');
 const textToList = (s) => s.split(',').map((x) => x.trim()).filter(Boolean);
 
-// porsiyon serbest metin olarak saklanır ("350 gr", "6 adet", "35 cl").
-// Formda miktar + birim olarak düzenlenir.
 const PORTION_UNITS = ['gr', 'adet', 'cl', 'porsiyon'];
 const parsePortion = (p) => {
   if (!p) return { amount: '', unit: 'gr' };
   const m = String(p).match(/^\s*([\d.,]+)\s*(.*)$/);
   if (m && PORTION_UNITS.includes(m[2].trim())) return { amount: m[1], unit: m[2].trim() };
   if (m && m[2].trim() === '') return { amount: m[1], unit: 'gr' };
-  return { amount: String(p), unit: 'gr' }; // beklenmedik biçim: ham değeri koru
+  return { amount: String(p), unit: 'gr' };
 };
 const composePortion = (amount, unit) => {
   const a = String(amount ?? '').trim();
@@ -92,7 +90,6 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
     ...product,
     diet: product?.diet ?? [],
     is_hidden: product?.is_hidden ?? 0,
-    // ingredient/allergen lists edited as comma-separated text
     ing_tr: listToText(product?.ing_tr),
     ing_en: listToText(product?.ing_en),
     ing_ar: listToText(product?.ing_ar),
@@ -108,7 +105,6 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
   const [confirmDel, setConfirmDel] = useState(false);
   const [portion, setPortion] = useState(() => parsePortion(product?.portion));
   const [w, setW] = useState(window.innerWidth);
-  // porsiyon varyantları: fiyat düzenleme kolaylığı için string tutulur
   const [variants, setVariants] = useState(() =>
     (product?.variants ?? []).map((v) => ({
       name_tr: v.name_tr ?? '', name_en: v.name_en ?? '',
@@ -152,8 +148,6 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
     e.preventDefault();
     setBusy(true); setError('');
 
-    // varyantlar: tamamen boş satırlar atılır; yarım doldurulmuş satır hatadır.
-    // (backend kuralı: name_tr + name_en dolu, price ≥ 0; AR/RU isteğe bağlı)
     const cleanVariants = [];
     for (const v of variants) {
       const nt = v.name_tr.trim();
@@ -171,7 +165,6 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
 
     const payload = {
       ...form,
-      // varyant varsa tekil fiyat kullanılmaz (menüde aralık gösterilir)
       price: form.is_market_price || cleanVariants.length
         ? null
         : (form.price === '' ? null : Number(form.price)),
@@ -195,8 +188,6 @@ export default function ProductForm({ product, categories, onSaved, onCancel, on
         : await api.post('/admin/products', payload);
       setSaved(res);
       onSaved(res);
-      // editing an existing product: close back to the list.
-      // new product: stay open so an image can be uploaded now that it has an id.
       if (wasExisting) onCancel();
     } catch (err) {
       setError(err.message);

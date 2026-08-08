@@ -14,6 +14,5 @@ export function writeStorage(key, value) {
   try {
     localStorage.setItem(PREFIX + key, JSON.stringify(value));
   } catch {
-    // storage unavailable (private mode / quota) — ignore
   }
 }

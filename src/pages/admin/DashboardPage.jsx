@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/auth-context.js';
 import { api } from '../../lib/api';
 import AdminShell from '../../components/admin/AdminShell';
 import ProductsView from '../../components/admin/ProductsView';
@@ -36,8 +36,8 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
-  const [editing, setEditing] = useState(null); // ürün | 'new' | null
-  const [bulk, setBulk] = useState(null); // Toplu Zam modal state — modal Task 7'de gelecek
+  const [editing, setEditing] = useState(null);
+  const [bulk, setBulk] = useState(null);
   const [toast, setToast] = useState('');
   const toastTimer = useRef(null);
 

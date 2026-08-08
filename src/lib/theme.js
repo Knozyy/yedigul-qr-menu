@@ -4,8 +4,6 @@ export const ACCENTS = [
   { id: 'teal', label: 'Teal', value: '#1F6F6B' },
 ];
 
-// QR menü ("Boğaz'da Akşam" editoryal tasarım) token'ları.
-// Admin sayfaları aşağıdaki eski getThemeVars'ı kullanmaya devam eder.
 const ACCENT_ON_CREAM = { '#C8902F': '#8F6318', '#B0653A': '#8A4A28', '#2F7E6D': '#1F5A4C' };
 const ACCENT_ON_NAVY = { '#C8902F': '#E2B45C', '#B0653A': '#E09B72', '#2F7E6D': '#7FC5B2' };
 
@@ -33,6 +31,16 @@ export function getMenuThemeVars(dark, accent) {
       '--chip-soft': 'rgba(242,233,214,0.09)',
       '--scrim-btn': 'rgba(10,31,53,0.72)',
       '--sheet-bg': '#0F2A46',
+      '--surface': '#102942',
+      '--surface-raised': '#15334F',
+      '--surface-muted': 'rgba(242,233,214,0.07)',
+      '--shadow': '0 22px 60px rgba(2,10,20,0.34)',
+      '--hero': '#071A2E',
+      '--hero-text': '#F7F0E2',
+      '--hero-muted': '#AEBACA',
+      '--hero-line': 'rgba(242,233,214,0.18)',
+      '--home-bg': 'rgba(255,255,255,0.07)',
+      '--card-hover': '#183A59',
     };
   }
   return {
@@ -57,6 +65,16 @@ export function getMenuThemeVars(dark, accent) {
     '--chip-soft': 'rgba(22,41,61,0.07)',
     '--scrim-btn': 'rgba(251,247,237,0.9)',
     '--sheet-bg': '#FDFAF2',
+    '--surface': '#FFFDF7',
+    '--surface-raised': '#FFFFFF',
+    '--surface-muted': '#F4EEDF',
+    '--shadow': '0 22px 60px rgba(12,31,50,0.11)',
+    '--hero': '#071A2E',
+    '--hero-text': '#F7F0E2',
+    '--hero-muted': '#AEBACA',
+    '--hero-line': 'rgba(242,233,214,0.18)',
+    '--home-bg': 'rgba(255,255,255,0.07)',
+    '--card-hover': '#FFF9EC',
   };
 }
 
@@ -101,8 +119,6 @@ export function getThemeVars(dark, accent) {
   };
 }
 
-// Yönetim paneli ("Boğaz" editoryal) token'ları — tek mod (krem sayfa + lacivert kabuk).
-// Menü getMenuThemeVars ve eski getThemeVars'a dokunulmaz.
 export function getAdminThemeVars() {
   const gold = '#C8902F';
   return {

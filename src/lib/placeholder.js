@@ -1,6 +1,3 @@
-// Görselsiz ürünler için kategoriye özel placeholder: balık pulu (scallop)
-// dokusu üzerine altın çizgi ikon üreten SVG data-URI. Renkler tema
-// CSS değişkeni olamaz (data-URI), o yüzden dark bayrağıyla üretilir.
 const GLYPHS = {
   fish: ['M14 36 C22 26 38 23 48 31 C51 33 54 34.5 58 36 C54 37.5 51 39 48 41 C38 49 22 46 14 36 Z', 'M58 36 L66 28.5', 'M58 36 L66 43.5', 'M25 33.5 a1.4 1.4 0 1 0 0.05 0'],
   hot: ['M20 33 H52', 'M23 33 V41 C23 46 26.5 49 31.5 49 H40.5 C45.5 49 49 46 49 41 V33', 'M52 35.5 H58', 'M30 26 C30 23.5 32.5 23.5 32.5 21', 'M40 26 C40 23.5 42.5 23.5 42.5 21'],
@@ -13,17 +10,10 @@ const GLYPHS = {
   heart: ['M36 50 C25 41.5 20 34.5 20 27.5 C20 21.8 24.3 17.5 29.3 17.5 C32 17.5 34.6 19 36 21.3 C37.4 19 40 17.5 42.7 17.5 C47.7 17.5 52 21.8 52 27.5 C52 34.5 47 41.5 36 50 Z'],
 };
 
-// DB'de olup ikon setinde olmayan kategoriler en yakın ikona eşlenir.
 const ALIAS = { beer: 'drink', wine: 'drink', raki: 'drink', spirits: 'drink', kahvalti: 'hot' };
 
 const cache = new Map();
 
-/**
- * @param {string} cat   kategori id'si (bilinmeyen id balık ikonuna düşer)
- * @param {'thumb'|'hero'|'empty'} mode
- * @param {boolean} dark
- * @returns {string} data-URI
- */
 export function placeholderArt(cat, mode, dark) {
   const glyph = GLYPHS[cat] ? cat : ALIAS[cat] || 'fish';
   const key = `${glyph}|${mode}|${dark ? 1 : 0}`;

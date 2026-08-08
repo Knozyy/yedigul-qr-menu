@@ -1,11 +1,8 @@
-// Ana siteye (/) dönüş linki. QR menünün hem en üstünde hem footer'ında
-// aynı görünümle kullanılır; renkler menü token'larından gelir (tema uyumlu).
-export default function HomeLink({ label = 'Ana Sayfa', rtl = false }) {
+export default function HomeLink({ label = 'Ana Sayfa', rtl = false, inverse = false }) {
   return (
     <a
       href="/"
-      className="inline-flex items-center gap-2 min-h-11 px-4 rounded-full text-[13.5px] font-medium cursor-pointer transition-colors duration-200"
-      style={{ color: 'var(--accent-text)', border: '1px solid var(--faint-strong)' }}
+      className={`yg-home-link inline-flex items-center gap-2 min-h-11 px-4 rounded-full text-[13.5px] font-medium cursor-pointer transition-colors duration-200${inverse ? ' yg-home-link--inverse' : ''}`}
     >
       <svg
         width="17"

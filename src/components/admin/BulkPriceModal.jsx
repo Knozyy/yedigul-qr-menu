@@ -7,12 +7,10 @@ function toNum(v) {
   return parseFloat(String(v).replace(',', '.')) || 0;
 }
 
-// mockup birebir: Math.max(1, Math.round(p * (1 + pct/100) / rd) * rd)
 function nextPrice(p, pct, rd) {
   return Math.max(1, Math.round((p * (1 + pct / 100)) / rd) * rd);
 }
 
-// kapsama uyan VE sabit fiyatlı (piyasa fiyatlı olmayan) ürünler
 function bulkAffected(products, scope) {
   return products.filter(
     (p) =>

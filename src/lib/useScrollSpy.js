@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/**
- * Tracks which stacked section is currently under the sticky header.
- *
- * @param {string[]} ids       ordered section ids (top → bottom)
- * @param {number}   offset    sticky header height in px
- * @param {boolean}  enabled   only observe while true (e.g. not during search)
- */
 export default function useScrollSpy(ids, offset, enabled) {
   const [active, setActive] = useState(ids[0] || null);
   const refs = useRef({});
@@ -56,8 +49,12 @@ export default function useScrollSpy(ids, offset, enabled) {
     const el = refs.current[id];
     if (!el) return;
     setActive(id);
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+    const top = window.scrollY + el.getBoundingClientRect().top - offset - 10;
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: 'auto',
+    });
+  }, [offset]);
 
   return { active, register, scrollTo };
 }

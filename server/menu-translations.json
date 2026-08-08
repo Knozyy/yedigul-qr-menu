@@ -1,0 +1,2329 @@
+{
+  "categories": [
+    {
+      "id": "fish",
+      "name_en": "Fresh Fish",
+      "name_ru": "Свежая рыба",
+      "name_ar": "الأسماك الطازجة"
+    },
+    {
+      "id": "cold",
+      "name_en": "Cold Appetizers",
+      "name_ru": "Холодные закуски",
+      "name_ar": "المقبلات الباردة"
+    },
+    {
+      "id": "hot",
+      "name_en": "Hot Starters",
+      "name_ru": "Горячие закуски",
+      "name_ar": "المقبلات الساخنة"
+    },
+    {
+      "id": "salad",
+      "name_en": "Salads",
+      "name_ru": "Салаты",
+      "name_ar": "السلطات"
+    },
+    {
+      "id": "meat",
+      "name_en": "Meat & Chicken",
+      "name_ru": "Мясо и курица",
+      "name_ar": "اللحوم والدجاج"
+    },
+    {
+      "id": "dessert",
+      "name_en": "Desserts",
+      "name_ru": "Десерты",
+      "name_ar": "الحلويات"
+    },
+    {
+      "id": "kahvalti",
+      "name_en": "Breakfast",
+      "name_ru": "Завтрак",
+      "name_ar": "الإفطار"
+    },
+    {
+      "id": "drink",
+      "name_en": "Beverages",
+      "name_ru": "Напитки",
+      "name_ar": "المشروبات"
+    },
+    {
+      "id": "beer",
+      "name_en": "Beer",
+      "name_ru": "Пиво",
+      "name_ar": "البيرة"
+    },
+    {
+      "id": "wine",
+      "name_en": "Wine",
+      "name_ru": "Вино",
+      "name_ar": "النبيذ"
+    },
+    {
+      "id": "raki",
+      "name_en": "Rakı",
+      "name_ru": "Ракы",
+      "name_ar": "الراكي"
+    },
+    {
+      "id": "spirits",
+      "name_en": "Whisky & Spirits",
+      "name_ru": "Виски и спиртные напитки",
+      "name_ar": "الويسكي والمشروبات الروحية"
+    }
+  ],
+  "products": [
+    {
+      "id": "baliksorbasi",
+      "name_en": "Fish Soup",
+      "name_ru": "Рыбный суп",
+      "name_ar": "حساء السمك",
+      "desc_en": "Creamy fish soup finished with lemon.",
+      "desc_ru": "Сливочный рыбный суп с лимоном.",
+      "desc_ar": "حساء السمك بالكريمة مع الليمون"
+    },
+    {
+      "id": "levrek",
+      "name_en": "Grilled Sea Bass",
+      "name_ru": "Сибас на гриле",
+      "name_ar": "سمك القاروص المشوي",
+      "desc_en": "Daily-fresh sea bass over charcoal.",
+      "desc_ru": "Свежий морской окунь на углях.",
+      "desc_ar": "سمك القاروص الطازج يوميًا على الفحم"
+    },
+    {
+      "id": "cipura",
+      "name_en": "Sea Bream",
+      "name_ru": "Морской лещ",
+      "name_ar": "سمك الدنيس",
+      "desc_en": "Charcoal-grilled sea bream with olive oil and lemon.",
+      "desc_ru": "Морской лещ, приготовленный на углях с оливковым маслом и лимоном.",
+      "desc_ar": "سمك الدنيس المشوي على الفحم مع زيت الزيتون والليمون"
+    },
+    {
+      "id": "jumbokarides",
+      "name_en": "Jumbo Shrimp",
+      "name_ru": "Джамбо-креветки",
+      "name_ar": "جمبري جامبو",
+      "desc_en": "Large shrimp in garlic butter.",
+      "desc_ru": "Большие креветки в чесночном масле.",
+      "desc_ar": "جمبري كبير في زبدة الثوم."
+    },
+    {
+      "id": "karides",
+      "name_en": "Shrimp Casserole",
+      "name_ru": "Запеканка из креветок",
+      "name_ar": "طاجن الروبيان",
+      "desc_en": "Shrimp baked with tomato, garlic and cheese.",
+      "desc_ru": "Креветки, запеченные с помидорами, чесноком и сыром.",
+      "desc_ar": "جمبري مخبوز بالطماطم، الثوم والجبن."
+    },
+    {
+      "id": "lufer",
+      "name_en": "Bluefish",
+      "name_ru": "Луфарь",
+      "name_ar": "سمك اللوفار",
+      "desc_en": "Seasonal Bosphorus bluefish, grilled or pan-fried.",
+      "desc_ru": "Сезонный босфорский луфарь, приготовленный на гриле или на сковороде.",
+      "desc_ar": "سمك البوسفور الأزرق الموسمي، مشوي أو مقلي."
+    },
+    {
+      "id": "cinekop",
+      "name_en": "Small Bluefish",
+      "name_ru": "Молодой луфарь",
+      "name_ar": "سمك لوفر صغير",
+      "desc_en": "Young bluefish, grilled or pan-fried.",
+      "desc_ru": "Молодая голубая рыба, приготовленная на гриле или на сковороде.",
+      "desc_ar": "سمكة زرقاء صغيرة، مشوية أو مقلية."
+    },
+    {
+      "id": "tereyagkarides",
+      "name_en": "Butter Shrimp",
+      "name_ru": "Сливочные креветки",
+      "name_ar": "جمبري بالزبدة",
+      "desc_en": "Shrimp sautéed in butter and garlic.",
+      "desc_ru": "Креветки, обжаренные в сливочном масле и чесноке.",
+      "desc_ar": "جمبري مقلي بالزبدة والثوم."
+    },
+    {
+      "id": "guvec",
+      "name_en": "Seafood Casserole",
+      "name_ru": "Запеканка из морепродуктов",
+      "name_ar": "طاجن المأكولات البحرية",
+      "desc_en": "Shrimp, mussels and calamari in a baked tomato casserole.",
+      "desc_ru": "Креветки, мидии и кальмары в запеканке из запеченных томатов.",
+      "desc_ar": "الجمبري وبلح البحر والكاليماري في طبق طماطم مخبوز."
+    },
+    {
+      "id": "mezgit",
+      "name_en": "Whiting",
+      "name_ru": "Мерланг",
+      "name_ar": "سمك البياض",
+      "desc_en": "Black Sea whiting, pan-fried.",
+      "desc_ru": "Черноморский мерланг, обжаренный на сковороде.",
+      "desc_ar": "سمك بياض البحر الأسود، مقلي في المقلاة."
+    },
+    {
+      "id": "barbunya",
+      "name_en": "Red Mullet",
+      "name_ru": "Барабулька",
+      "name_ar": "البوري الأحمر",
+      "desc_en": "Pan-seared red mullet over charcoal.",
+      "desc_ru": "Барабулька, обжаренная на углях.",
+      "desc_ar": "سمك البوري الأحمر، محمّر على الفحم."
+    },
+    {
+      "id": "kalamar",
+      "name_en": "Fried Calamari",
+      "name_ru": "Жареные кальмары",
+      "name_ar": "كاليماري مقلي",
+      "desc_en": "Crispy calamari rings served with tartar sauce.",
+      "desc_ru": "Хрустящие кольца кальмара подаются с соусом тартар.",
+      "desc_ar": "حلقات الكاليماري المقرمشة تقدم مع صوص التارتار."
+    },
+    {
+      "id": "midyetava",
+      "name_en": "Fried Mussels",
+      "name_ru": "Жареные мидии",
+      "name_ar": "بلح البحر المقلي",
+      "desc_en": "Crispy fried mussels with tartar sauce.",
+      "desc_ru": "Хрустящие жареные мидии с соусом тартар.",
+      "desc_ar": "بلح البحر المقلي المقرمش مع صوص التارتار."
+    },
+    {
+      "id": "tekir",
+      "name_en": "Striped Red Mullet",
+      "name_ru": "Полосатая барабулька",
+      "name_ar": "البوري الأحمر المخطط",
+      "desc_en": "Fresh striped mullet, pan-fried.",
+      "desc_ru": "Свежая полосатая барабулька, обжаренная на сковороде.",
+      "desc_ar": "سمك البوري الأحمر المخطط الطازج، مقلي في المقلاة."
+    },
+    {
+      "id": "istavrit",
+      "name_en": "Horse Mackerel",
+      "name_ru": "Ставрида",
+      "name_ar": "سمك الإسقمري الحصاني",
+      "desc_en": "Bosphorus horse mackerel, grilled or fried.",
+      "desc_ru": "Босфорская ставрида, приготовленная на гриле или обжаренная.",
+      "desc_ar": "سمك الإسقمري الحصاني من البوسفور، مشوي أو مقلي."
+    },
+    {
+      "id": "midyeizgara",
+      "name_en": "Grilled Mussels",
+      "name_ru": "Мидии на гриле",
+      "name_ar": "بلح البحر المشوي",
+      "desc_en": "Mussels grilled on the half-shell with butter and lemon.",
+      "desc_ru": "Мидии, обжаренные на полураковине со сливочным маслом и лимоном.",
+      "desc_ar": "بلح البحر مشوي على نصف القشرة مع الزبدة والليمون."
+    },
+    {
+      "id": "balikboregi",
+      "name_en": "Fish Rolls",
+      "name_ru": "Рыбные рулеты",
+      "name_ar": "لفائف السمك",
+      "desc_en": "Crispy filo rolls with a fish filling.",
+      "desc_ru": "Хрустящие роллы фило с рыбной начинкой.",
+      "desc_ar": "لفائف الفيلو المقرمشة بحشوة السمك"
+    },
+    {
+      "id": "hamsi",
+      "name_en": "Anchovy",
+      "name_ru": "Анчоус",
+      "name_ar": "الأنشوجة",
+      "desc_en": "Black Sea anchovy, pan-fried in cornmeal.",
+      "desc_ru": "Черноморский анчоус, обжаренный в кукурузной муке.",
+      "desc_ar": "أنشوجة البحر الأسود، مقلية في دقيق الذرة."
+    },
+    {
+      "id": "palamut",
+      "name_en": "Bonito",
+      "name_ru": "Пеламида",
+      "name_ar": "سمك البونيتو",
+      "desc_en": "Seasonal bonito, grilled.",
+      "desc_ru": "Сезонная пеламида, приготовленная на гриле.",
+      "desc_ar": "سمك البونيتو الموسمي، مشوي."
+    },
+    {
+      "id": "sigaraboregi",
+      "name_en": "Cheese Rolls",
+      "name_ru": "Сырные рулетики",
+      "name_ar": "لفائف الجبن",
+      "desc_en": "Crispy filo rolls filled with cheese.",
+      "desc_ru": "Хрустящие роллы фило с сырной начинкой.",
+      "desc_ar": "لفائف الفيلو المقرمشة والمحشوة بالجبنة"
+    },
+    {
+      "id": "balikkoftesi",
+      "name_en": "Fish Cakes",
+      "name_ru": "Рыбные котлеты",
+      "name_ar": "كعك السمك",
+      "desc_en": "Spiced fish cakes, pan-fried.",
+      "desc_ru": "Рыбные котлеты со специями, обжаренные на сковороде.",
+      "desc_ar": "كعك السمك المتبل، المقلي."
+    },
+    {
+      "id": "kalkan",
+      "name_en": "Turbot",
+      "name_ru": "Калкан",
+      "name_ar": "سمك الترس",
+      "desc_en": "Seasonal Black Sea turbot, pan-finished in butter.",
+      "desc_ru": "Сезонный черноморский тюрбо, обжаренный в сливочном масле.",
+      "desc_ar": "سمك الترس الموسمي من البحر الأسود، مطهي بالزبدة."
+    },
+    {
+      "id": "balikkokorec",
+      "name_en": "Fish Kokoreç",
+      "name_ru": "Рыба Кокореч",
+      "name_ar": "سمك كوكوريتش",
+      "desc_en": "Spiced fish \"kokoreç\" with tomato and pepper.",
+      "desc_ru": "Острая рыба «кокореч» с помидорами и перцем.",
+      "desc_ar": "سمك \"كوكوريتش\" متبل بالطماطم والفلفل."
+    },
+    {
+      "id": "iskorpit",
+      "name_en": "Scorpion Fish Casserole",
+      "name_ru": "Запеканка из скорпены",
+      "name_ar": "طاجن سمك العقرب",
+      "desc_en": "Scorpion fish baked in a tomato casserole.",
+      "desc_ru": "Скорпена, запеченная в томатном соусе.",
+      "desc_ar": "سمك العقرب مخبوز في صلصة الطماطم."
+    },
+    {
+      "id": "dilsis",
+      "name_en": "Fluke Skewers",
+      "name_ru": "Шашлык из камбалы",
+      "name_ar": "أسياخ السمك المفلطح",
+      "desc_en": "Fluke fillet skewers over charcoal.",
+      "desc_ru": "Шашлык из филе камбалы, приготовленный на углях.",
+      "desc_ar": "أسياخ فيليه السمك المفلطح، مشوية على الفحم."
+    },
+    {
+      "id": "patatestava",
+      "name_en": "Fried Potatoes",
+      "name_ru": "Жареный картофель",
+      "name_ar": "البطاطا المقلية",
+      "desc_en": "Crispy fried potatoes.",
+      "desc_ru": "Хрустящий жареный картофель.",
+      "desc_ar": "بطاطس مقلية مقرمشة."
+    },
+    {
+      "id": "kilicsis",
+      "name_en": "Swordfish Skewers",
+      "name_ru": "Шашлык из рыбы-меч",
+      "name_ar": "أسياخ سمك أبو سيف",
+      "desc_en": "Swordfish skewers with tomato and bay leaf.",
+      "desc_ru": "Шашлык из рыбы-меч с помидорами и лавровым листом.",
+      "desc_ar": "أسياخ سمك أبو سيف مع الطماطم وورق الغار."
+    },
+    {
+      "id": "patlicansoslu",
+      "name_en": "Eggplant in Sauce",
+      "name_ru": "Баклажаны в соусе",
+      "name_ar": "باذنجان بالصلصة",
+      "desc_en": "Fried eggplant in a tomato sauce.",
+      "desc_ru": "Жареные баклажаны в томатном соусе.",
+      "desc_ar": "باذنجان مقلي في صلصة الطماطم."
+    },
+    {
+      "id": "fenersis",
+      "name_en": "Monkfish Skewers & Sauté",
+      "name_ru": "Шашлык и соте из морского черта",
+      "name_ar": "أسياخ وسوتيه سمك الراهب",
+      "desc_en": "Monkfish, grilled on skewers or sautéed.",
+      "desc_ru": "Морской черт, приготовленный на гриле на шампурах или тушеный.",
+      "desc_ar": "سمك الراهب، مشوي على الأسياخ أو مقلي."
+    },
+    {
+      "id": "fava",
+      "name_en": "Broad Bean Purée",
+      "name_ru": "Пюре из бобов",
+      "name_ar": "هريس الفول العريض",
+      "desc_en": "Olive-oil broad bean purée with dill and lemon.",
+      "desc_ru": "Пюре из бобов с оливковым маслом, укропом и лимоном.",
+      "desc_ar": "هريس الفول العريض بزيت الزيتون والشبت والليمون."
+    },
+    {
+      "id": "haydari",
+      "name_en": "Garlic Yoghurt Dip",
+      "name_ru": "Чесночно-йогуртовый соус",
+      "name_ar": "تغميسة الزبادي بالثوم",
+      "desc_en": "Thick yoghurt with garlic and dill.",
+      "desc_ru": "Густой йогурт с чесноком и укропом.",
+      "desc_ar": "لبن زبادي كثيف بالثوم والشبت"
+    },
+    {
+      "id": "aciliezme",
+      "name_en": "Spicy Paste",
+      "name_ru": "Острая овощная паста",
+      "name_ar": "معجون الخضار الحار",
+      "desc_en": "Spicy chopped tomato and pepper relish.",
+      "desc_ru": "Острая закуска из мелко нарезанных помидоров и перца.",
+      "desc_ar": "مقبلات حارة من الطماطم والفلفل المفرومين ناعمًا."
+    },
+    {
+      "id": "patlicansalatasi",
+      "name_en": "Smoked Eggplant Salad",
+      "name_ru": "Салат из копченых баклажанов",
+      "name_ar": "سلطة الباذنجان المدخن",
+      "desc_en": "Char-grilled eggplant with olive oil and garlic.",
+      "desc_ru": "Баклажаны, приготовленные на углях, с оливковым маслом и чесноком.",
+      "desc_ar": "باذنجان مشوي على الفحم مع زيت الزيتون والثوم."
+    },
+    {
+      "id": "semizotu",
+      "name_en": "Purslane with Yoghurt",
+      "name_ru": "Портулак с йогуртом",
+      "name_ar": "الرجلة مع الزبادي",
+      "desc_en": "Purslane in garlic yoghurt.",
+      "desc_ru": "Портулак в чесночном йогурте.",
+      "desc_ar": "الرجلة في الزبادي بالثوم."
+    },
+    {
+      "id": "denizborulcesi",
+      "name_en": "Samphire",
+      "name_ru": "Самфир",
+      "name_ar": "سامفيري",
+      "desc_en": "Blanched samphire (glasswort) with olive oil and lemon.",
+      "desc_ru": "Бланшированный самфир (стеклянник) с оливковым маслом и лимоном.",
+      "desc_ar": "السامفير المقشر (نبات الزجاج) مع زيت الزيتون والليمون."
+    },
+    {
+      "id": "pazikavurma",
+      "name_en": "Sautéed Chard",
+      "name_ru": "Обжаренный мангольд",
+      "name_ar": "سلق سوتيه",
+      "desc_en": "Chard sautéed in olive oil.",
+      "desc_ru": "Чард, обжаренный в оливковом масле.",
+      "desc_ar": "سلق مقلي بزيت الزيتون."
+    },
+    {
+      "id": "pancar",
+      "name_en": "Beetroot",
+      "name_ru": "Свекла",
+      "name_ar": "الشمندر",
+      "desc_en": "Roasted beetroot with yoghurt.",
+      "desc_ru": "Запеченная свекла с йогуртом.",
+      "desc_ar": "شمندر مشوي مع الزبادي."
+    },
+    {
+      "id": "pilaki",
+      "name_en": "Bean Pilaki",
+      "name_ru": "Фасоль пилаки",
+      "name_ar": "فاصوليا بيلاكي",
+      "desc_en": "Cold white bean stew in olive oil.",
+      "desc_ru": "Холодное рагу из белой фасоли в оливковом масле.",
+      "desc_ar": "يخنة الفاصوليا البيضاء الباردة في زيت الزيتون."
+    },
+    {
+      "id": "kisir",
+      "name_en": "Bulgur Salad",
+      "name_ru": "Салат с булгуром",
+      "name_ar": "سلطة البرغل",
+      "desc_en": "Fine bulgur with tomato and pomegranate molasses.",
+      "desc_ru": "Мелкий булгур с помидорами и гранатовым соусом.",
+      "desc_ar": "برغل ناعم مع الطماطم ودبس الرمان."
+    },
+    {
+      "id": "beyazpeynir",
+      "name_en": "White Cheese",
+      "name_ru": "Белый сыр",
+      "name_ar": "الجبنة البيضاء",
+      "desc_en": "Full-fat white cheese, a rakı classic.",
+      "desc_ru": "Жирный белый сыр — классическая закуска к ракы.",
+      "desc_ar": "جبنة بيضاء كاملة الدسم، من المقبلات الكلاسيكية مع الراكي."
+    },
+    {
+      "id": "levrekmarin",
+      "name_en": "Marinated Sea Bass",
+      "name_ru": "Маринованный морской окунь",
+      "name_ar": "سمك القاروص المتبل",
+      "desc_en": "Thin-sliced sea bass with citrus and pink pepper.",
+      "desc_ru": "Тонко нарезанный сибас с цитрусовыми и розовым перцем.",
+      "desc_ar": "شرائح رقيقة من سمك القاروص مع الحمضيات والفلفل الوردي."
+    },
+    {
+      "id": "lakerda",
+      "name_en": "Salt-Cured Bonito",
+      "name_ru": "Лакерда из пеламиды",
+      "name_ar": "لاكيردا البونيتو",
+      "desc_en": "Salt-cured bonito served with onion.",
+      "desc_ru": "Соленая пеламида, подается с луком.",
+      "desc_ar": "سمك بونيتو مملح، يقدم مع البصل."
+    },
+    {
+      "id": "ciroz",
+      "name_en": "Dried Mackerel",
+      "name_ru": "Скумбрия сушеная",
+      "name_ar": "الماكريل المجفف",
+      "desc_en": "Sun-dried mackerel with olive oil and lemon.",
+      "desc_ru": "Вяленая скумбрия с оливковым маслом и лимоном.",
+      "desc_ar": "سمك الماكريل المجفف بالشمس مع زيت الزيتون والليمون"
+    },
+    {
+      "id": "karidessogus",
+      "name_en": "Poached Shrimp",
+      "name_ru": "Креветки-пашот",
+      "name_ar": "الجمبري المسلوق",
+      "desc_en": "Chilled poached shrimp with lemon and lettuce.",
+      "desc_ru": "Охлажденные креветки-пашот с лимоном и листьями салата.",
+      "desc_ar": "الجمبري المسلوق المبرد مع الليمون والخس."
+    },
+    {
+      "id": "ahtapot",
+      "name_en": "Octopus Salad",
+      "name_ru": "Салат из осьминога",
+      "name_ar": "سلطة الأخطبوط",
+      "desc_en": "Grilled octopus with capers and olive oil.",
+      "desc_ru": "Осьминог на гриле с каперсами и оливковым маслом.",
+      "desc_ar": "أخطبوط مشوي مع نبات الكبر وزيت الزيتون"
+    },
+    {
+      "id": "midye",
+      "name_en": "Stuffed Mussels",
+      "name_ru": "Фаршированные мидии",
+      "name_ar": "بلح البحر المحشي",
+      "desc_en": "Fresh mussels filled with spiced rice pilaf.",
+      "desc_ru": "Свежие мидии, фаршированные рисовым пловом со специями.",
+      "desc_ar": "بلح البحر الطازج مملوء بأرز بيلاف متبل."
+    },
+    {
+      "id": "cobansalata",
+      "name_en": "Shepherd's Salad",
+      "name_ru": "Пастуший салат",
+      "name_ar": "سلطة الراعي",
+      "desc_en": "Diced tomato, cucumber, pepper and onion.",
+      "desc_ru": "Нарезанные кубиками помидоры, огурцы, перец и лук.",
+      "desc_ar": "مكعبات طماطم، خيار، فلفل وبصل."
+    },
+    {
+      "id": "mevsim",
+      "name_en": "Season Salad",
+      "name_ru": "Сезонный салат",
+      "name_ar": "سلطة الموسم",
+      "desc_en": "Crisp seasonal greens with pomegranate dressing.",
+      "desc_ru": "Хрустящая сезонная зелень с гранатовым соусом.",
+      "desc_ar": "خضروات موسمية مقرمشة مع صلصة الرمان."
+    },
+    {
+      "id": "roka",
+      "name_en": "Rocket Salad",
+      "name_ru": "Салат из рукколы",
+      "name_ar": "سلطة الجرجير",
+      "desc_en": "Fresh rocket with parmesan and balsamic glaze.",
+      "desc_ru": "Свежая рукола с пармезаном и бальзамической глазурью.",
+      "desc_ar": "جرجير طازج مع جبن البارميزان وصلصة البلسميك"
+    },
+    {
+      "id": "etsis",
+      "name_en": "Meat Skewers",
+      "name_ru": "Мясные шашлычки",
+      "name_ar": "أسياخ اللحم",
+      "desc_en": "Marinated beef skewers over charcoal.",
+      "desc_ru": "Маринованные говяжьи шашлычки на углях.",
+      "desc_ar": "أسياخ لحم البقر المتبلة على الفحم."
+    },
+    {
+      "id": "kofte",
+      "name_en": "Grilled Meatballs",
+      "name_ru": "Фрикадельки на гриле",
+      "name_ar": "كرات اللحم المشوية",
+      "desc_en": "Char-grilled spiced meatballs.",
+      "desc_ru": "Фрикадельки со специями, приготовленные на углях.",
+      "desc_ar": "كرات اللحم المتبلة المشوية على الفحم"
+    },
+    {
+      "id": "tavukizgara",
+      "name_en": "Grilled Chicken",
+      "name_ru": "Курица-гриль",
+      "name_ar": "دجاج مشوي",
+      "desc_en": "Marinated chicken breast over charcoal.",
+      "desc_ru": "Маринованная куриная грудка, приготовленная на углях.",
+      "desc_ar": "صدر دجاج متبل ومشوي على الفحم."
+    },
+    {
+      "id": "baklava",
+      "name_en": "Baklava",
+      "name_ru": "Пахлава",
+      "name_ar": "البقلاوة",
+      "desc_en": "Pistachio baklava in syrup.",
+      "desc_ru": "Фисташковая пахлава в сиропе.",
+      "desc_ar": "بقلاوة بالفستق في شراب"
+    },
+    {
+      "id": "kadayif",
+      "name_en": "Kadayıf",
+      "name_ru": "Кадаиф",
+      "name_ar": "كاداييف",
+      "desc_en": "Shredded-wheat kadayıf with pistachio and syrup.",
+      "desc_ru": "Десерт из тонкого теста кадаиф с фисташками и сиропом.",
+      "desc_ar": "حلوى الكنافة بخيوط الكاداييف والفستق والقطر."
+    },
+    {
+      "id": "kabaktatlisi",
+      "name_en": "Pumpkin Dessert",
+      "name_ru": "Тыквенный десерт",
+      "name_ar": "حلوى اليقطين",
+      "desc_en": "Candied pumpkin with walnut and tahini.",
+      "desc_ru": "Засахаренная тыква с грецкими орехами и тахиной.",
+      "desc_ar": "قرعة محلاة بالجوز والطحينة"
+    },
+    {
+      "id": "ayva",
+      "name_en": "Quince Dessert",
+      "name_ru": "Десерт из айвы",
+      "name_ar": "حلوى السفرجل",
+      "desc_en": "Slow-baked quince served with clotted cream.",
+      "desc_ru": "Айва, томленная в духовке, подается с каймаком.",
+      "desc_ar": "سفرجل مطهو ببطء في الفرن، يقدم مع القشطة."
+    },
+    {
+      "id": "helva",
+      "name_en": "Semolina Halva",
+      "name_ru": "Халва манная",
+      "name_ar": "الحلاوة الطحينية السميد",
+      "desc_en": "Warm semolina halva with pine nuts.",
+      "desc_ru": "Тёплая манная халва с кедровыми орешками.",
+      "desc_ar": "الحلاوة الطحينية بالسميد الدافئ مع الصنوبر."
+    },
+    {
+      "id": "cikolatasufle",
+      "name_en": "Chocolate Soufflé",
+      "name_ru": "Шоколадное суфле",
+      "name_ar": "سوفليه الشوكولاتة",
+      "desc_en": "Molten chocolate soufflé with ice cream.",
+      "desc_ru": "Суфле из расплавленного шоколада с мороженым.",
+      "desc_ar": "سوفليه الشوكولاتة الذائبة مع الآيس كريم"
+    },
+    {
+      "id": "krep",
+      "name_en": "Pancake",
+      "name_ru": "Креп",
+      "name_ar": "كريب",
+      "desc_en": "Chocolate crêpe with fresh fruit.",
+      "desc_ru": "Шоколадный креп со свежими фруктами.",
+      "desc_ar": "كريب الشوكولاتة مع الفواكه الطازجة."
+    },
+    {
+      "id": "mevsimmeyve",
+      "name_en": "Seasonal Fruits",
+      "name_ru": "Сезонные фрукты",
+      "name_ar": "الفواكه الموسمية",
+      "desc_en": "A plate of fresh seasonal fruit.",
+      "desc_ru": "Тарелка свежих сезонных фруктов.",
+      "desc_ar": "طبق من الفاكهة الموسمية الطازجة."
+    },
+    {
+      "id": "dondurma",
+      "name_en": "Ice Cream",
+      "name_ru": "Мороженое",
+      "name_ar": "الآيس كريم",
+      "desc_en": "Assorted ice cream scoops.",
+      "desc_ru": "Ассорти из шариков мороженого.",
+      "desc_ar": "تشكيلة من كرات الآيس كريم."
+    },
+    {
+      "id": "raki",
+      "name_en": "Rakı",
+      "name_ru": "Ракы",
+      "name_ar": "الراكي",
+      "desc_en": "Traditional anise spirit, served with water and ice.",
+      "desc_ru": "Традиционный анисовый алкогольный напиток, подается с водой и льдом.",
+      "desc_ar": "مشروب كحولي تقليدي بنكهة اليانسون، يقدم مع الماء والثلج."
+    },
+    {
+      "id": "cay",
+      "name_en": "Turkish Tea",
+      "name_ru": "Турецкий чай",
+      "name_ar": "الشاي التركي",
+      "desc_en": "Brewed Rize tea in a tulip glass.",
+      "desc_ru": "Чай из Ризе, подается в традиционном стакане-тюльпане.",
+      "desc_ar": "شاي ريزي مخمر، يقدم في الكأس الزجاجي التقليدي على شكل زهرة التوليب."
+    },
+    {
+      "id": "ayran",
+      "name_en": "Ayran",
+      "name_ru": "Айран",
+      "name_ar": "عيران",
+      "desc_en": "House-made salted yogurt drink.",
+      "desc_ru": "Напиток из соленого йогурта домашнего приготовления.",
+      "desc_ar": "مشروب زبادي مملح مصنوع منزليًا."
+    },
+    {
+      "id": "rum-boregi",
+      "name_en": "Rum Börek",
+      "name_ru": "Греческий бёрек",
+      "name_ar": "بوريك رومي",
+      "desc_en": "Thin pastry filled with cheese, fried golden.",
+      "desc_ru": "Тонкое тесто с сырной начинкой, обжаренное до золотистого цвета.",
+      "desc_ar": "معجنات رقيقة محشوة بالجبن، مقلية باللون الذهبي."
+    },
+    {
+      "id": "ahtapot-kol-izgara",
+      "name_en": "Grilled Octopus Leg",
+      "name_ru": "Ножка осьминога на гриле",
+      "name_ar": "فخذ الأخطبوط المشوي",
+      "desc_en": "Olive-oil-marinated octopus leg, grilled.",
+      "desc_ru": "Ножка осьминога, маринованная в оливковом масле, на гриле.",
+      "desc_ar": "ساق الأخطبوط المتبلة بزيت الزيتون، مشوية."
+    },
+    {
+      "id": "levrek-pocero",
+      "name_en": "Sea Bass Poêlé",
+      "name_ru": "Филе сибаса поэль",
+      "name_ar": "فيليه قاروص بويليه",
+      "desc_en": "Sea bass fillet cooked in a buttery vegetable sauce.",
+      "desc_ru": "Филе морского окуня, приготовленное в маслянистом овощном соусе.",
+      "desc_ar": "شرائح سمك القاروص المطبوخة في صلصة الخضار بالزبدة."
+    },
+    {
+      "id": "levrek-simit",
+      "name_en": "Sea Bass Simit",
+      "name_ru": "Сибас в кунжуте",
+      "name_ar": "سمك قاروص بالسمسم",
+      "desc_en": "Sea bass bites in a crunchy sesame crust.",
+      "desc_ru": "Кусочки морского окуня в хрустящей кунжутной корочке.",
+      "desc_ar": "لقيمات سمك القاروس في قشرة السمسم المقرمشة."
+    },
+    {
+      "id": "mantar-izgara",
+      "name_en": "Grilled Mushrooms",
+      "name_ru": "Грибы на гриле",
+      "name_ar": "الفطر المشوي",
+      "desc_en": "Grilled mushrooms with garlic butter.",
+      "desc_ru": "Грибы-гриль с чесночным маслом.",
+      "desc_ar": "فطر مشوي مع زبدة الثوم."
+    },
+    {
+      "id": "mercimek-corbasi",
+      "name_en": "Lentil Soup",
+      "name_ru": "Чечевичный суп",
+      "name_ar": "شوربة العدس",
+      "desc_en": "Classic smooth red lentil soup.",
+      "desc_ru": "Классический нежный суп из красной чечевицы.",
+      "desc_ar": "شوربة العدس الأحمر الناعمة الكلاسيكية"
+    },
+    {
+      "id": "pilav",
+      "name_en": "Rice Pilaf",
+      "name_ru": "Рисовый плов",
+      "name_ar": "بيلاف الأرز",
+      "desc_en": "Buttery Turkish rice pilaf.",
+      "desc_ru": "Масляный турецкий рисовый плов.",
+      "desc_ar": "بيلاف الأرز التركي بالزبدة."
+    },
+    {
+      "id": "antibiyotik",
+      "name_en": "Antibiyotik (Garlic Special)",
+      "name_ru": "Антибиотик (чесночное мезе)",
+      "name_ar": "أنتيبيوتيك (مزة الثوم)",
+      "desc_en": "Our famously garlicky, vinegary house meze.",
+      "desc_ru": "Наше знаменитое чесночно-уксусное домашнее мезе.",
+      "desc_ar": "المزة المنزلية الشهيرة بالثوم والخل."
+    },
+    {
+      "id": "acili-balik-kebabi",
+      "name_en": "Spicy Fish Kebab",
+      "name_ru": "Острый рыбный кебаб",
+      "name_ar": "كباب السمك الحار",
+      "desc_en": "Spicy kebab made from minced sea bass.",
+      "desc_ru": "Острый шашлык из фарша морского окуня.",
+      "desc_ar": "كباب حار مصنوع من سمك القاروص المفروم"
+    },
+    {
+      "id": "somonlu-pacanga-boregi",
+      "name_en": "Salmon Paçanga Börek",
+      "name_ru": "Лосось Пасанга Бёрек",
+      "name_ar": "بوريك السلمون باسانغا",
+      "desc_en": "Crispy paçanga börek filled with salmon and cheese.",
+      "desc_ru": "Хрустящий пасанга бурек с начинкой из лосося и сыра.",
+      "desc_ar": "بوريك باشانغا مقرمش محشو بالسلمون والجبن."
+    },
+    {
+      "id": "sicak-ot",
+      "name_en": "Sautéed Greens",
+      "name_ru": "Обжаренная зелень",
+      "name_ar": "خضروات ورقية سوتيه",
+      "desc_en": "Seasonal greens sautéed in olive oil with garlic.",
+      "desc_ru": "Сезонная зелень, обжаренная в оливковом масле с чесноком.",
+      "desc_ar": "خضروات موسمية مقلية بزيت الزيتون مع الثوم."
+    },
+    {
+      "id": "kori-soslu-enginar",
+      "name_en": "Artichoke in Curry Sauce",
+      "name_ru": "Артишок в соусе карри",
+      "name_ar": "الخرشوف في صلصة الكاري",
+      "desc_en": "Fresh artichoke in a creamy curry sauce.",
+      "desc_ru": "Свежий артишок в сливочном соусе карри.",
+      "desc_ar": "خرشوف طازج في صلصة الكاري الكريمية"
+    },
+    {
+      "id": "pacanga-boregi",
+      "name_en": "Paçanga Börek",
+      "name_ru": "Пачанга Бёрек",
+      "name_ar": "باسانغا بوريك",
+      "desc_en": "Crispy börek rolled with pastırma and cheese.",
+      "desc_ru": "Хрустящий бёрек с пастырмой и сыром.",
+      "desc_ar": "بوريك مقرمش محشو بالبسطرمة والجبن."
+    },
+    {
+      "id": "kalamar-izgara",
+      "name_en": "Grilled Calamari",
+      "name_ru": "Кальмары на гриле",
+      "name_ar": "كاليماري مشوي",
+      "desc_en": "Whole calamari grilled with olive oil and lemon.",
+      "desc_ru": "Кальмары целиком, приготовленные на гриле с оливковым маслом и лимоном.",
+      "desc_ar": "حبار كامل مشوي مع زيت الزيتون والليمون."
+    },
+    {
+      "id": "karides-manti",
+      "name_en": "Shrimp Dumplings",
+      "name_ru": "Пельмени с креветками",
+      "name_ar": "زلابية الجمبري",
+      "desc_en": "Pastry parcels stuffed with shrimp in butter sauce.",
+      "desc_ru": "Мешочки из теста с креветками в сливочном соусе.",
+      "desc_ar": "قطع عجين محشوة بالروبيان في صلصة الزبدة."
+    },
+    {
+      "id": "somonlu-pacanga",
+      "name_en": "Salmon Paçanga",
+      "name_ru": "Лосось Пасанга",
+      "name_ar": "سمك السلمون باسانغا",
+      "desc_en": "Crispy börek prepared with smoked salmon.",
+      "desc_ru": "Хрустящий бурек, приготовленный с копченым лососем.",
+      "desc_ar": "بوريك مقرمش محضر مع السلمون المدخن"
+    },
+    {
+      "id": "balik-kebabi",
+      "name_en": "Fish Kebab",
+      "name_ru": "Рыбный кебаб",
+      "name_ar": "كباب السمك",
+      "desc_en": "Kebab of sea bass, parsley and spices.",
+      "desc_ru": "Кебаб из морского окуня, петрушки и специй.",
+      "desc_ar": "كباب سمك القاروص والبقدونس والبهارات"
+    },
+    {
+      "id": "balikli-avci-boregi",
+      "name_en": "Hunter's Fish Börek",
+      "name_ru": "Рыбный бёрек «Охотничий»",
+      "name_ar": "بوريك السمك على طريقة الصياد",
+      "desc_en": "Börek enriched with sea bass, bream and shrimp.",
+      "desc_ru": "Бёрек с добавлением морского окуня, леща и креветок.",
+      "desc_ar": "بوريك غني بالقاروص والدنيس والروبيان."
+    },
+    {
+      "id": "balik-sinitzel",
+      "name_en": "Fish Schnitzel",
+      "name_ru": "Рыбный шницель",
+      "name_ar": "شنيتزل السمك",
+      "desc_en": "Crispy breaded fish schnitzel.",
+      "desc_ru": "Хрустящий рыбный шницель в панировке.",
+      "desc_ar": "شنيتزل سمك مقرمش مغطى بالبقسماط."
+    },
+    {
+      "id": "enginar-salatasi",
+      "name_en": "Warm Artichoke Salad",
+      "name_ru": "Теплый салат из артишоков",
+      "name_ar": "سلطة الخرشوف الدافئة",
+      "desc_en": "Warm artichoke with olive oil and lemon.",
+      "desc_ru": "Теплый артишок с оливковым маслом и лимоном.",
+      "desc_ar": "خرشوف دافئ مع زيت الزيتون والليمون"
+    },
+    {
+      "id": "badem-ezmesi",
+      "name_en": "Almond Paste",
+      "name_ru": "Миндальное мезе",
+      "name_ar": "مزة اللوز",
+      "desc_en": "Warm meze of shrimp and almonds.",
+      "desc_ru": "Теплое мезе из креветок и миндаля.",
+      "desc_ar": "مزة دافئة من الجمبري واللوز."
+    },
+    {
+      "id": "sardalya",
+      "name_en": "Sardines",
+      "name_ru": "Сардины",
+      "name_ar": "السردين",
+      "desc_en": "Fresh deboned sardines off the charcoal grill.",
+      "desc_ru": "Свежие сардины без костей, приготовленные на угольном гриле.",
+      "desc_ar": "السردين الطازج منزوع العظم والمشوي على الفحم."
+    },
+    {
+      "id": "fener-kavurma",
+      "name_en": "Monkfish Sauté",
+      "name_ru": "Соте из морского черта",
+      "name_ar": "سمك الراهب مقلي",
+      "desc_en": "Monkfish morsels sautéed with vegetables.",
+      "desc_ru": "Кусочки морского черта, обжаренные с овощами.",
+      "desc_ar": "قطع سمك الراهب مقلية مع الخضار."
+    },
+    {
+      "id": "deniz-cuprasi",
+      "name_en": "Wild Sea Bream",
+      "name_ru": "Дикий морской лещ",
+      "name_ar": "سمك الدنيس البحري",
+      "desc_en": "Wild-caught sea bream, grilled whole.",
+      "desc_ru": "Дикий морской лещ, приготовленный на гриле целиком.",
+      "desc_ar": "سمك دنيس بري مصيد من البحر، مشوي كاملًا."
+    },
+    {
+      "id": "deniz-levregi",
+      "name_en": "Wild Sea Bass",
+      "name_ru": "Дикий морской окунь",
+      "name_ar": "باس البحر البري",
+      "desc_en": "Wild-caught sea bass, grilled whole.",
+      "desc_ru": "Дикий сибас, приготовленный на гриле целиком.",
+      "desc_ar": "سمك قاروص بري مصيد من البحر، مشوي كاملًا."
+    },
+    {
+      "id": "sarikanat",
+      "name_en": "Small Bluefish (Sarıkanat)",
+      "name_ru": "Маленький луфарь (Сариканат)",
+      "name_ar": "سمكة زرقاء صغيرة (ساريكانات)",
+      "desc_en": "Small bluefish, daily-fresh and grilled.",
+      "desc_ru": "Маленькая луфарь, свежая каждый день и приготовленная на гриле.",
+      "desc_ar": "سمكة زرقاء صغيرة، طازجة يوميًا ومشوية."
+    },
+    {
+      "id": "balik-ekmek",
+      "name_en": "Fish Sandwich",
+      "name_ru": "Сэндвич с рыбой",
+      "name_ar": "ساندويتش السمك",
+      "desc_en": "Grilled fish in fresh bread with onion and greens.",
+      "desc_ru": "Рыба гриль в свежем хлебе с луком и зеленью.",
+      "desc_ar": "سمك مشوي في خبز طازج مع البصل والخضار"
+    },
+    {
+      "id": "karadeniz-mezgit",
+      "name_en": "Black Sea Whiting",
+      "name_ru": "Черноморский мерланг",
+      "name_ar": "سمك بياض البحر الأسود",
+      "desc_en": "Black Sea whiting, lightly floured and crisp-fried.",
+      "desc_ru": "Черноморский мерланг в легкой мучной панировке, обжаренный до хрустящей корочки.",
+      "desc_ar": "سمك بياض البحر الأسود مغطى بطبقة خفيفة من الدقيق ومقلي حتى يصبح مقرمشًا."
+    },
+    {
+      "id": "torik",
+      "name_en": "Large Bonito (Torik)",
+      "name_ru": "Большой Бонито (Торик)",
+      "name_ar": "بونيتو (توريك) كبير",
+      "desc_en": "Large bonito, charcoal-grilled. Daily market price.",
+      "desc_ru": "Крупная пеламида, приготовленная на углях. Цена по рынку.",
+      "desc_ar": "سمك بونيتو كبير مشوي على الفحم. السعر حسب السوق."
+    },
+    {
+      "id": "roka-domates-peynirli",
+      "name_en": "Arugula, Tomato & Cheese Salad",
+      "name_ru": "Салат из рукколы, помидоров и сыра",
+      "name_ar": "سلطة الجرجير والطماطم والجبن",
+      "desc_en": "Arugula, cherry tomato and white cheese.",
+      "desc_ru": "Рукола, помидоры черри и белый сыр.",
+      "desc_ar": "جرجير، طماطم كرزية وجبنة بيضاء."
+    },
+    {
+      "id": "gavur-dagi-salatasi",
+      "name_en": "Gavurdağı Salad",
+      "name_ru": "Салат Гавурдагы",
+      "name_ar": "سلطة غافورداغي",
+      "desc_en": "Gavurdağı salad with walnuts and pomegranate.",
+      "desc_ru": "Салат Гавурдагы с грецкими орехами и гранатом.",
+      "desc_ar": "سلطة غافورداغي بالجوز والرمان"
+    },
+    {
+      "id": "akdeniz-salatasi",
+      "name_en": "Mediterranean Salad",
+      "name_ru": "Средиземноморский салат",
+      "name_ar": "سلطة البحر الأبيض المتوسط",
+      "desc_en": "Fresh, leafy Mediterranean salad.",
+      "desc_ru": "Свежий листовой средиземноморский салат.",
+      "desc_ar": "سلطة البحر الأبيض المتوسط الطازجة والمورقة."
+    },
+    {
+      "id": "makleron-salatasi",
+      "name_en": "Makleron Salad",
+      "name_ru": "Салат Маклерон",
+      "name_ar": "سلطة ماكليرون",
+      "desc_en": "House salad with seasonal greens.",
+      "desc_ru": "Домашний салат с сезонной зеленью.",
+      "desc_ar": "سلطة منزلية بالخضار الموسمية."
+    },
+    {
+      "id": "girit",
+      "name_en": "Cretan Meze",
+      "name_ru": "Критское мезе",
+      "name_ar": "المزة الكريتية",
+      "desc_en": "Cretan-style herb and walnut cheese spread.",
+      "desc_ru": "Сырная паста по-критски с зеленью и грецкими орехами.",
+      "desc_ar": "معجون جبن على الطريقة الكريتية بالأعشاب والجوز."
+    },
+    {
+      "id": "atom",
+      "name_en": "Atom (Spicy Yogurt Meze)",
+      "name_ru": "Атом (Острое йогуртовое мезе)",
+      "name_ar": "أتوم (مزة الزبادي الحارة)",
+      "desc_en": "Strained yogurt topped with spicy pepper oil.",
+      "desc_ru": "Процеженный йогурт с пряным перцовым маслом.",
+      "desc_ar": "زبادي مصفى مع زيت الفلفل الحار."
+    },
+    {
+      "id": "kopeoglu",
+      "name_en": "Köpoğlu (Eggplant & Yogurt)",
+      "name_ru": "Кёпоглу (баклажаны и йогурт)",
+      "name_ar": "كوب أوغلو (الباذنجان واللبن)",
+      "desc_en": "Fried eggplant topped with garlic yogurt.",
+      "desc_ru": "Жареные баклажаны с чесночным йогуртом.",
+      "desc_ar": "باذنجان مقلي مغطى بالزبادي بالثوم."
+    },
+    {
+      "id": "koz-biber",
+      "name_en": "Roasted Peppers",
+      "name_ru": "Жареный перец",
+      "name_ar": "فلفل مشوي",
+      "desc_en": "Roasted red peppers in garlicky olive oil.",
+      "desc_ru": "Жареный красный перец в чесночном оливковом масле.",
+      "desc_ar": "فلفل أحمر مشوي في زيت زيتون بالثوم."
+    },
+    {
+      "id": "yedigul-bomba",
+      "name_en": "Yedigül Bomba",
+      "name_ru": "Едигюль Бомба",
+      "name_ar": "يديغول بومبا",
+      "desc_en": "The chef's spicy signature paste — bold and hot.",
+      "desc_ru": "Острая фирменная паста от шеф-повара — яркая и острая.",
+      "desc_ar": "معجون الشيف الحار المميز - جريء وساخن."
+    },
+    {
+      "id": "enginar-kalbi",
+      "name_en": "Artichoke Hearts",
+      "name_ru": "Сердечки артишоков",
+      "name_ar": "قلوب الخرشوف",
+      "desc_en": "Fresh artichoke hearts in olive oil.",
+      "desc_ru": "Свежие сердечки артишоков в оливковом масле.",
+      "desc_ar": "قلوب الخرشوف الطازجة في زيت الزيتون."
+    },
+    {
+      "id": "kuru-cacik",
+      "name_en": "Thick Cacık",
+      "name_ru": "Густой джаджик",
+      "name_ar": "جاجيك كثيف",
+      "desc_en": "Thick garlicky yogurt meze.",
+      "desc_ru": "Густое йогуртовое мезе с чесноком.",
+      "desc_ar": "مزة زبادي كثيفة بالثوم."
+    },
+    {
+      "id": "cerkez-baligi",
+      "name_en": "Circassian-Style Fish",
+      "name_ru": "Рыба по-черкесски",
+      "name_ar": "الأسماك الشركسية",
+      "desc_en": "Circassian-style fish meze with walnut sauce.",
+      "desc_ru": "Рыбное мезе по-черкесски с ореховым соусом.",
+      "desc_ar": "مزة السمك على الطريقة الشركسية مع صلصة الجوز."
+    },
+    {
+      "id": "karides-shot",
+      "name_en": "Shrimp Shot",
+      "name_ru": "Шот из креветок",
+      "name_ar": "طلقة الروبيان",
+      "desc_en": "Jumbo shrimp with shredded pastry and sweet-chili sauce.",
+      "desc_ru": "Креветки джамбо с тестом кадаиф и сладким соусом чили.",
+      "desc_ar": "جمبري جامبو مع عجينة الكاداييف وصلصة الفلفل الحلو."
+    },
+    {
+      "id": "borulceli-enginar-oturtma",
+      "name_en": "Artichoke with Black-Eyed Peas",
+      "name_ru": "Артишок с черноглазым горошком",
+      "name_ar": "الخرشوف مع البازلاء ذات العين السوداء",
+      "desc_en": "Artichoke baked with samphire and tomato.",
+      "desc_ru": "Артишок, запеченный с самфиром и помидорами.",
+      "desc_ar": "الخرشوف المخبوز مع السمفير والطماطم."
+    },
+    {
+      "id": "isli-koy-peyniri",
+      "name_en": "Smoked Village Cheese",
+      "name_ru": "Копченый деревенский сыр",
+      "name_ar": "جبنة القرية المدخنة",
+      "desc_en": "Smoked village cheese with thyme and capers.",
+      "desc_ru": "Копченый деревенский сыр с тимьяном и каперсами.",
+      "desc_ar": "جبنة قروية مدخنة مع الزعتر ونبات الكبر."
+    },
+    {
+      "id": "somon-sarma",
+      "name_en": "Salmon Rolls",
+      "name_ru": "Роллы с лососем",
+      "name_ar": "لفائف السلمون",
+      "desc_en": "Smoked salmon rolls with a creamy filling.",
+      "desc_ru": "Рулеты из копченого лосося со сливочной начинкой.",
+      "desc_ar": "لفائف السلمون المدخن بحشوة الكريمة"
+    },
+    {
+      "id": "ananas-salatasi",
+      "name_en": "Pineapple Salad",
+      "name_ru": "Ананасовый салат",
+      "name_ar": "سلطة الأناناس",
+      "desc_en": "Refreshing salad of pineapple, chicken and mayo.",
+      "desc_ru": "Освежающий салат из ананаса, курицы и майонеза.",
+      "desc_ar": "سلطة منعشة بالأناناس والدجاج والمايونيز."
+    },
+    {
+      "id": "avokadolu-karides",
+      "name_en": "Shrimp with Avocado",
+      "name_ru": "Креветки с авокадо",
+      "name_ar": "الجمبري مع الأفوكادو",
+      "desc_en": "Jumbo shrimp with avocado and lemon dressing.",
+      "desc_ru": "Креветки Джамбо с авокадо и лимонным соусом.",
+      "desc_ar": "جمبري جامبو مع صلصة الأفوكادو والليمون"
+    },
+    {
+      "id": "citir-kabak",
+      "name_en": "Crispy Zucchini",
+      "name_ru": "Хрустящие кабачки",
+      "name_ar": "كوسا مقرمشة",
+      "desc_en": "Thinly sliced zucchini, crisp-fried.",
+      "desc_ru": "Тонко нарезанные цукини, обжаренные до хрустящей корочки.",
+      "desc_ar": "كوسا مقطعة إلى شرائح رفيعة ومقلية مقرمشة."
+    },
+    {
+      "id": "isli-midye",
+      "name_en": "Smoked Mussels",
+      "name_ru": "Копченые мидии",
+      "name_ar": "بلح البحر المدخن",
+      "desc_en": "Smoke-scented mussels in olive oil.",
+      "desc_ru": "Мидии с ароматом дымка в оливковом масле.",
+      "desc_ar": "بلح البحر المعطر بالدخان في زيت الزيتون"
+    },
+    {
+      "id": "pavurya-salatasi",
+      "name_en": "Crab Salad",
+      "name_ru": "Крабовый салат",
+      "name_ar": "سلطة السلطعون",
+      "desc_en": "Light salad prepared with crab meat.",
+      "desc_ru": "Легкий салат из крабового мяса.",
+      "desc_ar": "سلطة خفيفة محضرة بلحم الكابوريا."
+    },
+    {
+      "id": "cig-brokoli",
+      "name_en": "Raw Broccoli Salad",
+      "name_ru": "Салат из сырой брокколи",
+      "name_ar": "سلطة البروكلي النيئة",
+      "desc_en": "Raw broccoli with yogurt dressing and walnuts.",
+      "desc_ru": "Сырая брокколи с йогуртовой заправкой и грецкими орехами.",
+      "desc_ar": "البروكلي النيئ مع صلصة الزبادي والجوز."
+    },
+    {
+      "id": "feslegenli-humus",
+      "name_en": "Basil Hummus",
+      "name_ru": "Хумус с базиликом",
+      "name_ar": "حمص بالريحان",
+      "desc_en": "Chickpea hummus blended with fresh basil.",
+      "desc_ru": "Нутовый хумус со свежим базиликом.",
+      "desc_ar": "حمص مهروس ممزوج بالريحان الطازج."
+    },
+    {
+      "id": "soya-soslu-palamut",
+      "name_en": "Bonito in Soy Sauce",
+      "name_ru": "Скумбрия в соевом соусе",
+      "name_ar": "سمك البونيتو في صلصة الصويا",
+      "desc_en": "Marinated bonito slices with soy sauce.",
+      "desc_ru": "Маринованные ломтики пеламиды с соевым соусом.",
+      "desc_ar": "شرائح بونيتو متبلة بصلصة الصويا."
+    },
+    {
+      "id": "meksika-biberi",
+      "name_en": "Jalapeño Peppers",
+      "name_ru": "Перец халапеньо",
+      "name_ar": "فلفل الهالبينو",
+      "desc_en": "Stuffed jalapeño peppers, mildly spicy.",
+      "desc_ru": "Фаршированный перец халапеньо, слегка острый.",
+      "desc_ar": "فلفل هالبينو محشو، حار قليلاً."
+    },
+    {
+      "id": "hamsi-ancuez",
+      "name_en": "Marinated Anchovies",
+      "name_ru": "Маринованные анчоусы",
+      "name_ar": "الأنشوجة المتبلة",
+      "desc_en": "Vinegar-cured anchovy fillets.",
+      "desc_ru": "Филе анчоусов, маринованное в уксусе.",
+      "desc_ar": "شرائح أنشوجة معالجة بالخل."
+    },
+    {
+      "id": "yedi-cesit-ot",
+      "name_en": "Seven Herbs Meze",
+      "name_ru": "Мезе из семи трав",
+      "name_ar": "مزة الأعشاب السبعة",
+      "desc_en": "Seven seasonal herbs in olive oil.",
+      "desc_ru": "Семь сезонных трав в оливковом масле.",
+      "desc_ar": "سبع أعشاب موسمية في زيت الزيتون."
+    },
+    {
+      "id": "feslegenli-levrek-marin",
+      "name_en": "Basil Sea Bass Marinade",
+      "name_ru": "Маринад для сибаса с базиликом",
+      "name_ar": "تتبيلة سمك القاروص بالريحان",
+      "desc_en": "Thin-sliced sea bass marinated with basil and lemon.",
+      "desc_ru": "Тонко нарезанный сибас, маринованный с базиликом и лимоном.",
+      "desc_ar": "شرائح رقيقة من سمك القاروص المتبل بالريحان والليمون."
+    },
+    {
+      "id": "rum-ezmesi",
+      "name_en": "Greek-Style Meze",
+      "name_ru": "Мезе по-гречески",
+      "name_ar": "المازة على الطريقة اليونانية",
+      "desc_en": "Greek-style spiced white cheese spread.",
+      "desc_ru": "Пряная паста из белого сыра по-гречески.",
+      "desc_ar": "معجون جبن أبيض متبل على الطريقة اليونانية."
+    },
+    {
+      "id": "yogurtlu-tahinli-patlican",
+      "name_en": "Eggplant with Yogurt & Tahini",
+      "name_ru": "Баклажаны с йогуртом и тахиной",
+      "name_ar": "باذنجان مع الزبادي والطحينة",
+      "desc_en": "Roasted eggplant with yogurt and tahini.",
+      "desc_ru": "Жареные баклажаны с йогуртом и тахини.",
+      "desc_ar": "باذنجان مشوي مع الزبادي والطحينة."
+    },
+    {
+      "id": "susamli-koz-biber",
+      "name_en": "Roasted Peppers with Sesame",
+      "name_ru": "Жареный перец с кунжутом",
+      "name_ar": "فلفل مشوي بالسمسم",
+      "desc_en": "Roasted peppers with sesame and olive oil.",
+      "desc_ru": "Жареный перец с кунжутом и оливковым маслом.",
+      "desc_ar": "فلفل مشوي مع السمسم وزيت الزيتون"
+    },
+    {
+      "id": "somon-lakerda",
+      "name_en": "Salmon Lakerda",
+      "name_ru": "Лакерда из лосося",
+      "name_ar": "لاكيردا السلمون",
+      "desc_en": "Salt-cured salmon lakerda.",
+      "desc_ru": "Лакерда из слабосоленого лосося.",
+      "desc_ar": "لاكيردا محضرة من السلمون المملح."
+    },
+    {
+      "id": "labneli-somon-tarama",
+      "name_en": "Salmon Tarama with Labneh",
+      "name_ru": "Лосось Тарама с Лабне",
+      "name_ar": "سلمون طرامة مع لبنة",
+      "desc_en": "Creamy spread of smoked salmon and labneh.",
+      "desc_ru": "Сливочная намазка из копченого лосося и лабне.",
+      "desc_ar": "كريمة السلمون المدخن واللبنة"
+    },
+    {
+      "id": "sevketi-bostan-sogus",
+      "name_en": "Blessed Thistle Meze",
+      "name_ru": "Шевкети-бостан",
+      "name_ar": "مزة الشوك المبارك",
+      "desc_en": "Blanched blessed thistle with olive oil and lemon.",
+      "desc_ru": "Бланшированный чертополох с оливковым маслом и лимоном.",
+      "desc_ar": "نبات الشوك المبارك المسلوق بزيت الزيتون والليمون."
+    },
+    {
+      "id": "kuzu-pirzola",
+      "name_en": "Lamb Chops",
+      "name_ru": "Бараньи отбивные",
+      "name_ar": "قطع لحم الضأن",
+      "desc_en": "Charcoal-grilled lamb chops.",
+      "desc_ru": "Отбивные из баранины, приготовленные на углях.",
+      "desc_ar": "قطع لحم الضأن المشوية على الفحم"
+    },
+    {
+      "id": "kuzu-sis",
+      "name_en": "Lamb Shish",
+      "name_ru": "Шиш из баранины",
+      "name_ar": "شيش خروف",
+      "desc_en": "Marinated lamb skewers, char-grilled.",
+      "desc_ru": "Маринованные шашлычки из баранины, приготовленные на углях.",
+      "desc_ar": "أسياخ لحم ضأن متبلة، مشوية على الفحم"
+    },
+    {
+      "id": "biftek-antrikot",
+      "name_en": "Ribeye Steak",
+      "name_ru": "Стейк Рибай",
+      "name_ar": "شريحة لحم الريب آي",
+      "desc_en": "Aged ribeye steak off the grill.",
+      "desc_ru": "Выдержанный стейк рибай, приготовленный на гриле.",
+      "desc_ar": "شريحة لحم ريب آي معتّقة ومشوية."
+    },
+    {
+      "id": "urfa-kebap",
+      "name_en": "Urfa Kebab",
+      "name_ru": "Урфа-кебаб",
+      "name_ar": "اورفا كباب",
+      "desc_en": "Mild Urfa-style minced meat kebab.",
+      "desc_ru": "Нежный шашлык из мясного фарша по-урфски.",
+      "desc_ar": "كباب لحم مفروم خفيف على طريقة أورفا"
+    },
+    {
+      "id": "kavun",
+      "name_en": "Melon",
+      "name_ru": "Дыня",
+      "name_ar": "الشمام",
+      "desc_en": "Fresh sliced melon in season.",
+      "desc_ru": "Свежая сезонная дыня, нарезанная ломтиками.",
+      "desc_ar": "شرائح شمام طازجة في موسمها."
+    },
+    {
+      "id": "karpuz",
+      "name_en": "Watermelon",
+      "name_ru": "Арбуз",
+      "name_ar": "البطيخ",
+      "desc_en": "Fresh sliced watermelon in season.",
+      "desc_ru": "Свежий нарезанный сезонный арбуз.",
+      "desc_ar": "شرائح بطيخ طازجة في الموسم"
+    },
+    {
+      "id": "cerez",
+      "name_en": "Nuts & Snacks",
+      "name_ru": "Орехи и снеки",
+      "name_ar": "المكسرات والوجبات الخفيفة",
+      "desc_en": "Plate of mixed nuts and snacks.",
+      "desc_ru": "Тарелка ореховой смеси и закусок.",
+      "desc_ar": "طبق مكسرات ووجبات خفيفة."
+    },
+    {
+      "id": "hayrabolu-tatlisi",
+      "name_en": "Hayrabolu Dessert",
+      "name_ru": "Десерт «Хайраболу»",
+      "name_ar": "حلوى هايرابولو",
+      "desc_en": "Cheese-dough dessert in syrup with clotted cream.",
+      "desc_ru": "Десерт из сырного теста в сиропе, подается с каймаком.",
+      "desc_ar": "حلوى من عجينة الجبن بالقطر، تقدم مع القشطة."
+    },
+    {
+      "id": "tahinli-dondurma",
+      "name_en": "Tahini Ice Cream",
+      "name_ru": "Мороженое тахини",
+      "name_ar": "آيس كريم الطحينة",
+      "desc_en": "House-made tahini-flavored ice cream.",
+      "desc_ru": "Домашнее мороженое со вкусом тахини.",
+      "desc_ar": "آيس كريم منزلي الصنع بنكهة الطحينة"
+    },
+    {
+      "id": "serpme-kahvalti",
+      "name_en": "Turkish Spread Breakfast",
+      "name_ru": "Турецкий завтрак-сет",
+      "name_ar": "فطور تركي متنوع",
+      "desc_en": "Rich Turkish spread breakfast; cheeses, jams, eggs and more.",
+      "desc_ru": "Обильный турецкий завтрак; сыры, джемы, яйца и многое другое.",
+      "desc_ar": "وجبة إفطار تركية غنية؛ الجبن والمربيات والبيض وغيرها."
+    },
+    {
+      "id": "kuymak-ekstra",
+      "name_en": "Kuymak (Extra)",
+      "name_ru": "Куймак (Экстра)",
+      "name_ar": "كويماك (إضافي)",
+      "desc_en": "Cheesy Black Sea kuymak (mıhlama).",
+      "desc_ru": "Сырный черноморский куймак (михлама).",
+      "desc_ar": "كويماك البحر الأسود بالجبنة (mıhlama)."
+    },
+    {
+      "id": "sahanda-yumurta",
+      "name_en": "Fried Eggs",
+      "name_ru": "Жареные яйца",
+      "name_ar": "البيض المقلي",
+      "desc_en": "Eggs fried in butter, served in the pan.",
+      "desc_ru": "Яйца, обжаренные на сливочном масле, подаются на сковороде.",
+      "desc_ar": "بيض مقلي بالزبدة، يقدم في المقلاة."
+    },
+    {
+      "id": "kahvalti-tabagi",
+      "name_en": "Breakfast Plate",
+      "name_ru": "Тарелка для завтрака",
+      "name_ar": "طبق الإفطار",
+      "desc_en": "Curated breakfast plate for one.",
+      "desc_ru": "Тарелка с завтраком на одного человека.",
+      "desc_ar": "طبق إفطار منسق لشخص واحد"
+    },
+    {
+      "id": "menemen",
+      "name_en": "Menemen",
+      "name_ru": "Менемен",
+      "name_ar": "منيمن",
+      "desc_en": "Classic menemen with tomato, pepper and egg.",
+      "desc_ru": "Классический менемен с помидорами, перцем и яйцом.",
+      "desc_ar": "المينمين الكلاسيكي مع الطماطم والفلفل والبيض"
+    },
+    {
+      "id": "coca-cola",
+      "name_en": "Coca-Cola",
+      "name_ru": "Кока-Кола",
+      "name_ar": "كوكا كولا",
+      "desc_en": "Ice-cold Coca-Cola.",
+      "desc_ru": "Ледяная кока-кола.",
+      "desc_ar": "كوكاكولا مثلجة."
+    },
+    {
+      "id": "fanta",
+      "name_en": "Fanta",
+      "name_ru": "Фанта",
+      "name_ar": "فانتا",
+      "desc_en": "Orange-flavored soft drink.",
+      "desc_ru": "Безалкогольный напиток со вкусом апельсина.",
+      "desc_ar": "مشروب غازي بنكهة البرتقال."
+    },
+    {
+      "id": "sprite",
+      "name_en": "Sprite",
+      "name_ru": "Sprite",
+      "name_ar": "سبرايت",
+      "desc_en": "Lemon-lime soft drink.",
+      "desc_ru": "Газированный напиток со вкусом лимона и лайма.",
+      "desc_ar": "مشروب غازي بنكهة الليمون والليمون الأخضر."
+    },
+    {
+      "id": "meyve-suyu",
+      "name_en": "Fruit Juice",
+      "name_ru": "Фруктовый сок",
+      "name_ar": "عصير الفاكهة",
+      "desc_en": "Assorted fruit juice.",
+      "desc_ru": "Ассорти фруктовых соков.",
+      "desc_ar": "عصير فواكه متنوع."
+    },
+    {
+      "id": "soda",
+      "name_en": "Sparkling Water",
+      "name_ru": "Газированная вода",
+      "name_ar": "المياه الفوارة",
+      "desc_en": "Plain sparkling mineral water.",
+      "desc_ru": "Обычная газированная минеральная вода.",
+      "desc_ar": "مياه معدنية فوارة عادية."
+    },
+    {
+      "id": "salgam-kucuk",
+      "name_en": "Turnip Juice (Small)",
+      "name_ru": "Шалгам (маленький)",
+      "name_ar": "عصير الشلغم (صغير)",
+      "desc_en": "Sour turnip juice, small.",
+      "desc_ru": "Кислый сок шалгама, маленькая порция.",
+      "desc_ar": "عصير شلغم حامض، حجم صغير."
+    },
+    {
+      "id": "salgam-buyuk",
+      "name_en": "Turnip Juice (Large)",
+      "name_ru": "Шалгам (большой)",
+      "name_ar": "عصير الشلغم (كبير)",
+      "desc_en": "Sour turnip juice, large.",
+      "desc_ru": "Кислый сок шалгама, большая порция.",
+      "desc_ar": "عصير شلغم حامض، حجم كبير."
+    },
+    {
+      "id": "turk-kahvesi",
+      "name_en": "Turkish Coffee",
+      "name_ru": "Кофе по-турецки",
+      "name_ar": "القهوة التركية",
+      "desc_en": "Traditional Turkish coffee with foam.",
+      "desc_ru": "Традиционный турецкий кофе с пеной.",
+      "desc_ar": "القهوة التركية التقليدية مع الرغوة."
+    },
+    {
+      "id": "nescafe",
+      "name_en": "Nescafé",
+      "name_ru": "Нескафе",
+      "name_ar": "نسكافيه",
+      "desc_en": "Hot instant coffee with milk.",
+      "desc_ru": "Горячий растворимый кофе с молоком.",
+      "desc_ar": "قهوة ساخنة سريعة التحضير مع الحليب"
+    },
+    {
+      "id": "su",
+      "name_en": "Water",
+      "name_ru": "Вода",
+      "name_ar": "الماء",
+      "desc_en": "Spring water.",
+      "desc_ru": "Родниковая вода.",
+      "desc_ar": "مياه الينابيع."
+    },
+    {
+      "id": "su-500-ml",
+      "name_en": "Water (500 ml)",
+      "name_ru": "Вода (500 мл)",
+      "name_ar": "ماء (500 مل)",
+      "desc_en": "Spring water, 500 ml.",
+      "desc_ru": "Родниковая вода, 500 мл.",
+      "desc_ar": "مياه الينابيع 500 مل."
+    },
+    {
+      "id": "efes",
+      "name_en": "Efes",
+      "name_ru": "Эфес",
+      "name_ar": "أفس",
+      "desc_en": "Turkey's classic golden lager, ice-cold.",
+      "desc_ru": "Классический турецкий золотой лагер, ледяной.",
+      "desc_ar": "الجعة الذهبية الكلاسيكية التركية، مثلجة."
+    },
+    {
+      "id": "tuborg",
+      "name_en": "Tuborg",
+      "name_ru": "Туборг",
+      "name_ar": "توبورج",
+      "desc_en": "Refreshing pilsner lager.",
+      "desc_ru": "Освежающий пилснер.",
+      "desc_ar": "جعة بيلسنر المنعشة."
+    },
+    {
+      "id": "miller",
+      "name_en": "Miller",
+      "name_ru": "Миллер",
+      "name_ar": "ميلر",
+      "desc_en": "Light, easy-drinking American lager.",
+      "desc_ru": "Легкий, легко пьющийся американский лагер.",
+      "desc_ar": "جعة أمريكية خفيفة وسهلة الشرب."
+    },
+    {
+      "id": "carlsberg",
+      "name_en": "Carlsberg",
+      "name_ru": "Карлсберг",
+      "name_ar": "كارلسبيرج",
+      "desc_en": "Danish-style premium pilsner.",
+      "desc_ru": "Пильзнер премиум-класса в датском стиле.",
+      "desc_ar": "بيلسنر فاخر على الطراز الدنماركي."
+    },
+    {
+      "id": "bomonti",
+      "name_en": "Bomonti",
+      "name_ru": "Бомонти",
+      "name_ar": "بومونتي",
+      "desc_en": "Full-bodied unfiltered beer.",
+      "desc_ru": "Насыщенное нефильтрованное пиво.",
+      "desc_ar": "بيرة كاملة الجسم غير مفلترة."
+    },
+    {
+      "id": "corona",
+      "name_en": "Corona",
+      "name_ru": "Корона",
+      "name_ar": "كورونا",
+      "desc_en": "Mexican lager, best with a wedge of lime.",
+      "desc_ru": "Мексиканский лагер, лучше всего с ломтиком лайма.",
+      "desc_ar": "الجعة المكسيكية، يُفضل تناولها مع شريحة من الليمون"
+    },
+    {
+      "id": "tuborg-ice-330-ml",
+      "name_en": "Tuborg Ice 330 ml",
+      "name_ru": "Туборг Айс 330 мл",
+      "name_ar": "ثلج توبورج 330 مل",
+      "desc_en": "Crisp, light Tuborg Ice.",
+      "desc_ru": "Легкое освежающее пиво Tuborg Ice.",
+      "desc_ar": "بيرة Tuborg Ice خفيفة ومنعشة."
+    },
+    {
+      "id": "beck-s",
+      "name_en": "Beck's",
+      "name_ru": "Бек",
+      "name_ar": "بيك",
+      "desc_en": "German-style pilsner.",
+      "desc_ru": "Пильзнер по-немецки.",
+      "desc_ar": "بيلسنر على الطريقة الألمانية."
+    },
+    {
+      "id": "tuborg-amber",
+      "name_en": "Tuborg Amber",
+      "name_ru": "Туборг Янтарь",
+      "name_ar": "عنبر توبورج",
+      "desc_en": "Amber lager with caramel notes.",
+      "desc_ru": "Янтарный лагер с нотками карамели.",
+      "desc_ar": "جعة العنبر مع نكهة الكراميل."
+    },
+    {
+      "id": "tuborg-filtresiz",
+      "name_en": "Tuborg Unfiltered",
+      "name_ru": "Туборг без фильтров",
+      "name_ar": "توبورغ غير مفلتر",
+      "desc_en": "Unfiltered, hazy and full.",
+      "desc_ru": "Нефильтрованное, мутное и насыщенное пиво.",
+      "desc_ar": "بيرة غير مفلترة، عكرة وغنية النكهة."
+    },
+    {
+      "id": "stella-artois",
+      "name_en": "Stella Artois",
+      "name_ru": "Стелла Артуа",
+      "name_ar": "ستيلا ارتواز",
+      "desc_en": "Belgian-style premium lager.",
+      "desc_ru": "Бельгийский лагер премиум-класса.",
+      "desc_ar": "الجعة الفاخرة على الطريقة البلجيكية."
+    },
+    {
+      "id": "bud",
+      "name_en": "Bud",
+      "name_ru": "Bud",
+      "name_ar": "بود",
+      "desc_en": "Light American lager.",
+      "desc_ru": "Светлый американский лагер.",
+      "desc_ar": "الجعة الأمريكية الخفيفة."
+    },
+    {
+      "id": "efes-malt",
+      "name_en": "Efes Malt",
+      "name_ru": "Эфес Мальт",
+      "name_ar": "أفس مالت",
+      "desc_en": "Non-alcoholic malt beverage.",
+      "desc_ru": "Безалкогольный солодовый напиток.",
+      "desc_ar": "مشروب شعير غير كحولي."
+    },
+    {
+      "id": "efes-glutensiz",
+      "name_en": "Efes Gluten-Free",
+      "name_ru": "Эфес без глютена",
+      "name_ar": "إيفيس خالي من الغلوتين",
+      "desc_en": "Gluten-free Efes beer.",
+      "desc_ru": "Безглютеновое пиво Efes.",
+      "desc_ar": "بيرة إيفيس الخالية من الغلوتين."
+    },
+    {
+      "id": "carlsberg-luna",
+      "name_en": "Carlsberg Luna",
+      "name_ru": "Карлсберг Луна",
+      "name_ar": "كارلسبيرج لونا",
+      "desc_en": "Light and refreshing Carlsberg Luna.",
+      "desc_ru": "Легкий и освежающий Carlsberg Luna.",
+      "desc_ar": "لونا كارلسبيرج الخفيف والمنعش."
+    },
+    {
+      "id": "amsterdam",
+      "name_en": "Amsterdam",
+      "name_ru": "Амстердам",
+      "name_ar": "أمستردام",
+      "desc_en": "Dutch-style lager.",
+      "desc_ru": "Лагер в голландском стиле.",
+      "desc_ar": "الجعة على الطريقة الهولندية."
+    },
+    {
+      "id": "efe-gold",
+      "name_en": "Efe Gold",
+      "name_ru": "Эфе Голд",
+      "name_ar": "إيفي جولد",
+      "desc_en": "Smooth premium rakı. Calories per double serving.",
+      "desc_ru": "Мягкая ракы премиум-класса. Калорийность указана на двойную порцию.",
+      "desc_ar": "راكي فاخر ناعم. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "beylerbeyi",
+      "name_en": "Beylerbeyi",
+      "name_ru": "Бейлербей",
+      "name_ar": "بيلربيه",
+      "desc_en": "Classic anise rakı. Calories per double serving.",
+      "desc_ru": "Классическая анисовая ракы. Калорийность указана на двойную порцию.",
+      "desc_ar": "راكي كلاسيكي بنكهة اليانسون. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "altin-seri",
+      "name_en": "Altın Seri",
+      "name_ru": "Алтын Сери",
+      "name_ar": "ألتين سيري",
+      "desc_en": "Balanced rakı range. Calories per double serving.",
+      "desc_ru": "Сбалансированная ракы. Калорийность указана на двойную порцию.",
+      "desc_ar": "راكي متوازن. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "sari-zeybek",
+      "name_en": "Sarı Zeybek",
+      "name_ru": "Сари Зейбек",
+      "name_ar": "ساري زيبيك",
+      "desc_en": "Traditional Aegean-spirited rakı. Calories per double serving.",
+      "desc_ru": "Традиционная эгейская ракы. Калорийность указана на двойную порцию.",
+      "desc_ar": "راكي تقليدي بطابع بحر إيجه. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "yeni-seri",
+      "name_en": "Yeni Seri",
+      "name_ru": "Ени Сери",
+      "name_ar": "يني سيري",
+      "desc_en": "Yeni Rakı's premium series. Calories per double serving.",
+      "desc_ru": "Премиальная серия Yeni Rakı. Калорийность указана на двойную порцию.",
+      "desc_ar": "سلسلة Yeni Rakı الفاخرة. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "tekirdag-gobek",
+      "name_en": "Tekirdağ Göbek",
+      "name_ru": "Текирдаг Гёбек",
+      "name_ar": "تيكيرداغ جوبيك",
+      "desc_en": "Famous Thracian \"göbek\" rakı. Calories per double serving.",
+      "desc_ru": "Знаменитая фракийская ракы «Göbek». Калорийность указана на двойную порцию.",
+      "desc_ar": "راكي «Göbek» التراقية الشهيرة. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "mercan",
+      "name_en": "Mercan",
+      "name_ru": "Меркан",
+      "name_ar": "ميركان",
+      "desc_en": "Light, value rakı. Calories per double serving.",
+      "desc_ru": "Легкая ракы по доступной цене. Калорийность указана на двойную порцию.",
+      "desc_ar": "راكي خفيفة بسعر مناسب. السعرات الحرارية محسوبة للحصة المزدوجة."
+    },
+    {
+      "id": "villa-doluca",
+      "name_en": "Villa Doluca",
+      "name_ru": "Вилла Долука",
+      "name_ar": "فيلا دولوكا",
+      "desc_en": "Local classic; red and white. Values per glass.",
+      "desc_ru": "Классическое местное красное или белое вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ محلي كلاسيكي أحمر أو أبيض. السعر محسوب للكأس."
+    },
+    {
+      "id": "doluca-selection",
+      "name_en": "Doluca Selection",
+      "name_ru": "Выбор Долука",
+      "name_ar": "اختيار دولوكا",
+      "desc_en": "Doluca's selection range. Values per glass.",
+      "desc_ru": "Вино из линейки Doluca Selection. Цена указана за бокал.",
+      "desc_ar": "نبيذ من مجموعة Doluca Selection. السعر محسوب للكأس."
+    },
+    {
+      "id": "kavaklidere-yakut-kirmizi",
+      "name_en": "Kavaklıdere Yakut Red",
+      "name_ru": "Каваклидере Якутский красный",
+      "name_ar": "كافاكليدير ياقوت الأحمر",
+      "desc_en": "Smooth local red. Per glass.",
+      "desc_ru": "Мягкое местное красное вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ أحمر محلي ناعم. السعر محسوب للكأس."
+    },
+    {
+      "id": "cielo",
+      "name_en": "Cielo",
+      "name_ru": "Сьело",
+      "name_ar": "سيلو",
+      "desc_en": "Light Italian-style wine. Per glass.",
+      "desc_ru": "Легкое вино в итальянском стиле. Цена указана за бокал.",
+      "desc_ar": "نبيذ خفيف على الطريقة الإيطالية. السعر محسوب للكأس."
+    },
+    {
+      "id": "doluca-antik-kirmizi",
+      "name_en": "Doluca Antik Red",
+      "name_ru": "Долука Антик Красный",
+      "name_ar": "دولوكا أنتيك أحمر",
+      "desc_en": "Full-bodied local red. Per glass.",
+      "desc_ru": "Насыщенное местное красное вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ أحمر محلي ممتلئ القوام. السعر محسوب للكأس."
+    },
+    {
+      "id": "doluca-safir-tatli-beyaz",
+      "name_en": "Doluca Safir Sweet White",
+      "name_ru": "Долука Сафир Сладкий Белый",
+      "name_ar": "دولوكا سفير سويت وايت",
+      "desc_en": "Sweet white wine. Per glass.",
+      "desc_ru": "Сладкое белое вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ أبيض حلو. السعر محسوب للكأس."
+    },
+    {
+      "id": "doluca-hayel",
+      "name_en": "Doluca Hayel",
+      "name_ru": "Долука Хайел",
+      "name_ar": "دولوكا هايل",
+      "desc_en": "Balanced local wine. Per glass.",
+      "desc_ru": "Сбалансированное местное вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ محلي متوازن. السعر محسوب للكأس."
+    },
+    {
+      "id": "kayra-allure",
+      "name_en": "Kayra Allure",
+      "name_ru": "Кайра Аллюр",
+      "name_ar": "جاذبية كايرا",
+      "desc_en": "Fruity, modern wine. Per glass.",
+      "desc_ru": "Фруктовое современное вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ عصري بنكهة فاكهية. السعر محسوب للكأس."
+    },
+    {
+      "id": "buzbag",
+      "name_en": "Buzbağ",
+      "name_ru": "Бузбаг",
+      "name_ar": "بوزباغ",
+      "desc_en": "Iconic red from eastern Anatolia. Per glass.",
+      "desc_ru": "Знаковое красное вино из Восточной Анатолии. Цена указана за бокал.",
+      "desc_ar": "نبيذ أحمر شهير من شرق الأناضول. السعر محسوب للكأس."
+    },
+    {
+      "id": "kuzeybag-kirmizi",
+      "name_en": "Kuzeybağ Red",
+      "name_ru": "Кузейбаг Красный",
+      "name_ar": "أحمر كوزايباغ",
+      "desc_en": "Characterful local red. Per glass.",
+      "desc_ru": "Выразительное местное красное вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ أحمر محلي ذو طابع مميز. السعر محسوب للكأس."
+    },
+    {
+      "id": "sarafin-beyaz",
+      "name_en": "Sarafin White",
+      "name_ru": "Сарафин Белый",
+      "name_ar": "سارافين أبيض",
+      "desc_en": "Premium local white. Per glass.",
+      "desc_ru": "Премиальное местное белое вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ أبيض محلي فاخر. السعر محسوب للكأس."
+    },
+    {
+      "id": "sarafin-kirmizi",
+      "name_en": "Sarafin Red",
+      "name_ru": "Сарафин красный",
+      "name_ar": "أحمر سارافين",
+      "desc_en": "Premium local red. Per glass.",
+      "desc_ru": "Премиальное местное красное вино. Цена указана за бокал.",
+      "desc_ar": "نبيذ أحمر محلي فاخر. السعر محسوب للكأس."
+    },
+    {
+      "id": "kadeh-sarap",
+      "name_en": "Glass of Wine",
+      "name_ru": "Бокал вина",
+      "name_ar": "كأس من النبيذ",
+      "desc_en": "Open wine of the day, by the glass.",
+      "desc_ru": "Вино дня, подается по бокалам.",
+      "desc_ar": "نبيذ اليوم، يقدم بالكأس."
+    },
+    {
+      "id": "johnnie-walker",
+      "name_en": "Johnnie Walker",
+      "name_ru": "Джонни Уокер",
+      "name_ar": "جوني ووكر",
+      "desc_en": "Scotch blended whisky. Calories per serving.",
+      "desc_ru": "Купажированный шотландский виски. Калорийность указана на порцию.",
+      "desc_ar": "ويسكي اسكتلندي مخلوط. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "ballantine-s",
+      "name_en": "Ballantine's",
+      "name_ru": "Баллантайн",
+      "name_ar": "بالانتاين",
+      "desc_en": "Smooth Scotch blend. Calories per serving.",
+      "desc_ru": "Мягкий купажированный шотландский виски. Калорийность указана на порцию.",
+      "desc_ar": "ويسكي اسكتلندي مخلوط وناعم. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "chivas-regal",
+      "name_en": "Chivas Regal",
+      "name_ru": "Чивас Ригал",
+      "name_ar": "شيفاز ريجال",
+      "desc_en": "Premium Scotch blend. Calories per serving.",
+      "desc_ru": "Премиальный купажированный шотландский виски. Калорийность указана на порцию.",
+      "desc_ar": "ويسكي اسكتلندي مخلوط فاخر. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "j-b",
+      "name_en": "J&B",
+      "name_ru": "J&B",
+      "name_ar": "J&B",
+      "desc_en": "Crisp Scotch blend. Calories per serving.",
+      "desc_ru": "Легкий купажированный шотландский виски. Калорийность указана на порцию.",
+      "desc_ar": "ويسكي اسكتلندي مخلوط وخفيف. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "duble-viski",
+      "name_en": "Double Whisky",
+      "name_ru": "Двойной виски",
+      "name_ar": "ويسكي مزدوج",
+      "desc_en": "House whisky, double measure.",
+      "desc_ru": "Фирменный виски, двойная порция.",
+      "desc_ar": "ويسكي البيت، حصة مزدوجة."
+    },
+    {
+      "id": "absolut-votka",
+      "name_en": "Absolut Vodka",
+      "name_ru": "Absolut Vodka",
+      "name_ar": "أبسولوت فودكا",
+      "desc_en": "Swedish premium vodka. Calories per serving.",
+      "desc_ru": "Шведская водка премиум-класса. Калорийность указана на порцию.",
+      "desc_ar": "فودكا سويدية فاخرة. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "1967-votka",
+      "name_en": "1967 Vodka",
+      "name_ru": "Водка 1967 года",
+      "name_ar": "1967 فودكا",
+      "desc_en": "Local premium vodka. Calories per serving.",
+      "desc_ru": "Местная водка премиум-класса. Калорийность указана на порцию.",
+      "desc_ar": "فودكا محلية فاخرة. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "duble-votka",
+      "name_en": "Double Vodka",
+      "name_ru": "Двойная водка",
+      "name_ar": "فودكا مزدوجة",
+      "desc_en": "House vodka, double measure.",
+      "desc_ru": "Фирменная водка, двойная порция.",
+      "desc_ar": "فودكا البيت، حصة مزدوجة."
+    },
+    {
+      "id": "gordon-cin",
+      "name_en": "Gordon's Gin",
+      "name_ru": "Джин Гордона",
+      "name_ar": "جين جوردون",
+      "desc_en": "Classic London Dry gin. Calories per serving.",
+      "desc_ru": "Классический лондонский сухой джин. Калорийность указана на порцию.",
+      "desc_ar": "جين لندن جاف كلاسيكي. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "gilbey-s-cin",
+      "name_en": "Gilbey's Gin",
+      "name_ru": "Джин Гилби",
+      "name_ar": "جين جيلبي",
+      "desc_en": "Smooth-drinking gin. Calories per serving.",
+      "desc_ru": "Мягкий джин. Калорийность указана на порцию.",
+      "desc_ar": "جين ناعم. السعرات الحرارية محسوبة للحصة."
+    },
+    {
+      "id": "duble-cin",
+      "name_en": "Double Gin",
+      "name_ru": "Двойной джин",
+      "name_ar": "الجن المزدوج",
+      "desc_en": "House gin, double measure.",
+      "desc_ru": "Фирменный джин, двойная порция.",
+      "desc_ar": "جين البيت، حصة مزدوجة."
+    }
+  ],
+  "terms": {
+    "Fish stock": {
+      "ru": "Рыбный бульон",
+      "ar": "مرق السمك"
+    },
+    "Egg": {
+      "ru": "Яйцо",
+      "ar": "بيضة"
+    },
+    "Flour": {
+      "ru": "Мука",
+      "ar": "دقيق"
+    },
+    "Lemon": {
+      "ru": "Лимон",
+      "ar": "ليمون"
+    },
+    "Fish": {
+      "ru": "Рыба",
+      "ar": "السمك"
+    },
+    "Gluten": {
+      "ru": "Глютен",
+      "ar": "الجلوتين"
+    },
+    "Sea bass": {
+      "ru": "Морской окунь",
+      "ar": "قاروص البحر"
+    },
+    "Olive oil": {
+      "ru": "Оливковое масло",
+      "ar": "زيت الزيتون"
+    },
+    "Sea salt": {
+      "ru": "Морская соль",
+      "ar": "ملح البحر"
+    },
+    "Sea bream": {
+      "ru": "Морской лещ",
+      "ar": "سمك الدنيس"
+    },
+    "Thyme": {
+      "ru": "Тимьян",
+      "ar": "زعتر"
+    },
+    "Shrimp": {
+      "ru": "Креветки",
+      "ar": "الجمبري"
+    },
+    "Butter": {
+      "ru": "Сливочное масло",
+      "ar": "الزبدة"
+    },
+    "Garlic": {
+      "ru": "Чеснок",
+      "ar": "الثوم"
+    },
+    "Shellfish": {
+      "ru": "Ракообразные и моллюски",
+      "ar": "القشريات والرخويات"
+    },
+    "Dairy": {
+      "ru": "Молочные продукты",
+      "ar": "الألبان"
+    },
+    "Tomato": {
+      "ru": "Помидор",
+      "ar": "الطماطم"
+    },
+    "Cheese": {
+      "ru": "Сыр",
+      "ar": "الجبن"
+    },
+    "Green pepper": {
+      "ru": "Зеленый перец",
+      "ar": "فلفل أخضر"
+    },
+    "Bluefish": {
+      "ru": "Луфарь",
+      "ar": "سمك اللوفار"
+    },
+    "Onion": {
+      "ru": "Лук",
+      "ar": "البصل"
+    },
+    "Small bluefish": {
+      "ru": "Молодой луфарь",
+      "ar": "سمك لوفر صغير"
+    },
+    "Parsley": {
+      "ru": "Петрушка",
+      "ar": "البقدونس"
+    },
+    "Mussels": {
+      "ru": "Мидии",
+      "ar": "بلح البحر"
+    },
+    "Calamari": {
+      "ru": "Кальмары",
+      "ar": "كالاماري"
+    },
+    "Whiting": {
+      "ru": "Мерланг",
+      "ar": "سمك البياض"
+    },
+    "Cornmeal": {
+      "ru": "Кукурузная мука",
+      "ar": "دقيق الذرة"
+    },
+    "Red mullet": {
+      "ru": "Барабулька",
+      "ar": "البوري الأحمر"
+    },
+    "Tartar": {
+      "ru": "Соус тартар",
+      "ar": "صلصة التارتار"
+    },
+    "Beer": {
+      "ru": "Пиво",
+      "ar": "البيرة"
+    },
+    "Striped mullet": {
+      "ru": "Полосатая барабулька",
+      "ar": "البوري الأحمر المخطط"
+    },
+    "Horse mackerel": {
+      "ru": "Ставрида",
+      "ar": "سمك الإسقمري الحصاني"
+    },
+    "Filo pastry": {
+      "ru": "Тесто фило",
+      "ar": "معجنات الفيلو"
+    },
+    "Spices": {
+      "ru": "Специи",
+      "ar": "البهارات"
+    },
+    "Anchovy": {
+      "ru": "Анчоус",
+      "ar": "الأنشوجة"
+    },
+    "Bonito": {
+      "ru": "Пеламида",
+      "ar": "سمك البونيتو"
+    },
+    "White cheese": {
+      "ru": "Белый сыр",
+      "ar": "الجبن الأبيض"
+    },
+    "Breadcrumbs": {
+      "ru": "Хлебные крошки",
+      "ar": "فتات الخبز"
+    },
+    "Turbot": {
+      "ru": "Турбот",
+      "ar": "تربو"
+    },
+    "Pepper": {
+      "ru": "Перец",
+      "ar": "الفلفل"
+    },
+    "Oregano": {
+      "ru": "Орегано",
+      "ar": "أوريجانو"
+    },
+    "Scorpion fish": {
+      "ru": "Скорпена",
+      "ar": "سمك العقرب"
+    },
+    "Fluke": {
+      "ru": "Камбала",
+      "ar": "سمك مفلطح"
+    },
+    "Bay leaf": {
+      "ru": "Лавровый лист",
+      "ar": "ورق الغار"
+    },
+    "Potato": {
+      "ru": "Картофель",
+      "ar": "البطاطا"
+    },
+    "Sunflower oil": {
+      "ru": "Подсолнечное масло",
+      "ar": "زيت دوار الشمس"
+    },
+    "Salt": {
+      "ru": "Соль",
+      "ar": "ملح"
+    },
+    "Swordfish": {
+      "ru": "Рыба-меч",
+      "ar": "سمك أبو سيف"
+    },
+    "Eggplant": {
+      "ru": "Баклажан",
+      "ar": "الباذنجان"
+    },
+    "Monkfish": {
+      "ru": "Морской черт",
+      "ar": "سمك الراهب"
+    },
+    "Broad beans": {
+      "ru": "Бобы",
+      "ar": "الفول العريض"
+    },
+    "Dill": {
+      "ru": "Укроп",
+      "ar": "الشبت"
+    },
+    "Strained yoghurt": {
+      "ru": "Процеженный йогурт",
+      "ar": "الزبادي المصفى"
+    },
+    "Walnut": {
+      "ru": "Грецкий орех",
+      "ar": "الجوز"
+    },
+    "Tree nuts": {
+      "ru": "Орехи",
+      "ar": "المكسرات الشجرية"
+    },
+    "Pomegranate molasses": {
+      "ru": "Гранатовая патока",
+      "ar": "دبس الرمان"
+    },
+    "Purslane": {
+      "ru": "Портулак",
+      "ar": "الرجلة"
+    },
+    "Yoghurt": {
+      "ru": "Йогурт",
+      "ar": "الزبادي"
+    },
+    "Samphire": {
+      "ru": "Самфир",
+      "ar": "ساليكورنيا"
+    },
+    "Chard": {
+      "ru": "Чард",
+      "ar": "سلق"
+    },
+    "Beetroot": {
+      "ru": "Свекла",
+      "ar": "الشمندر"
+    },
+    "White beans": {
+      "ru": "Белая фасоль",
+      "ar": "الفاصوليا البيضاء"
+    },
+    "Carrot": {
+      "ru": "Морковь",
+      "ar": "الجزر"
+    },
+    "Bulgur": {
+      "ru": "Булгур",
+      "ar": "البرغل"
+    },
+    "Orange": {
+      "ru": "Апельсин",
+      "ar": "برتقال"
+    },
+    "Pink pepper": {
+      "ru": "Розовый перец",
+      "ar": "الفلفل الوردي"
+    },
+    "Mackerel": {
+      "ru": "Скумбрия",
+      "ar": "الماكريل"
+    },
+    "Lettuce": {
+      "ru": "Салат",
+      "ar": "الخس"
+    },
+    "Octopus": {
+      "ru": "Осьминог",
+      "ar": "الأخطبوط"
+    },
+    "Capers": {
+      "ru": "Каперсы",
+      "ar": "الكبر"
+    },
+    "Red onion": {
+      "ru": "Красный лук",
+      "ar": "بصل أحمر"
+    },
+    "Rice": {
+      "ru": "Рис",
+      "ar": "الأرز"
+    },
+    "Currants": {
+      "ru": "Изюм",
+      "ar": "زبيب"
+    },
+    "Pine nuts": {
+      "ru": "Кедровые орехи",
+      "ar": "الصنوبر"
+    },
+    "Cucumber": {
+      "ru": "Огурец",
+      "ar": "الخيار"
+    },
+    "Rocket": {
+      "ru": "Руккола",
+      "ar": "جرجير"
+    },
+    "Pomegranate": {
+      "ru": "Гранат",
+      "ar": "الرمان"
+    },
+    "Parmesan": {
+      "ru": "Пармезан",
+      "ar": "جبنة البارميزان"
+    },
+    "Balsamic": {
+      "ru": "Бальзамик",
+      "ar": "بلسميك"
+    },
+    "Beef": {
+      "ru": "Говядина",
+      "ar": "لحم البقر"
+    },
+    "Ground beef": {
+      "ru": "Говяжий фарш",
+      "ar": "اللحم المفروم"
+    },
+    "Chicken breast": {
+      "ru": "Куриная грудка",
+      "ar": "صدر دجاج"
+    },
+    "Pistachio": {
+      "ru": "Фисташки",
+      "ar": "فستق"
+    },
+    "Syrup": {
+      "ru": "Сироп",
+      "ar": "الشراب"
+    },
+    "Shredded wheat": {
+      "ru": "Измельченная пшеница",
+      "ar": "القمح المبشور"
+    },
+    "Pumpkin": {
+      "ru": "Тыква",
+      "ar": "اليقطين"
+    },
+    "Sugar": {
+      "ru": "Сахар",
+      "ar": "السكر"
+    },
+    "Tahini": {
+      "ru": "Тахини",
+      "ar": "الطحينة"
+    },
+    "Sesame": {
+      "ru": "Кунжут",
+      "ar": "السمسم"
+    },
+    "Quince": {
+      "ru": "Айва",
+      "ar": "السفرجل"
+    },
+    "Clove": {
+      "ru": "Гвоздика",
+      "ar": "القرنفل"
+    },
+    "Clotted cream": {
+      "ru": "Каймак",
+      "ar": "قشطة"
+    },
+    "Semolina": {
+      "ru": "Манная крупа",
+      "ar": "السميد"
+    },
+    "Chocolate": {
+      "ru": "Шоколад",
+      "ar": "الشوكولاتة"
+    },
+    "Milk": {
+      "ru": "Молоко",
+      "ar": "الحليب"
+    },
+    "Seasonal fruit": {
+      "ru": "Сезонные фрукты",
+      "ar": "الفاكهة الموسمية"
+    },
+    "Fruit": {
+      "ru": "Фрукты",
+      "ar": "الفاكهة"
+    },
+    "Anise": {
+      "ru": "Анис",
+      "ar": "اليانسون"
+    },
+    "Grape": {
+      "ru": "Виноград",
+      "ar": "العنب"
+    },
+    "Black tea": {
+      "ru": "Черный чай",
+      "ar": "الشاي الأسود"
+    },
+    "Yogurt": {
+      "ru": "Йогурт",
+      "ar": "الزبادي"
+    },
+    "Water": {
+      "ru": "Вода",
+      "ar": "الماء"
+    }
+  },
+  "variants": {
+    "Tek": {
+      "ru": "Одна порция",
+      "ar": "جرعة مفردة"
+    },
+    "20 cl": {
+      "ru": "20 cl",
+      "ar": "20 cl"
+    },
+    "35 cl": {
+      "ru": "35 cl",
+      "ar": "35 cl"
+    },
+    "50 cl": {
+      "ru": "50 cl",
+      "ar": "50 cl"
+    },
+    "70 cl": {
+      "ru": "70 cl",
+      "ar": "70 cl"
+    },
+    "1 lt": {
+      "ru": "1 lt",
+      "ar": "1 lt"
+    },
+    "Duble": {
+      "ru": "Двойная порция",
+      "ar": "جرعة مزدوجة"
+    },
+    "20 cc": {
+      "ru": "20 cc",
+      "ar": "20 cc"
+    },
+    "35 cc": {
+      "ru": "35 cc",
+      "ar": "35 cc"
+    },
+    "50 cc": {
+      "ru": "50 cc",
+      "ar": "50 cc"
+    },
+    "70 cc": {
+      "ru": "70 cc",
+      "ar": "70 cc"
+    },
+    "100 cc": {
+      "ru": "100 cc",
+      "ar": "100 cc"
+    }
+  }
+}

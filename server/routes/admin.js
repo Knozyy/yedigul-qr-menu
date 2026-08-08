@@ -4,6 +4,7 @@ import multer from 'multer';
 import { resolve, sep } from 'node:path';
 import { existsSync, unlinkSync, readFileSync } from 'node:fs';
 import { getSetting, setSetting, logChange, localDay } from '../db.js';
+import { isKnownMetric, isValidEntity } from '../snapshot-metrics.js';
 
 // Yüklenen dosyanın gerçekten resim olduğunu magic-byte ile doğrula —
 // multer'ın fileFilter'ı yalnız istemci Content-Type'ına bakar, o sahtelenebilir.
@@ -139,7 +140,9 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   router.get('/menu', (req, res) => {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort').all();
     const products = db.prepare('SELECT * FROM products ORDER BY sort').all().map(hydrate);
-    res.json({ categories, products });
+    // Setler de burada döner: panel tek istekle menünün tamamını alır ve
+    // fiyat toplayıcı fix menü satış fiyatını (menu.setPrice) görebilir.
+    res.json({ categories, products, sets: readSets() });
   });
 
   // ---- Ayarlar: QR / adres + duyuru + restoran bilgileri ----
@@ -195,8 +198,10 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     if (!b.category_id || !b.name_tr || !b.name_en) {
       return res.status(400).json({ error: 'category_id, name_tr, name_en zorunlu' });
     }
-    const cat = db.prepare('SELECT id FROM categories WHERE id = ?').get(b.category_id);
+    const cat = db.prepare('SELECT id, kind FROM categories WHERE id = ?').get(b.category_id);
     if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
+    // Fix menü bölümü setleri gösterir; içine tek tek ürün konulamaz.
+    if (cat.kind === 'sets') return res.status(400).json({ error: 'Fix menü bölümüne ürün eklenemez' });
     const variants = normalizeVariants(b.variants);
     if (variants === null) {
       return res.status(400).json({ error: 'Geçersiz varyantlar (name_tr, name_en, price ≥ 0 zorunlu, en çok 8)' });
@@ -263,6 +268,11 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     const before = getProduct(db, req.params.id);
     if (!before) return res.status(404).json({ error: 'Ürün bulunamadı' });
     const b = req.body ?? {};
+    if ('category_id' in b) {
+      const cat = db.prepare('SELECT id, kind FROM categories WHERE id = ?').get(b.category_id);
+      if (!cat) return res.status(400).json({ error: 'Geçersiz kategori' });
+      if (cat.kind === 'sets') return res.status(400).json({ error: 'Fix menü bölümüne ürün taşınamaz' });
+    }
     if ('variants' in b) {
       const v = normalizeVariants(b.variants);
       if (v === null) {
@@ -308,6 +318,19 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   router.delete('/products/:id', (req, res) => {
     const existing = getProduct(db, req.params.id);
     if (!existing) return res.status(404).json({ error: 'Ürün bulunamadı' });
+    // Fix menüde kullanılan ürün silinemez. FK zaten RESTRICT ama açıkça
+    // kontrol edilir: yoksa kullanıcıya 500 ve anlaşılmaz SQLite hatası döner.
+    const setler = db
+      .prepare(
+        `SELECT s.name_tr FROM product_set_items i
+         JOIN product_sets s ON s.id = i.set_id WHERE i.product_id = ?`
+      )
+      .all(req.params.id);
+    if (setler.length) {
+      return res.status(409).json({
+        error: `Ürün şu menülerde kullanılıyor: ${setler.map((s) => s.name_tr).join(', ')}`,
+      });
+    }
     for (const url of existing.images) removeImageFile(url);
     db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
     log('delete', 'product', req.params.id, existing.name_tr);
@@ -357,11 +380,256 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   router.delete('/categories/:id', (req, res) => {
     const existing = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Kategori bulunamadı' });
+    if (existing.kind === 'sets') {
+      return res.status(409).json({ error: 'Fix menü bölümü silinemez; gizlemek için pasife alın.' });
+    }
     const count = db.prepare('SELECT COUNT(*) n FROM products WHERE category_id = ?').get(req.params.id).n;
     if (count > 0) return res.status(409).json({ error: 'Kategoride ürün var, önce ürünleri taşı/sil' });
     db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
     log('delete', 'category', req.params.id, existing.name_tr);
     res.status(204).end();
+  });
+
+  // ---- Ürün setleri (fix menü; ileride masa senaryosu) ----
+
+  const SET_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+  const SET_TEXTS = [
+    'name_tr', 'name_en', 'name_ar', 'name_ru',
+    'desc_tr', 'desc_en', 'desc_ar', 'desc_ru',
+  ];
+
+  function readSets(kind = null) {
+    const rows = kind
+      ? db.prepare('SELECT * FROM product_sets WHERE kind = ? ORDER BY sort').all(kind)
+      : db.prepare('SELECT * FROM product_sets ORDER BY sort').all();
+    const items = db
+      .prepare('SELECT set_id, product_id, qty, sort FROM product_set_items ORDER BY sort')
+      .all();
+    return rows.map((row) => ({
+      ...row,
+      items: items.filter((item) => item.set_id === row.id)
+        .map(({ set_id: _s, ...rest }) => rest),
+    }));
+  }
+
+  /**
+   * Gövdeden set alanlarını çıkarır. Hata varsa mesaj döner, yoksa null.
+   * items verilmemişse (PATCH) `items: null` olur ve içerik korunur.
+   */
+  function readSetBody(body, { yeni }) {
+    const out = { hata: null, alanlar: {}, items: null };
+    for (const key of SET_TEXTS) {
+      if (body[key] !== undefined) out.alanlar[key] = String(body[key] ?? '').trim();
+    }
+    if (yeni || body.name_tr !== undefined || body.name_en !== undefined) {
+      if (!out.alanlar.name_tr || !out.alanlar.name_en) {
+        out.hata = 'name_tr ve name_en zorunlu';
+        return out;
+      }
+    }
+    if (body.price !== undefined) {
+      const price = body.price === null || body.price === '' ? null : Number(body.price);
+      if (price !== null && (!Number.isFinite(price) || price < 0)) {
+        out.hata = 'Geçersiz fiyat';
+        return out;
+      }
+      out.alanlar.price = price;
+    }
+    if (body.is_active !== undefined) out.alanlar.is_active = body.is_active ? 1 : 0;
+    if (body.kind !== undefined) out.alanlar.kind = String(body.kind) === 'senaryo' ? 'senaryo' : 'fix_menu';
+
+    if (body.items !== undefined) {
+      if (!Array.isArray(body.items)) { out.hata = 'items dizi olmalı'; return out; }
+      const gorulen = new Set();
+      const temiz = [];
+      for (const item of body.items) {
+        const productId = String(item?.product_id || '');
+        const qty = Number(item?.qty ?? 1);
+        if (!productId || gorulen.has(productId)) {
+          out.hata = 'Ürün listede bir kez bulunabilir (adet için qty kullanın)';
+          return out;
+        }
+        if (!Number.isInteger(qty) || qty < 1) { out.hata = 'qty en az 1 olmalı'; return out; }
+        if (!db.prepare('SELECT 1 FROM products WHERE id = ?').get(productId)) {
+          out.hata = `Geçersiz ürün: ${productId}`;
+          return out;
+        }
+        gorulen.add(productId);
+        temiz.push({ product_id: productId, qty });
+      }
+      out.items = temiz;
+    }
+    return out;
+  }
+
+  function writeItems(setId, items) {
+    db.prepare('DELETE FROM product_set_items WHERE set_id = ?').run(setId);
+    const ekle = db.prepare(
+      'INSERT INTO product_set_items (set_id, product_id, qty, sort) VALUES (?, ?, ?, ?)'
+    );
+    items.forEach((item, index) => ekle.run(setId, item.product_id, item.qty, index));
+  }
+
+  router.get('/sets', (req, res) => {
+    const kind = req.query.kind ? String(req.query.kind) : null;
+    res.json({ sets: readSets(kind) });
+  });
+
+  router.post('/sets', (req, res) => {
+    const body = req.body ?? {};
+    const id = String(body.id || randomUUID().slice(0, 8));
+    if (!SET_ID_RE.test(id)) {
+      return res.status(400).json({ error: 'Geçersiz id (yalnızca harf, rakam, tire, alt çizgi)' });
+    }
+    if (db.prepare('SELECT 1 FROM product_sets WHERE id = ?').get(id)) {
+      return res.status(409).json({ error: 'Bu id zaten kullanılıyor' });
+    }
+    const { hata, alanlar, items } = readSetBody(body, { yeni: true });
+    if (hata) return res.status(400).json({ error: hata });
+
+    const sonSort = db.prepare('SELECT COALESCE(MAX(sort), -1) AS n FROM product_sets').get().n;
+    db.transaction(() => {
+      db.prepare(
+        `INSERT INTO product_sets
+           (id, kind, name_tr, name_en, name_ar, name_ru,
+            desc_tr, desc_en, desc_ar, desc_ru, price, is_active, sort)
+         VALUES (@id, @kind, @name_tr, @name_en, @name_ar, @name_ru,
+                 @desc_tr, @desc_en, @desc_ar, @desc_ru, @price, @is_active, @sort)`
+      ).run({
+        id,
+        kind: alanlar.kind ?? 'fix_menu',
+        name_ar: '', name_ru: '', desc_tr: '', desc_en: '', desc_ar: '', desc_ru: '',
+        price: null, is_active: 1,
+        ...alanlar,
+        sort: sonSort + 1,
+      });
+      if (items) writeItems(id, items);
+    })();
+
+    log('create', 'set', id, alanlar.name_tr);
+    res.status(201).json(readSets().find((s) => s.id === id));
+  });
+
+  router.patch('/sets/:id', (req, res) => {
+    const existing = db.prepare('SELECT * FROM product_sets WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Set bulunamadı' });
+
+    const { hata, alanlar, items } = readSetBody(req.body ?? {}, { yeni: false });
+    if (hata) return res.status(400).json({ error: hata });
+
+    db.transaction(() => {
+      const anahtarlar = Object.keys(alanlar);
+      if (anahtarlar.length) {
+        db.prepare(
+          `UPDATE product_sets SET ${anahtarlar.map((k) => `${k} = @${k}`).join(', ')} WHERE id = @id`
+        ).run({ ...alanlar, id: req.params.id });
+      }
+      // items verilmemişse içerik korunur; verilmişse TAMAMEN değişir.
+      if (items) writeItems(req.params.id, items);
+    })();
+
+    log('update', 'set', req.params.id, alanlar.name_tr ?? existing.name_tr);
+    res.json(readSets().find((s) => s.id === req.params.id));
+  });
+
+  router.delete('/sets/:id', (req, res) => {
+    const existing = db.prepare('SELECT * FROM product_sets WHERE id = ?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Set bulunamadı' });
+    db.prepare('DELETE FROM product_sets WHERE id = ?').run(req.params.id);
+    log('delete', 'set', req.params.id, existing.name_tr);
+    res.status(204).end();
+  });
+
+  /** Set sırasını toplu yazar — kategori sıralamasıyla aynı permütasyon şartı. */
+  router.put('/sets/order', (req, res) => {
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : null;
+    if (!ids || !ids.length) return res.status(400).json({ error: 'ids listesi gerekli.' });
+
+    const mevcut = db.prepare('SELECT id FROM product_sets').all().map((row) => row.id);
+    const benzersiz = new Set(ids);
+    if (benzersiz.size !== ids.length) {
+      return res.status(400).json({ error: 'Listede tekrar eden set var.' });
+    }
+    if (ids.length !== mevcut.length || mevcut.some((id) => !benzersiz.has(id))) {
+      return res.status(400).json({ error: 'Liste tüm setleri tam olarak içermeli.' });
+    }
+
+    const write = db.prepare('UPDATE product_sets SET sort = ? WHERE id = ?');
+    db.transaction((sirali) => sirali.forEach((id, index) => write.run(index, id)))(ids);
+    log('update', 'set', null, `Set sırası değiştirildi (${ids.length} set)`);
+    res.json({ ok: true, count: ids.length });
+  });
+
+  /**
+   * Bir kategorinin ürün sırasını toplu yazar.
+   *
+   * `products.sort` TEK BİR GLOBAL DİZİDİR (0..N) ve kategoriler bu dizide
+   * bitişik bloklar tutar (fish 0-16, hot 17-30, ...). Kategoriyi 0'dan
+   * numaralasaydık bloklar iç içe geçer ve menü baştan sona karışırdı.
+   *
+   * Bu yüzden kategorinin MEVCUT SIRA YUVALARI korunur: o kategorinin sort
+   * değerleri artan sırada toplanır, yeni diziliş aynı yuvalara yerleştirilir.
+   * Kategori küresel konumunu aynen korur, yalnız içindeki ürünler yer değişir.
+   */
+  router.put('/products/order', (req, res) => {
+    const categoryId = String(req.body?.category_id || '');
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : null;
+    if (!categoryId || !ids || !ids.length) {
+      return res.status(400).json({ error: 'category_id ve ids listesi gerekli.' });
+    }
+    const kategori = db.prepare('SELECT id FROM categories WHERE id = ?').get(categoryId);
+    if (!kategori) return res.status(400).json({ error: 'Geçersiz kategori' });
+
+    const mevcut = db
+      .prepare('SELECT id, sort FROM products WHERE category_id = ? ORDER BY sort')
+      .all(categoryId);
+    const benzersiz = new Set(ids);
+    if (benzersiz.size !== ids.length) {
+      return res.status(400).json({ error: 'Listede tekrar eden ürün var.' });
+    }
+    if (ids.length !== mevcut.length || mevcut.some((row) => !benzersiz.has(row.id))) {
+      return res.status(400).json({ error: 'Liste kategorideki tüm ürünleri tam olarak içermeli.' });
+    }
+
+    // Yuvalar: kategorinin hâlihazırda kapladığı sort değerleri, artan sırada.
+    const yuvalar = mevcut.map((row) => row.sort).sort((a, b) => a - b);
+    const write = db.prepare('UPDATE products SET sort = ? WHERE id = ?');
+    db.transaction((sirali) => {
+      sirali.forEach((id, index) => write.run(yuvalar[index], id));
+    })(ids);
+
+    log('update', 'product', null, `Ürün sırası değiştirildi (${categoryId}, ${ids.length} ürün)`);
+    res.json({ ok: true, count: ids.length });
+  });
+
+  /**
+   * Kategori sırasını toplu yazar.
+   *
+   * Tek tek PATCH yerine tek uç: sıra yarım uygulanamaz. `sort` sütunu
+   * benzersiz DEĞİL — eksik bir liste iki kategoriye aynı değeri verir ve
+   * ORDER BY sort ikisi arasında rastgele karar verir, sıra her yüklemede
+   * değişir. Bu yüzden liste TAM PERMÜTASYON olmak zorunda.
+   */
+  router.put('/categories/order', (req, res) => {
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : null;
+    if (!ids || !ids.length) return res.status(400).json({ error: 'ids listesi gerekli.' });
+
+    const mevcut = db.prepare('SELECT id FROM categories').all().map((row) => row.id);
+    const benzersiz = new Set(ids);
+    if (benzersiz.size !== ids.length) {
+      return res.status(400).json({ error: 'Listede tekrar eden kategori var.' });
+    }
+    if (ids.length !== mevcut.length || mevcut.some((id) => !benzersiz.has(id))) {
+      return res.status(400).json({ error: 'Liste tüm kategorileri tam olarak içermeli.' });
+    }
+
+    const write = db.prepare('UPDATE categories SET sort = ? WHERE id = ?');
+    db.transaction((sirali) => {
+      sirali.forEach((id, index) => write.run(index, id));
+    })(ids);
+
+    log('update', 'category', null, `Kategori sırası değiştirildi (${ids.length} kategori)`);
+    res.json({ ok: true, count: ids.length });
   });
 
   // ---- Görseller ----
@@ -450,29 +718,174 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   });
 
   // ---- İstatistik: günlük menü görüntülenme + QR tarama ----
+  // İsteğe bağlı from/to YALNIZCA days[]'i etkiler. Parametresiz çağrı son 30
+  // günü döndürür — panonun siteStats konektörü bu ucu böyle çağırıyor ve
+  // today/week/month alanlarına bel bağlıyor; onların anlamı aralıktan bağımsız.
+  const GUN_BICIMI = /^\d{4}-\d{2}-\d{2}$/;
+  const MAX_ARALIK_GUN = 730;
+
   router.get('/stats', (req, res) => {
+    const ago = (n) => {
+      const d = new Date();
+      d.setDate(d.getDate() - n);
+      return localDay(d);
+    };
+
+    const ham = { from: req.query.from, to: req.query.to };
+    const istendi = ham.from !== undefined || ham.to !== undefined;
+    let from = ago(29);
+    let to = localDay();
+
+    if (istendi) {
+      // Boş dize de hata: '?to=' yazan istemci bir şey demek istemiştir,
+      // sessizce bugüne düşürmek yanlış aralık göstermek olur.
+      for (const [ad, deger] of Object.entries(ham)) {
+        if (deger !== undefined && !GUN_BICIMI.test(String(deger))) {
+          return res.status(400).json({ error: `Geçersiz ${ad} tarihi (YYYY-AA-GG bekleniyor).` });
+        }
+      }
+      from = ham.from ?? '0000-01-01';
+      to = ham.to ?? localDay();
+      if (from > to) return res.status(400).json({ error: 'from, to tarihinden büyük olamaz.' });
+
+      const gun = Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000) + 1;
+      if (gun > MAX_ARALIK_GUN) {
+        return res.status(400).json({ error: `Aralık en fazla ${MAX_ARALIK_GUN} gün olabilir.` });
+      }
+    }
+
     const rows = db
-      .prepare("SELECT day, key, n FROM stats_daily WHERE day >= date('now', 'localtime', '-29 days') ORDER BY day")
-      .all();
+      .prepare('SELECT day, key, n FROM stats_daily WHERE day >= ? AND day <= ? ORDER BY day')
+      .all(from, to);
     const byDay = new Map();
     for (const r of rows) {
       if (!byDay.has(r.day)) byDay.set(r.day, { day: r.day, menu_view: 0, qr_scan: 0 });
       byDay.get(r.day)[r.key] = r.n;
     }
     const days = [...byDay.values()];
+
+    // today/week/month HER ZAMAN gerçek bugüne göre hesaplanır, seçili aralığa
+    // göre değil — bu yüzden kendi sorgularını yaparlar.
+    const bugunAraligi = db
+      .prepare('SELECT day, key, n FROM stats_daily WHERE day >= ? ORDER BY day')
+      .all(ago(29));
+    const guncelByDay = new Map();
+    for (const r of bugunAraligi) {
+      if (!guncelByDay.has(r.day)) guncelByDay.set(r.day, { day: r.day, menu_view: 0, qr_scan: 0 });
+      guncelByDay.get(r.day)[r.key] = r.n;
+    }
+    const guncel = [...guncelByDay.values()];
     const today = localDay();
-    const sum = (from, key) => days.filter((d) => d.day >= from).reduce((a, d) => a + d[key], 0);
-    const ago = (n) => {
-      const d = new Date();
-      d.setDate(d.getDate() - n);
-      return localDay(d);
-    };
+    const sum = (baslangic, key) => guncel.filter((d) => d.day >= baslangic).reduce((a, d) => a + d[key], 0);
+
+    // Panel sayacın ne zaman başladığını bilmeli: veri olmayan bir dönem
+    // "iş kötü gitti" değil "henüz sayılmıyordu" demek olabilir.
+    const enEski = db.prepare('SELECT MIN(day) AS gun FROM stats_daily').get();
+
     res.json({
-      today: byDay.get(today) || { day: today, menu_view: 0, qr_scan: 0 },
+      today: guncelByDay.get(today) || { day: today, menu_view: 0, qr_scan: 0 },
       week: { menu_view: sum(ago(6), 'menu_view'), qr_scan: sum(ago(6), 'qr_scan') },
       month: { menu_view: sum(ago(29), 'menu_view'), qr_scan: sum(ago(29), 'qr_scan') },
       days,
+      firstDay: enEski?.gun ?? null,
     });
+  });
+
+  // ---- İstatistik: en çok bakılan ürünler ----
+  // İki pencere TEK istekte döner (days parametresi yok): panel 7 gün ile
+  // 30 gün arasında geçiş yaparken ağa çıkmasın. Pencereler /stats ile aynı.
+  router.get('/stats/products', (req, res) => {
+    const enCok = (gunSayisi) =>
+      db
+        .prepare(
+          `SELECT v.product_id AS id, p.name_tr, SUM(v.n) AS views
+             FROM product_views_daily v
+             JOIN products p ON p.id = v.product_id
+            WHERE v.day >= date('now', 'localtime', ?)
+            GROUP BY v.product_id
+            ORDER BY views DESC, p.name_tr
+            LIMIT 10`
+        )
+        .all(`-${gunSayisi - 1} days`);
+
+    res.json({ week: enCok(7), month: enCok(30) });
+  });
+
+  // ---- Pano anlık görüntüleri ----
+  // Panel dış API'leri kendi çeker (anahtarlar orada kalır) ve sonucu buraya
+  // gönderir. Burada tutulur çünkü: tek geçmiş olur, iki bilgisayar aynı
+  // seriye yazar ve db-backup.sh data.db ile birlikte yedekler.
+  // Bu ölçütlerin geçmişi API'den ALINAMAZ; kaybolursa geri getirilemez.
+  router.get('/snapshots', (req, res) => {
+    const metric = String(req.query.metric || '');
+    if (!isKnownMetric(metric)) return res.status(400).json({ error: 'Bilinmeyen ölçüt.' });
+
+    const GUN = /^\d{4}-\d{2}-\d{2}$/;
+    const to = GUN.test(String(req.query.to || '')) ? String(req.query.to) : localDay();
+    // Aralık verilmezse son 90 gün; yıllık analiz from/to ile açıkça ister.
+    const from = GUN.test(String(req.query.from || ''))
+      ? String(req.query.from)
+      : localDay(new Date(Date.now() - 89 * 86400000));
+    const limit = Math.min(Math.max(Number(req.query.limit) || 5000, 1), 5000);
+
+    // entity parametresi hiç verilmemişse o ölçütün TÜM varlıkları döner
+    // (ör. bir günün bütün ürün fiyatları).
+    const rows = req.query.entity !== undefined
+      ? db
+          .prepare(
+            `SELECT day, entity, value FROM pano_snapshots
+             WHERE metric = ? AND entity = ? AND day BETWEEN ? AND ?
+             ORDER BY day ASC LIMIT ?`
+          )
+          .all(metric, String(req.query.entity), from, to, limit)
+      : db
+          .prepare(
+            `SELECT day, entity, value FROM pano_snapshots
+             WHERE metric = ? AND day BETWEEN ? AND ?
+             ORDER BY day ASC, entity ASC LIMIT ?`
+          )
+          .all(metric, from, to, limit);
+
+    res.json({ metric, from, to, rows });
+  });
+
+  router.post('/snapshots', (req, res) => {
+    const items = Array.isArray(req.body?.items) ? req.body.items : [];
+    if (!items.length) return res.status(400).json({ error: 'Gönderilecek kayıt yok.' });
+    if (items.length > 2000) return res.status(413).json({ error: 'Tek seferde en çok 2000 kayıt.' });
+
+    const today = localDay();
+    const write = db.prepare(
+      `INSERT INTO pano_snapshots (day, metric, entity, value) VALUES (?, ?, ?, ?)
+       ON CONFLICT(day, metric, entity) DO UPDATE SET value = excluded.value`
+    );
+
+    let yazilan = 0;
+    const bilinmeyen = new Set();
+    const run = db.transaction((rows) => {
+      for (const row of rows) {
+        const day = String(row?.day || '');
+        const metric = String(row?.metric || '');
+        const entity = String(row?.entity ?? '');
+        const value = Number(row?.value);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
+        // Gelecek tarih kabul edilmez: saati yanlış kurulmuş bir istemci
+        // seriyi ileri taşıyıp grafiği kalıcı olarak bozabilirdi.
+        if (day > today) continue;
+        if (!isKnownMetric(metric)) {
+          // Panel ayrı depo; ayrışma olursa sessiz kalmasın diye adı bildirilir.
+          if (bilinmeyen.size < 10) bilinmeyen.add(metric);
+          continue;
+        }
+        if (!isValidEntity(metric, entity)) continue;
+        if (!Number.isFinite(value)) continue;
+        write.run(day, metric, entity, value);
+        yazilan += 1;
+      }
+    });
+    run(items);
+
+    res.json({ written: yazilan, skipped: items.length - yazilan, unknown: [...bilinmeyen] });
   });
 
   return router;

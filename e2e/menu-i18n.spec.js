@@ -20,28 +20,27 @@ test('TR/EN/AR/RU geçişi HTML dili ve RTL yönünü günceller', async ({ page
   await expect(root).toHaveAttribute('lang', 'ar');
   await expect(root).toHaveAttribute('dir', 'rtl');
   await expect(page.getByRole('textbox', { name: 'ابحث في القائمة…' })).toBeVisible();
-  // Seed verisinde AR boşsa müşteri boş metin görmez; EN → TR fallback çalışır.
-  await expect(page.getByRole('button', { name: 'Fresh Fish', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'الأسماك الطازجة', exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'اختيار اللغة: Русский', exact: true }).click();
   await expect(root).toHaveAttribute('lang', 'ru');
   await expect(root).toHaveAttribute('dir', 'ltr');
   await expect(page.getByRole('textbox', { name: 'Поиск по меню…' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Категории' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Свежая рыба', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Сибас на гриле', level: 3 })).toBeVisible();
 });
 
 test('arama seçili dilde büyük-küçük harf ve aksan farkını tolere eder', async ({ page }) => {
   await openMenu(page);
   const search = page.getByRole('textbox', { name: 'Menüde ara…' });
   await search.fill('CUPRA');
-  await expect(page.getByRole('heading', { name: 'Çupra', level: 3 })).toBeVisible();
-  await expect(page.locator('main h3')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'Çupra', exact: true, level: 3 })).toBeVisible();
 
   await page.getByRole('button', { name: 'Dil seçimi: English', exact: true }).click();
   const englishSearch = page.getByRole('textbox', { name: 'Search the menu…' });
   await englishSearch.fill('SEA BREAM');
-  await expect(page.getByRole('heading', { name: 'Sea Bream', level: 3 })).toBeVisible();
-  await expect(page.locator('main h3')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'Sea Bream', exact: true, level: 3 })).toBeVisible();
 });
 
 test('dile bağlı erişilebilir adlar ve favori durumu birlikte güncellenir', async ({ page }) => {

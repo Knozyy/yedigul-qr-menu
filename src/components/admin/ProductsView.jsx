@@ -26,7 +26,7 @@ const cardStyle = {
 
 export default function ProductsView({ categories, products, onEdit, onReload, onError, onAdd, onBulk }) {
   const [q, setQ] = useState('');
-  const [cat, setCat] = useState('all'); // 'all' | category id
+  const [cat, setCat] = useState('all');
 
   const catById = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c])), [categories]);
 
@@ -57,7 +57,6 @@ export default function ProductsView({ categories, products, onEdit, onReload, o
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {/* Arama + eylemler */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: 190 }}>
           <svg width="17" height="17" viewBox="0 0 24 24" style={{ position: 'absolute', left: 15, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)' }}>
@@ -111,7 +110,6 @@ export default function ProductsView({ categories, products, onEdit, onReload, o
         </button>
       </div>
 
-      {/* Kategori çipleri */}
       <div className="nosb" style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 2 }}>
         <button onClick={() => setCat('all')} style={chipStyle(cat === 'all')}>Tümü</button>
         {categories.map((c) => (
@@ -119,12 +117,10 @@ export default function ProductsView({ categories, products, onEdit, onReload, o
         ))}
       </div>
 
-      {/* Sayaç */}
       <span style={{ fontSize: 12.5, color: 'var(--muted)', letterSpacing: 0.3 }}>
         {filtered.length} ürün{hiddenCount ? ` · ${hiddenCount} gizli` : ''}
       </span>
 
-      {/* Liste */}
       <div style={cardStyle}>
         {filtered.length === 0 ? (
           <div style={{ padding: '36px 20px', textAlign: 'center', color: 'var(--muted)', fontSize: 13.5 }}>

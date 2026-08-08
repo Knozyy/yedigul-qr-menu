@@ -1,11 +1,10 @@
 import { formatNumber } from '../lib/i18n.js';
 
-// Menü arayüzünün TR/EN/AR/RU sözlüğü. Ürün/kategori verisi burada DEĞİL:
-// asıl kaynak server/data.db (yönetim paneli), ilk kurulum tohumları
-// server/seed-data.js dosyasındadır.
 export const UI = {
   tr: {
     sub: 'Balık Lokantası', tagline: 'Boğaz Balık Restoranı', search: 'Menüde ara…',
+    menuLabel: 'Günün menüsü', menuLead: 'Denizden sofraya, Yedigül usulü.',
+    menuIntro: 'Günün taze balıkları, klasik mezeler ve Boğaz sofrasının vazgeçilmezleri.',
     gf: 'Glutensiz', veg: 'Vejetaryen', favorites: 'Favorilerim',
     market: 'Piyasa Fiyatı',
     marketNote: 'Mevsimlik üründür; günün fiyatını servis ekibimizden öğrenebilirsiniz.',
@@ -21,6 +20,7 @@ export const UI = {
     loading: 'Menü yükleniyor…', home: 'Ana Sayfa', close: 'Kapat', toTop: 'Başa dön',
     hours: 'Çalışma Saatleri', phone: 'Telefon', wifi: 'Wi-Fi',
     kcalUnit: 'kcal',
+    fixMenus: 'Fix Menüler', perPerson: 'Kişi Başı',
     language: 'Dil seçimi', useLightTheme: 'Açık temaya geç', useDarkTheme: 'Koyu temaya geç',
     logoAlt: 'Yedigül logosu', locationShort: 'Anadolukavağı · İstanbul',
     locationLong: 'Anadolukavağı, Beykoz — İstanbul', categories: 'Kategoriler',
@@ -29,6 +29,8 @@ export const UI = {
   },
   en: {
     sub: 'Fish Restaurant', tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…',
+    menuLabel: "Today's menu", menuLead: 'From the sea to your table, the Yedigül way.',
+    menuIntro: "Today's fresh catch, classic meze and Bosphorus table favourites.",
     gf: 'Gluten-free', veg: 'Vegetarian', favorites: 'Favourites',
     market: 'Market Price',
     marketNote: 'Seasonal catch — please ask our team for today’s price.',
@@ -44,6 +46,7 @@ export const UI = {
     loading: 'Loading menu…', home: 'Home', close: 'Close', toTop: 'Back to top',
     hours: 'Opening Hours', phone: 'Phone', wifi: 'Wi-Fi',
     kcalUnit: 'kcal',
+    fixMenus: 'Set Menus', perPerson: 'Per Person',
     language: 'Language selection', useLightTheme: 'Switch to light theme', useDarkTheme: 'Switch to dark theme',
     logoAlt: 'Yedigül logo', locationShort: 'Anadolukavağı · Istanbul',
     locationLong: 'Anadolukavağı, Beykoz — Istanbul', categories: 'Categories',
@@ -52,6 +55,8 @@ export const UI = {
   },
   ar: {
     sub: 'مطعم أسماك', tagline: 'مطعم أسماك البوسفور', search: 'ابحث في القائمة…',
+    menuLabel: 'قائمة اليوم', menuLead: 'من البحر إلى مائدتكم، على طريقة Yedigül.',
+    menuIntro: 'صيد اليوم الطازج والمقبلات الكلاسيكية وأطباق مائدة البوسفور.',
     gf: 'خالٍ من الغلوتين', veg: 'نباتي', favorites: 'المفضلة',
     market: 'سعر السوق',
     marketNote: 'صيد موسمي — يرجى سؤال فريق الخدمة عن سعر اليوم.',
@@ -67,6 +72,7 @@ export const UI = {
     loading: 'جارٍ تحميل القائمة…', home: 'الصفحة الرئيسية', close: 'إغلاق', toTop: 'العودة إلى الأعلى',
     hours: 'ساعات العمل', phone: 'الهاتف', wifi: 'واي فاي',
     kcalUnit: 'سعرة',
+    fixMenus: 'قوائم ثابتة', perPerson: 'للشخص الواحد',
     language: 'اختيار اللغة', useLightTheme: 'التبديل إلى الوضع الفاتح', useDarkTheme: 'التبديل إلى الوضع الداكن',
     logoAlt: 'شعار Yedigül', locationShort: 'أناضولو كافاغي · إسطنبول',
     locationLong: 'أناضولو كافاغي، بيكوز — إسطنبول', categories: 'الفئات',
@@ -75,6 +81,8 @@ export const UI = {
   },
   ru: {
     sub: 'Рыбный ресторан', tagline: 'Рыбный ресторан на Босфоре', search: 'Поиск по меню…',
+    menuLabel: 'Меню дня', menuLead: 'Из моря к вашему столу — в стиле Yedigül.',
+    menuIntro: 'Свежий улов дня, классические мезе и любимые блюда Босфора.',
     gf: 'Без глютена', veg: 'Вегетарианское', favorites: 'Избранное',
     market: 'Цена дня',
     marketNote: 'Сезонная рыба — уточните цену дня у официанта.',
@@ -90,6 +98,7 @@ export const UI = {
     loading: 'Загрузка меню…', home: 'Главная', close: 'Закрыть', toTop: 'Наверх',
     hours: 'Часы работы', phone: 'Телефон', wifi: 'Wi-Fi',
     kcalUnit: 'ккал',
+    fixMenus: 'Комплексные меню', perPerson: 'На человека',
     language: 'Выбор языка', useLightTheme: 'Включить светлую тему', useDarkTheme: 'Включить тёмную тему',
     logoAlt: 'Логотип Yedigül', locationShort: 'Анадолукавагы · Стамбул',
     locationLong: 'Анадолукавагы, Бейкоз — Стамбул', categories: 'Категории',
@@ -98,7 +107,6 @@ export const UI = {
   },
 };
 
-// Fiyat biçimi referans tasarımdan: TR "650 TL", EN "₺650", AR "650 ل.ت", RU "650 ₺".
 export function fmtPrice(n, lang) {
   const number = formatNumber(n, lang);
   if (lang === 'tr') return `${number} TL`;

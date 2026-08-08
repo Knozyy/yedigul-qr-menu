@@ -4,6 +4,7 @@ import { useMenu } from '../context/menu-context.js';
 import { getMenuThemeVars } from '../lib/theme';
 import { placeholderArt } from '../lib/placeholder';
 import { readStorage, writeStorage } from '../lib/storage';
+import { trackProductView } from '../lib/track';
 import {
   LANGUAGE_CODES,
   foldForSearch,
@@ -18,12 +19,9 @@ import SearchFilters from '../components/SearchFilters';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
-import HomeLink from '../components/HomeLink';
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
-// Varyantlı ürünlerde kart fiyatı aralık olarak gösterilir (650–1100 TL);
-// varyantı da fiyatı da olmayan ürün "Piyasa Fiyatı" sayılır.
 const priceLabel = (it, lang, ui) => {
   if (hasVariants(it)) {
     const ps = it.variants.map((v) => v.price);
@@ -54,7 +52,7 @@ const passesDiet = (it, gf, veg) => {
 };
 
 export default function MenuPage({ defaultLang = 'tr', defaultDark = false, accent = '#C8902F' }) {
-  const { categories: CATEGORIES, items: ITEMS, meta, loading, error, reload } = useMenu();
+  const { categories: CATEGORIES, items: ITEMS, sets: SETS, meta, loading, error, reload } = useMenu();
   const [lang, setLang] = useState(() => {
     const stored = readStorage('lang', LANGUAGE_CODES.includes(defaultLang) ? defaultLang : 'tr');
     return LANGUAGE_CODES.includes(stored) ? stored : 'tr';
@@ -73,13 +71,10 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const ui = UI[lang];
   const language = getLanguage(lang);
 
-  // persist preferences
   useEffect(() => writeStorage('lang', lang), [lang]);
   useEffect(() => writeStorage('dark', dark), [dark]);
   useEffect(() => writeStorage('favorites', favorites), [favorites]);
 
-  // Ekran okuyucular, yerleşik çeviri araçları ve RTL düzeni sayfanın gerçek
-  // dilini kök HTML öğesinden okuyabilsin.
   useEffect(() => {
     const root = document.documentElement;
     const previousLang = root.lang;
@@ -92,13 +87,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     };
   }, [lang, language.dir]);
 
-  // Sayfa arka planı (overscroll dahil) temayı takip etsin; admin'e sızmasın.
   useEffect(() => {
     document.body.style.background = dark ? '#0A1F35' : '#FBF7ED';
     return () => { document.body.style.background = ''; };
   }, [dark]);
 
-  // Yalnız kategori çubuğu yapışkan; scroll-spy ofseti onun yüksekliği.
   useLayoutEffect(() => {
     const measure = () => {
       if (catbarRef.current) setCatbarH(catbarRef.current.offsetHeight);
@@ -112,6 +105,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
 
+  const openItem = useCallback((id) => {
+    setSelectedId(id);
+    trackProductView(id);
+  }, []);
+
   const toggleSection = useCallback((id) => {
     setCollapsedIds((prev) => {
       const next = new Set(prev);
@@ -123,11 +121,9 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
   const q = foldForSearch(search.trim(), lang);
 
-  // Arama ve tüm filtreler bölümlerin İÇİNİ süzer (düz liste modu yok);
-  // boşalan kategori hem bölümden hem çip şeridinden düşer.
-  const sections = useMemo(() => {
+  const urunBolumleri = useMemo(() => {
     const favSet = new Set(favorites);
-    return CATEGORIES.map((c) => ({
+    return CATEGORIES.filter((c) => c.kind !== 'sets').map((c) => ({
       id: c.id,
       title: localize(c, lang),
       items: ITEMS.filter((it) => {
@@ -139,6 +135,38 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       }).map((it) => mapItem(it, lang, ui, dark)),
     })).filter((s) => s.items.length > 0);
   }, [CATEGORIES, ITEMS, lang, ui, dark, gf, veg, fav, favorites, q]);
+
+  const fixMenus = useMemo(
+    () => (SETS || []).map((set) => ({
+      id: set.id,
+      name: localize(set.name, lang),
+      desc: localize(set.desc, lang),
+      priceText: set.price == null ? '' : fmtPrice(set.price, lang),
+      items: (set.items || []).map((item) => ({ qty: item.qty, name: localize(item.name, lang) })),
+    })),
+    [SETS, lang],
+  );
+
+  const sections = useMemo(() => {
+    const setKategorisi = CATEGORIES.find((c) => c.kind === 'sets');
+    const gorunur = fixMenus.filter((set) => {
+      if (gf || veg || fav) return false;
+      if (!q) return true;
+      return foldForSearch(`${set.name} ${set.desc}`, lang).includes(q);
+    });
+    if (!setKategorisi || !gorunur.length) return urunBolumleri;
+
+    const urunlerById = new Map(urunBolumleri.map((s) => [s.id, s]));
+    const out = [];
+    for (const category of CATEGORIES) {
+      if (category.kind === 'sets') {
+        out.push({ id: category.id, title: localize(category, lang), kind: 'sets', items: gorunur });
+      } else if (urunlerById.has(category.id)) {
+        out.push(urunlerById.get(category.id));
+      }
+    }
+    return out;
+  }, [CATEGORIES, fixMenus, urunBolumleri, gf, veg, fav, q, lang]);
 
   const categories = useMemo(
     () => sections.map((s) => ({ id: s.id, label: s.title })),
@@ -167,7 +195,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     };
   }, [ITEMS, selectedId, lang, ui, dark]);
 
-  // kapalı bölüme kaydırılıyorsa önce aç
   const onSelectCategory = useCallback(
     (id) => {
       setCollapsedIds((prev) => {
@@ -194,8 +221,8 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const favEmpty = fav && favorites.length === 0;
   const announcement = String(localize(meta.announcement, lang) || '').trim();
   const instagram = (meta.info.instagram || '').trim();
+  const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
 
-  // Balık fiyatı oynak; menüde son fiyat güncelleme tarihi güven verir.
   const priceUpdatedText = (() => {
     if (!meta.price_updated_at) return '';
     const d = new Date(meta.price_updated_at);
@@ -230,7 +257,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     <div
       lang={lang}
       dir={language.dir}
-      className="min-h-screen text-[15px]"
+      className="yg-menu-page min-h-screen text-[15px]"
       style={{
         ...themeVars,
         background: 'var(--bg)',
@@ -239,22 +266,19 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         transition: 'background 0.35s ease, color 0.35s ease',
       }}
     >
-      <div className="max-w-[980px] mx-auto px-4 pt-3">
-        <HomeLink label={ui.home} rtl={language.dir === 'rtl'} />
-      </div>
-
       <Header
         ui={ui}
         dark={dark}
         onToggleTheme={() => setDark((d) => !d)}
         lang={lang}
         onSetLang={setLang}
+        rtl={language.dir === 'rtl'}
       />
 
-      <div className="max-w-[980px] mx-auto px-4 pt-4 pb-1 flex flex-col gap-3">
+      <div className="yg-menu-controls">
         {announcement !== '' && (
           <div
-            className="flex items-center gap-[11px] rounded-[14px] px-3.5 py-[11px] text-[13.5px] leading-[1.45]"
+            className="yg-menu-notice"
             style={{ background: 'var(--ann-bg)', border: '1px solid var(--ann-border)', color: 'var(--accent-text)' }}
           >
             <svg width="21" height="21" viewBox="0 0 24 24" className="flex-none" aria-hidden="true">
@@ -270,8 +294,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
 
         {meta.info.wifi && (
           <div
-            className="flex items-center gap-3.5 rounded-[14px] px-4 py-[11px]"
-            style={{ border: '1.5px dashed var(--faint-strong)' }}
+            className="yg-menu-wifi"
           >
             <svg width="23" height="23" viewBox="0 0 24 24" className="flex-none" style={{ color: 'var(--accent-text)' }} aria-hidden="true">
               <path
@@ -307,20 +330,24 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
       {categories.length > 0 && (
         <div
           ref={catbarRef}
-          className="sticky top-0 z-30"
-          style={{
-            background: 'var(--sticky-bg)',
-            backdropFilter: 'blur(14px)',
-            WebkitBackdropFilter: 'blur(14px)',
-            borderBottom: '1px solid var(--faint)',
-            transition: 'background 0.35s ease',
-          }}
+          className="yg-category-dock sticky top-0 z-30"
         >
           <CategoryBar categories={categories} activeCat={activeCat} onSelect={onSelectCategory} label={ui.categories} />
         </div>
       )}
 
-      <main className="max-w-[980px] mx-auto px-4 pt-1.5 pb-12">
+      <main className="yg-menu-main">
+        {!showEmpty && (
+          <div className="yg-menu-intro">
+            <div>
+              <p className="yg-overline">{ui.menuLabel}</p>
+              <h2>{ui.menuLead}</h2>
+              <p>{ui.menuIntro}</p>
+            </div>
+            <span className="yg-menu-intro__count">{formatItemCount(visibleItemCount, lang)}</span>
+          </div>
+        )}
+
         {showEmpty && (
           <div className="pt-14 pb-10 px-6 flex flex-col items-center gap-4 text-center">
             <div
@@ -356,7 +383,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
           register={register}
           scrollMargin={catbarH}
           countLabel={(count) => formatItemCount(count, lang)}
-          onItemClick={setSelectedId}
+          onItemClick={openItem}
           favorites={favorites}
           onToggleFav={toggleFav}
           collapsedIds={collapsedIds}
@@ -364,8 +391,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         />
 
         <footer
-          className="mt-8 px-2 pt-7 pb-1.5 flex flex-col items-center gap-2 text-center"
-          style={{ borderTop: '1px solid var(--faint)' }}
+          className="yg-menu-footer"
         >
           <span className="font-outfit text-[21px] font-semibold">Yedigül</span>
           {meta.info.hours && (

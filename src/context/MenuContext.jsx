@@ -3,8 +3,6 @@ import { api } from '../lib/api';
 import { getDeviceId } from '../lib/deviceId';
 import { MenuContext } from './menu-context.js';
 const POLL_MS = 30000;
-// static export mode: menu data is baked into the bundle as a JSON file
-// (no backend on the shared host), so there is nothing to poll
 const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 
 const EMPTY_META = {
@@ -25,6 +23,7 @@ function normalizeMeta(meta) {
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
+  const [sets, setSets] = useState([]);
   const [meta, setMeta] = useState(EMPTY_META);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,6 +41,7 @@ export function MenuProvider({ children }) {
       }
       setCategories(Array.isArray(data.categories) ? data.categories : []);
       setItems(Array.isArray(data.products) ? data.products : []);
+      setSets(Array.isArray(data.sets) ? data.sets : []);
       setMeta(normalizeMeta(data.meta));
       setError(null);
     } catch (e) {
@@ -61,15 +61,13 @@ export function MenuProvider({ children }) {
     return () => clearInterval(t);
   }, [reload]);
 
-  // Cihaz başına görüntülenme kaydı: uygulama açılışında bir kez pinglenir.
-  // 6 saatlik tekrarsızlığı sunucu uygular; polling'deki reload SAYMAZ.
   useEffect(() => {
     if (IS_STATIC) return;
     api.post('/menu/view', { id: getDeviceId() }).catch(() => {});
   }, []);
 
   return (
-    <MenuContext.Provider value={{ categories, items, meta, loading, error, reload }}>
+    <MenuContext.Provider value={{ categories, items, sets, meta, loading, error, reload }}>
       {children}
     </MenuContext.Provider>
   );

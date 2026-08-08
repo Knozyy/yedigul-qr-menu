@@ -25,8 +25,11 @@ export function createApp({ db, uploadsDir, auth, mode = 'full' }) {
     res.setHeader('Referrer-Policy', 'no-referrer');
     res.setHeader(
       'Content-Security-Policy',
-      "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; " +
-        "script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; " +
+      "default-src 'self'; img-src 'self' data: blob:; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' data: https://fonts.gstatic.com; " +
+        "script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; " +
+        "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; " +
         // Konum haritaları (ana sayfa + /nasil-gelinir/) Yandex Haritalar widget'ı
         // kullanır; yandex.com.tr yönlenebildiği için .com ve .ru de eklendi.
         "frame-src 'self' https://yandex.com.tr https://yandex.com https://yandex.ru"

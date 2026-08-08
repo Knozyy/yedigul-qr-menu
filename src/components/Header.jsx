@@ -1,6 +1,6 @@
 import { LANGUAGES } from '../lib/i18n.js';
+import HomeLink from './HomeLink';
 
-// Boğaz dalgası süsü — marka satırının iki yanında.
 function Wave() {
   return (
     <svg width="34" height="10" viewBox="0 0 38 10" className="flex-none" aria-hidden="true">
@@ -12,16 +12,23 @@ function Wave() {
   );
 }
 
-export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
+export default function Header({ ui, dark, onToggleTheme, lang, onSetLang, rtl = false }) {
   return (
-    <header style={{ background: 'var(--bg)', borderBottom: '1px solid var(--faint)', transition: 'background .35s ease' }}>
-      <div className="max-w-[980px] mx-auto px-4 pt-3 pb-5 flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-3">
+    <header className="yg-menu-hero">
+      <img
+        className="yg-menu-hero__photo"
+        src="/images/slider/2.jpg"
+        alt=""
+        aria-hidden="true"
+      />
+      <span className="yg-menu-hero__veil" aria-hidden="true" />
+      <div className="yg-menu-hero__inner">
+        <div className="yg-menu-hero__topbar">
+          <HomeLink label={ui.home} rtl={rtl} inverse />
           <div
             role="group"
             aria-label={ui.language}
-            className="flex overflow-hidden rounded-full border"
-            style={{ borderColor: 'var(--faint-strong)' }}
+            className="yg-language-switcher"
           >
             {LANGUAGES.map(({ code, dir, nativeName }) => {
               const active = lang === code;
@@ -33,12 +40,7 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
                   dir={dir}
                   aria-label={`${ui.language}: ${nativeName}`}
                   aria-pressed={active}
-                  className="min-w-[46px] h-11 px-1.5 border-none cursor-pointer text-[13px] tracking-[.5px] transition-colors duration-200"
-                  style={{
-                    background: active ? 'var(--accent-text)' : 'transparent',
-                    color: active ? 'var(--on-accent)' : 'var(--muted)',
-                    fontWeight: active ? 600 : 400,
-                  }}
+                  className={`yg-language-switcher__button${active ? ' is-active' : ''}`}
                 >
                   {code.toUpperCase()}
                 </button>
@@ -48,8 +50,7 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
           <button
             onClick={onToggleTheme}
             aria-label={dark ? ui.useLightTheme : ui.useDarkTheme}
-            className="flex-none w-11 h-11 flex items-center justify-center rounded-full border cursor-pointer bg-transparent"
-            style={{ borderColor: 'var(--faint-strong)', color: 'var(--text)' }}
+            className="yg-theme-toggle"
           >
             {dark ? (
               <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
@@ -70,33 +71,23 @@ export default function Header({ ui, dark, onToggleTheme, lang, onSetLang }) {
           </button>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-3.5 text-center pt-0.5">
-          {/* Gerçek amblem (www/images/logo/logo.png'den kırpılmış balık-Y);
-              zemini lacivert olduğundan madalyon gibi daire içinde kullanılır. */}
-          <div
-            className="w-14 h-14 rounded-full overflow-hidden flex-none"
-            style={{ border: '1.5px solid var(--accent-text)' }}
-          >
+        <div className="yg-menu-hero__brand">
+          <div className="yg-menu-hero__mark">
             <img
               src={`${import.meta.env.BASE_URL}logo-mark.png`}
               alt={ui.logoAlt}
-              width="56"
-              height="56"
+              width="72"
+              height="72"
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="flex flex-col items-center gap-[5px]">
-            <h1 className="m-0 font-outfit text-[34px] font-semibold tracking-[.5px] leading-[1.05]" style={{ color: 'var(--text)' }}>
-              Yedigül
-            </h1>
-            <div className="text-[11.5px] tracking-[3px] uppercase font-medium" style={{ color: 'var(--muted)' }}>
-              {ui.sub}
-            </div>
-            <div className="flex items-center gap-[9px]" style={{ color: 'var(--accent-text)' }}>
+          <div className="yg-menu-hero__copy">
+            <p className="yg-overline yg-menu-hero__eyebrow">{ui.menuLabel}</p>
+            <h1>Yedigül</h1>
+            <p className="yg-menu-hero__lead">{ui.menuLead}</p>
+            <div className="yg-menu-hero__meta">
               <Wave />
-              <span className="text-[11px] tracking-[1.2px]" style={{ color: 'var(--muted)' }}>
-                {ui.locationShort}
-              </span>
+              <span>{ui.locationShort}</span>
               <Wave />
             </div>
           </div>

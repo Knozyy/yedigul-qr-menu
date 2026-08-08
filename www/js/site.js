@@ -1,18 +1,43 @@
-/* Yedigül Restaurant — homepage interactions. Vanilla JS, no deps. */
 (function () {
   "use strict";
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---- Sticky nav scroll state ---- */
+  var floatQuietZones = Array.prototype.slice.call(document.querySelectorAll(".hero, .specials, .menuband, .gallery, .contact"));
+  var waFloat = document.querySelector(".wa-float");
+  var visibleQuietZones = [];
+  if (floatQuietZones.length && waFloat && "IntersectionObserver" in window) {
+    var floatObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var position = visibleQuietZones.indexOf(entry.target);
+        if (entry.isIntersecting && position === -1) visibleQuietZones.push(entry.target);
+        if (!entry.isIntersecting && position !== -1) visibleQuietZones.splice(position, 1);
+      });
+      waFloat.classList.toggle("is-hidden-over-section", visibleQuietZones.length > 0);
+    }, { threshold: 0.08, rootMargin: "-5% 0px -5% 0px" });
+    floatQuietZones.forEach(function (section) { floatObserver.observe(section); });
+  }
+
   var nav = document.querySelector(".nav");
+  var navAnchorLinks = Array.prototype.slice.call(document.querySelectorAll(".nav__links .nav__link[href^='#']"));
+  var trackedSections = Array.prototype.slice.call(document.querySelectorAll("#tarihce, #spesiyaller, #galeri, #iletisim"));
+  function updateActiveNav() {
+    var activeHref = "#top";
+    var marker = window.innerHeight * 0.42;
+    trackedSections.forEach(function (section) {
+      if (section.getBoundingClientRect().top <= marker) activeHref = "#" + section.id;
+    });
+    navAnchorLinks.forEach(function (link) {
+      link.classList.toggle("is-active", link.getAttribute("href") === activeHref);
+    });
+  }
   function onScroll() {
     if (!nav) return;
     nav.classList.toggle("is-scrolled", window.scrollY > 40);
+    updateActiveNav();
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---- Mobile nav panel ---- */
   var toggle = document.querySelector(".nav__toggle");
   var panelLinks = document.querySelectorAll(".nav__panel a");
   function closeNav() { document.body.classList.remove("nav-open"); if (toggle) toggle.setAttribute("aria-expanded", "false"); }
@@ -25,9 +50,9 @@
   panelLinks.forEach(function (a) { a.addEventListener("click", closeNav); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeNav(); });
 
-  /* ---- Hero slider ---- */
   var slides = Array.prototype.slice.call(document.querySelectorAll(".hero__slide"));
   var dots = Array.prototype.slice.call(document.querySelectorAll(".hero__dot"));
+  var slideCount = document.querySelector(".hero__slide-count b");
   var idx = 0, timer = null, DUR = 6000;
   function show(n) {
     idx = (n + slides.length) % slides.length;
@@ -36,6 +61,7 @@
       d.classList.remove("is-active");
       if (i === idx) { void d.offsetWidth; d.classList.add("is-active"); }
     });
+    if (slideCount) slideCount.textContent = String(idx + 1).padStart(2, "0");
   }
   function next() { show(idx + 1); }
   function start() { if (reduceMotion || slides.length < 2) return; stop(); timer = setInterval(next, DUR); }
@@ -48,11 +74,20 @@
     });
   }
 
-  /* ---- Scroll reveals ---- */
   var revealEls = document.querySelectorAll(".reveal");
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealEls.forEach(function (el) { el.classList.add("is-in"); });
   } else {
+    function revealVisible() {
+      revealEls.forEach(function (el) {
+        if (el.classList.contains("is-in")) return;
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.94 && rect.bottom > 0) {
+          el.classList.add("is-in");
+          io.unobserve(el);
+        }
+      });
+    }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -61,12 +96,11 @@
         }
       });
     }, { threshold: 0.12, rootMargin: "10000px 0px -8% 0px" });
-    // rootMargin üst değeri büyük: çapa ile aşağı atlanınca viewport'un
-    // ÜSTÜNDE kalan bölümler de "görüldü" sayılır, gizli kalmazlar
     revealEls.forEach(function (el) { io.observe(el); });
+    window.addEventListener("scroll", revealVisible, { passive: true });
+    requestAnimationFrame(revealVisible);
   }
 
-  /* ---- Gallery lightbox ---- */
   var lb = document.querySelector(".lightbox");
   if (lb) {
     var lbImg = lb.querySelector("img");
@@ -103,11 +137,9 @@
     });
   }
 
-  /* ---- Footer year ---- */
   var y = document.getElementById("yr");
   if (y) y.textContent = new Date().getFullYear();
 
-  /* ---- Mobile scroll indicator dots ---- */
   function initScrollDots(gridSelector, hintSelector) {
     var grid = document.querySelector(gridSelector);
     var hint = document.querySelector(gridSelector + " + " + hintSelector);
@@ -116,13 +148,11 @@
     var items = Array.prototype.slice.call(grid.children);
     if (items.length < 2) return;
 
-    // Only activate on mobile
     var mq = window.matchMedia("(max-width: 619px)");
 
     function setup() {
       if (!mq.matches) { hint.innerHTML = ""; return; }
 
-      // Create dots
       hint.innerHTML = "";
       items.forEach(function (_, i) {
         var dot = document.createElement("span");
@@ -132,7 +162,6 @@
 
       var dots = Array.prototype.slice.call(hint.querySelectorAll(".scroll-hint__dot"));
 
-      // Track which item is most visible
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {

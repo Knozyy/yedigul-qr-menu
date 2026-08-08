@@ -1,10 +1,8 @@
 import { useRef, useState } from 'react';
 import { api } from '../../lib/api';
 
-const MAX = 6; // backend MAX_IMAGES ile aynı
+const MAX = 6;
 
-// Ürün görsel galerisi: 6'ya kadar görsel, çoklu seçilebilir. İlk görsel kapaktır.
-// Backend: POST /products/:id/images (ekle), PUT /products/:id/images (sırala/çıkar).
 export default function ImageUploader({ product, onChange }) {
   const inputRef = useRef(null);
   const [busy, setBusy] = useState(false);
@@ -16,7 +14,6 @@ export default function ImageUploader({ product, onChange }) {
 
   const images = product.images ?? [];
 
-  // Çoklu dosya: sırayla yükle, en sonda tek onChange (tek toast/reload).
   async function onPick(e) {
     const files = Array.from(e.target.files || []);
     if (inputRef.current) inputRef.current.value = '';

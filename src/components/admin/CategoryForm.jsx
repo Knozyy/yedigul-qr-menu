@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { api } from '../../lib/api';
 
-// "Şaraplar & Kokteyller" -> "saraplar-kokteyller"
 function slugify(s) {
   const map = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u' };
   return s
@@ -47,7 +46,6 @@ export default function CategoryForm({ categories, products, onChanged }) {
   const [nameAr, setNameAr] = useState('');
   const [nameRu, setNameRu] = useState('');
   const [error, setError] = useState('');
-  // satır içi yeniden adlandırma: düzenlenen kategori id'si + taslak adlar
   const [editId, setEditId] = useState(null);
   const [editTr, setEditTr] = useState('');
   const [editEn, setEditEn] = useState('');
@@ -98,7 +96,6 @@ export default function CategoryForm({ categories, products, onChanged }) {
       setError('Geçerli bir kategori adı girin.');
       return;
     }
-    // avoid id collisions with existing categories
     let id = base;
     for (let n = 2; categories.some((c) => c.id === id); n++) id = `${base}-${n}`;
     try {
@@ -138,8 +135,6 @@ export default function CategoryForm({ categories, products, onChanged }) {
     }
   }
 
-  // yeni sırayı hesapla (index ile index+dir yer değiştirir), TÜM listeyi 0..n-1'e
-  // yeniden numaralandır, yalnızca sırası DEĞİŞEN kategorileri PATCH'le.
   async function moveCat(index, dir) {
     const j = index + dir;
     if (j < 0 || j >= categories.length) return;

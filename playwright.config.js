@@ -25,7 +25,13 @@ export default defineConfig({
       command: 'npm run dev:server',
       port: 3001,
       reuseExistingServer: !process.env.CI,
-      env: { APP_MODE: 'public', DB_PATH: ':memory:', UPLOADS_DIR: 'server/uploads' },
+      // APP_MODE 'full': fix menü testi yönetim API'sinden set oluşturur
+      // (public modda /api/admin hiç mount edilmez). Genel menü davranışı
+      // değişmez; testler kendi oluşturdukları veriyi geri alır.
+      env: {
+        APP_MODE: 'full', DB_PATH: ':memory:', UPLOADS_DIR: 'server/uploads',
+        ADMIN_PASSWORD: 'e2e-test-parolasi', JWT_SECRET: 'e2e-test-secret',
+      },
     },
     {
       // yalnız Vite (npm run dev artık API'yi de başlatıyor; burada API'yi

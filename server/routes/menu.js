@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getSetting, countMenuView } from '../db.js';
+import { getSetting, countMenuView, countProductView } from '../db.js';
 
 const cleanText = (value) => (typeof value === 'string' ? value.trim() : '');
 
@@ -46,7 +46,9 @@ function i18nList(row, base) {
 }
 
 export function rowToPublicCategory(row) {
-  return { id: row.id, ...i18nText(row, 'name') };
+  // kind: 'sets' kategorisi ürün değil fix menüleri gösterir. İstemci bölümü
+  // buna göre çizer; sırası normal kategorilerle birlikte sort'tan gelir.
+  return { id: row.id, kind: row.kind || 'products', ...i18nText(row, 'name') };
 }
 
 export function rowToPublicItem(row) {
@@ -104,7 +106,7 @@ export function publicMeta(db) {
 
 export function readPublicMenu(db) {
   const categories = db
-    .prepare('SELECT id, name_tr, name_en, name_ar, name_ru FROM categories WHERE is_active = 1 ORDER BY sort')
+    .prepare('SELECT id, kind, name_tr, name_en, name_ar, name_ru FROM categories WHERE is_active = 1 ORDER BY sort')
     .all()
     .map(rowToPublicCategory);
   const rows = db
@@ -115,7 +117,56 @@ export function readPublicMenu(db) {
        ORDER BY p.sort`
     )
     .all();
-  return { categories, products: rows.map(rowToPublicItem), meta: publicMeta(db) };
+  return {
+    categories,
+    products: rows.map(rowToPublicItem),
+    sets: readPublicSets(db),
+    meta: publicMeta(db),
+  };
+}
+
+/**
+ * Müşteriye açık fix menüler.
+ *
+ * Yalnız kind='fix_menu' ve aktif olanlar. İçerik METİN olarak yazılır, ürün
+ * kartına bağlanmaz: fix menü sabit bir paket, içindeki ürün tükendi/gizli
+ * olsa bile paketin kendisi satılmaya devam eder.
+ */
+export function readPublicSets(db) {
+  const sets = db
+    .prepare(
+      `SELECT * FROM product_sets
+       WHERE kind = 'fix_menu' AND is_active = 1 ORDER BY sort`
+    )
+    .all();
+  if (!sets.length) return [];
+
+  const items = db
+    .prepare(
+      `SELECT i.set_id, i.qty,
+              p.name_tr, p.name_en, p.name_ar, p.name_ru
+       FROM product_set_items i
+       JOIN products p ON p.id = i.product_id
+       ORDER BY i.sort`
+    )
+    .all();
+
+  const dil = (row, alan) => ({
+    tr: fallbackText(row[`${alan}_tr`], row[`${alan}_en`], row[`${alan}_tr`]),
+    en: fallbackText(row[`${alan}_en`], row[`${alan}_tr`], row[`${alan}_tr`]),
+    ar: fallbackText(row[`${alan}_ar`], row[`${alan}_en`], row[`${alan}_tr`]),
+    ru: fallbackText(row[`${alan}_ru`], row[`${alan}_en`], row[`${alan}_tr`]),
+  });
+
+  return sets.map((set) => ({
+    id: set.id,
+    name: dil(set, 'name'),
+    desc: dil(set, 'desc'),
+    price: set.price,
+    items: items
+      .filter((item) => item.set_id === set.id)
+      .map((item) => ({ qty: item.qty, name: dil(item, 'name') })),
+  }));
 }
 
 export function createMenuRouter(db) {
@@ -128,6 +179,15 @@ export function createMenuRouter(db) {
     const id = typeof req.body?.id === 'string' ? req.body.id.trim().slice(0, 64) : '';
     if (!id) return res.status(400).json({ counted: false });
     res.json({ counted: countMenuView(db, id) });
+  });
+
+  // Ürün detayının açılması. Menü açılışından ayrı bir olay: hangi ürünlerin
+  // merak edildiğini ölçer. Aynı cihaz farklı ürünlere bakınca hepsi sayılır.
+  router.post('/product-view', (req, res) => {
+    const id = typeof req.body?.id === 'string' ? req.body.id.trim().slice(0, 64) : '';
+    const product = typeof req.body?.product === 'string' ? req.body.product.trim().slice(0, 64) : '';
+    if (!id || !product) return res.status(400).json({ counted: false });
+    res.json({ counted: countProductView(db, id, product) });
   });
 
   router.get('/', (req, res) => {

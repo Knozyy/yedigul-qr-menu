@@ -1,4 +1,3 @@
-// Popüler / Şefin Önerisi / GF / V rozetleri — kartta ve detay sayfasında ortak.
 export default function Badges({ item, ui }) {
   if (!item.popular && !item.chef && !item.gf && !item.veg) return null;
   return (

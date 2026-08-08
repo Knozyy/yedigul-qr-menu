@@ -60,7 +60,7 @@ after(() => {
 // ---- varyantlar ----
 
 test('product accepts valid variants and rejects invalid ones', async () => {
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
   const created = await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Varyantlı', name_en: 'Variant',
     variants: [
@@ -88,7 +88,7 @@ test('product accepts valid variants and rejects invalid ones', async () => {
 });
 
 test('public menu exposes variants with localized names', async () => {
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
   const created = await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Porsiyonlu', name_en: 'Portioned',
     variants: [{ name_tr: 'Tek', name_en: 'Single', name_ar: 'فردي', price: 90 }],
@@ -105,7 +105,8 @@ test('public menu exposes variants with localized names', async () => {
 // ---- AR/RU çevirileri ----
 
 test('AR/RU fields persist and public menu falls back empty → EN → TR', async () => {
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
+  const originalCategoryTranslations = { name_ar: cat.name_ar, name_ru: cat.name_ru };
   const created = await req('POST', '/api/admin/products', {
     category_id: cat.id,
     name_tr: 'Çevirili', name_en: 'Translated',
@@ -117,7 +118,7 @@ test('AR/RU fields persist and public menu falls back empty → EN → TR', asyn
   assert.equal(created.data.name_ar, 'مترجم');
   assert.deepEqual(created.data.ing_ru, ['помидор']);
 
-  const catAr = await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: 'فئة' });
+  const catAr = await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: 'فئة', name_ru: '' });
   assert.equal(catAr.data.name_ar, 'فئة');
 
   const menu = await (await fetch(`${base}/api/menu`)).json();
@@ -131,7 +132,7 @@ test('AR/RU fields persist and public menu falls back empty → EN → TR', asyn
   assert.equal(pubCat.ar, 'فئة');
   assert.equal(pubCat.ru, pubCat.en); // boş RU → EN
 
-  await req('PATCH', `/api/admin/categories/${cat.id}`, { name_ar: '' });
+  await req('PATCH', `/api/admin/categories/${cat.id}`, originalCategoryTranslations);
   await req('DELETE', `/api/admin/products/${created.data.id}`);
 });
 
@@ -151,7 +152,7 @@ test('announcement AR/RU exposed in public meta with EN fallback', async () => {
 // ---- çoklu görsel ----
 
 test('multiple images: append, reorder, remove; cover follows first', async () => {
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
   const p = (await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Görselli', name_en: 'Pictured',
   })).data;
@@ -188,7 +189,7 @@ test('multiple images: append, reorder, remove; cover follows first', async () =
 });
 
 test('image count is limited', async () => {
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
   const p = (await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Sınır', name_en: 'Limit',
   })).data;
@@ -203,7 +204,7 @@ test('image count is limited', async () => {
 
 test('deleting a product removes its image files from disk', async () => {
   const { readdirSync } = await import('node:fs');
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
   const p = (await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Silinecek', name_en: 'Doomed',
   })).data;
@@ -242,7 +243,7 @@ test('settings accept announcement and restaurant info; public menu meta exposes
 // ---- değişiklik geçmişi ----
 
 test('mutations are recorded in history with readable summaries', async () => {
-  const cat = (await req('GET', '/api/admin/menu')).data.categories[0];
+  const cat = (await req('GET', '/api/admin/menu')).data.categories.find((c) => c.kind !== 'sets');
   const p = (await req('POST', '/api/admin/products', {
     category_id: cat.id, name_tr: 'Tarihçeli', name_en: 'Historied', price: 100,
   })).data;

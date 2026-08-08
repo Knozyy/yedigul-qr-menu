@@ -3,12 +3,7 @@ function FilterChip({ active, onClick, heart, children }) {
     <button
       onClick={onClick}
       aria-pressed={active}
-      className="min-h-11 px-4 flex items-center gap-[7px] rounded-full cursor-pointer text-[13.5px] font-medium transition-all duration-200"
-      style={{
-        background: active ? 'var(--accent)' : 'transparent',
-        color: active ? 'var(--on-accent)' : 'var(--muted)',
-        border: `1px solid ${active ? 'var(--accent)' : 'var(--faint-strong)'}`,
-      }}
+      className={`yg-filter-chip${active ? ' is-active' : ''}`}
     >
       {heart && (
         <svg width="14" height="14" viewBox="0 0 24 24" className="flex-none" aria-hidden="true">
@@ -30,12 +25,11 @@ export default function SearchFilters({
   gfLabel, vegLabel, favLabel, clearLabel,
 }) {
   return (
-    <>
-      <div className="relative">
+    <div className="yg-search-filters">
+      <div className="yg-search-field">
         <svg
           width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"
-          className="absolute top-1/2 -translate-y-1/2 opacity-55"
-          style={{ insetInlineStart: 16, color: 'var(--muted)' }}
+          className="yg-search-field__icon"
         >
           <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="1.8" />
           <path d="M16.2 16.2 L21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -45,20 +39,13 @@ export default function SearchFilters({
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder={placeholder}
           aria-label={placeholder}
-          className="w-full h-12 px-[46px] rounded-full text-[15px]"
-          style={{
-            background: 'var(--search-bg)',
-            border: '1px solid var(--search-border)',
-            color: 'var(--text)',
-            transition: 'background .35s ease',
-          }}
+          className="yg-search-field__input"
         />
         {search !== '' && (
           <button
             onClick={() => onSearchChange('')}
             aria-label={clearLabel}
-            className="absolute top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-transparent border-none cursor-pointer"
-            style={{ insetInlineEnd: 4, color: 'var(--muted)' }}
+            className="yg-search-field__clear"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -66,11 +53,11 @@ export default function SearchFilters({
           </button>
         )}
       </div>
-      <div className="flex gap-2 flex-wrap">
+      <div className="yg-filter-row yg-scroll">
         <FilterChip active={gf} onClick={onToggleGF}>{gfLabel}</FilterChip>
         <FilterChip active={veg} onClick={onToggleVeg}>{vegLabel}</FilterChip>
         <FilterChip active={fav} onClick={onToggleFav} heart>{favLabel}</FilterChip>
       </div>
-    </>
+    </div>
   );
 }

@@ -7,7 +7,6 @@ export function AuthProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Statik ve public üretim build'lerinde admin yok — oturum kontrolü yapma.
     if (import.meta.env.VITE_ADMIN_ENABLED !== '1') {
       setReady(true);
       return;

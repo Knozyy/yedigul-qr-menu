@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import Badges from './Badges';
 
 export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) {
-  // Çoklu görselde seçili kare; ürün değişince kapağa dön.
   const [imgIdx, setImgIdx] = useState(0);
   useEffect(() => setImgIdx(0), [sheet?.id]);
 
-  // Esc ile kapat + panel açıkken arka planı kaydırmayı kilitle.
   useEffect(() => {
     if (!sheet) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -29,17 +27,14 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
       <div
         onClick={onClose}
         className="yg-anim-overlay absolute inset-0"
-        style={{ background: 'rgba(5,14,25,0.55)' }}
       />
       <div
         role="dialog"
         aria-modal="true"
-        className="yg-anim-sheet absolute left-1/2 bottom-0 w-full max-w-[560px]"
-        style={{ boxShadow: '0 -16px 48px rgba(4,12,22,0.35)', borderRadius: '24px 24px 0 0' }}
+        className="yg-anim-sheet yg-detail-sheet absolute left-1/2 bottom-0 w-full"
       >
         <div
-          className="yg-scroll max-h-[88vh] overflow-y-auto"
-          style={{ background: 'var(--sheet-bg)', color: 'var(--text)', borderRadius: '24px 24px 0 0' }}
+          className="yg-scroll yg-detail-sheet__scroll"
         >
           <div className="sticky top-0 z-[2] flex justify-center pt-2.5 pb-1.5">
             <button
@@ -61,11 +56,11 @@ export default function BottomSheet({ sheet, ui, onClose, isFav, onToggleFav }) 
             </button>
           </div>
 
-          <div className="px-5 pt-1 pb-9 flex flex-col gap-4">
+          <div className="yg-detail-sheet__content">
             <div
               role="img"
               aria-label={`${ui.dishImage}: ${sheet.name}`}
-              className="w-full h-[216px] rounded-[14px]"
+              className="yg-detail-sheet__image"
               style={{ backgroundImage: `url('${hero}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             />
 

@@ -17,8 +17,6 @@ function hasContent(value) {
   return value !== null && value !== undefined;
 }
 
-// Seçili dil boşsa EN'e, o da boşsa TR'ye düşer. TR/EN alanları da eski
-// verilerde boş olabileceği için birbirini yedekler.
 export function localize(field, lang) {
   if (!field || typeof field !== 'object') return '';
   const order = [...new Set([lang, 'en', 'tr'])];
