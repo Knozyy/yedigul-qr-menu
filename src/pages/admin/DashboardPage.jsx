@@ -54,7 +54,12 @@ export default function DashboardPage() {
     try { const data = await api.get('/admin/menu'); setCategories(data.categories); setProducts(data.products); }
     catch (e) { setError(e.message); }
   }, []);
-  useEffect(() => { reload(); }, [reload]);
+
+  const loadUnread = useCallback(() => {
+    api.get('/admin/feedback').then((data) => setUnread(data.unread)).catch(() => {});
+  }, []);
+
+  useEffect(() => { reload(); loadUnread(); }, [reload, loadUnread]);
 
   async function onLogout() { await logout(); navigate('/admin/login', { replace: true }); }
 
