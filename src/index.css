@@ -762,6 +762,30 @@ body {
 }
 .yg-rating__send:disabled { opacity: 0.5; cursor: default; }
 
+.yg-rating-strip {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 12px 14px calc(14px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--ann-border);
+  box-shadow: 0 -6px 24px rgba(10, 31, 53, 0.18);
+}
+.yg-rating-strip__close {
+  position: absolute;
+  inset-inline-end: 10px;
+  top: 6px;
+  min-width: 36px;
+  min-height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 @keyframes yg-menu-rise {
   from {
     opacity: 0;
