@@ -34,6 +34,7 @@ export const UI = {
     rateAlready: 'Görüşünüzü zaten aldık, teşekkürler.',
     rateError: 'Gönderilemedi. Lütfen tekrar deneyin.',
     rateStarLabel: '{n} yıldız',
+    rateFabLabel: 'Deneyiminizi değerlendirin',
   },
   en: {
     sub: 'Fish Restaurant', tagline: 'Bosphorus Fish Restaurant', search: 'Search the menu…',
@@ -68,6 +69,7 @@ export const UI = {
     rateAlready: 'We already have your feedback, thank you.',
     rateError: 'Could not send. Please try again.',
     rateStarLabel: '{n} stars',
+    rateFabLabel: 'Rate your experience',
   },
   ar: {
     sub: 'مطعم أسماك', tagline: 'مطعم أسماك البوسفور', search: 'ابحث في القائمة…',
@@ -102,6 +104,7 @@ export const UI = {
     rateAlready: 'وصلنا رأيك بالفعل، شكراً لك.',
     rateError: 'تعذّر الإرسال. حاول مرة أخرى.',
     rateStarLabel: '{n} نجوم',
+    rateFabLabel: 'قيّم تجربتك',
   },
   ru: {
     sub: 'Рыбный ресторан', tagline: 'Рыбный ресторан на Босфоре', search: 'Поиск по меню…',
@@ -136,6 +139,7 @@ export const UI = {
     rateAlready: 'Мы уже получили ваш отзыв, спасибо.',
     rateError: 'Не удалось отправить. Попробуйте ещё раз.',
     rateStarLabel: '{n} звёзд',
+    rateFabLabel: 'Оцените ваш опыт',
   },
 };
 

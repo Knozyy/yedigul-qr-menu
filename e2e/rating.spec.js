@@ -98,39 +98,40 @@ test('puan verildikten sonra sayfa yenilenince tekrar sorulmaz', async ({ page, 
   await expect(page.locator('.yg-rating').first().getByRole('button', { name: '4 yıldız' })).toHaveCount(0);
 });
 
-test('şerit 60 saniye + yeterli kaydırmadan sonra görünür, başa dön butonu gizlenir, kapatılabilir', async ({ page, request }) => {
+test('yıldız düğmesi hemen görünür, panel açar/kapatır, kapatınca düğme tekrar açılabilir', async ({ page, request }) => {
   const auth = { Authorization: `Bearer ${await token(request)}` };
   await setReviewUrl(request, auth, REVIEW_URL);
 
-  await page.clock.install();
-
   await page.goto('/menu/');
-  // Sayfa ve mock clock tam yüklensin diye bekle
-  await page.waitForTimeout(200);
+
+  const fab = page.locator('.yg-rating-fab');
+  await expect(fab).toBeVisible();
   await expect(page.locator('.yg-rating-strip')).toHaveCount(0);
 
-  // Sayfanın %80'ine kaydır (sınır değer riskini ortadan kaldır — %40 sınırda yuvarlama riski vardı)
+  // Kaydırarak "başa dön" düğmesini görünür kıl; aksi halde aşağıdaki
+  // tabindex/aria-hidden kontrolleri düğme zaten görünmediği için de geçer
+  // ve panel-açıkken-gizleme davranışını gerçekten sınamamış olur.
   await page.evaluate(() => {
     const height = document.documentElement.scrollHeight - window.innerHeight;
     window.scrollTo(0, height * 0.8);
   });
-
-  // Kaydırmanın işlenmesi için sayfaya time ver
   await page.waitForTimeout(100);
-
-  // Kaydırmanın gerçekten olduğunu kanıtla: "başa dön" düğmesi yalnızca 600px'den
-  // sonra görünür hale gelir. Bu doğrulanmazsa aşağıdaki tabindex/aria-hidden
-  // kontrolleri düğme HİÇ görünmediği için de geçer — test yanlış sebeple yeşil olur.
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(600);
 
-  await page.clock.fastForward(61_000);
-
-  await expect(page.locator('.yg-rating-strip')).toBeVisible();
-
   const scrollBtn = page.locator('.yg-scroll-top');
+  await expect(scrollBtn).toHaveAttribute('tabindex', '0');
+
+  await fab.click();
+  await expect(page.locator('.yg-rating-strip')).toBeVisible();
+  await expect(fab).toHaveCount(0);
+
   await expect(scrollBtn).toHaveAttribute('tabindex', '-1');
   await expect(scrollBtn).toHaveAttribute('aria-hidden', 'true');
 
   await page.locator('.yg-rating-strip__close').click();
   await expect(page.locator('.yg-rating-strip')).toHaveCount(0);
+  await expect(fab).toBeVisible();
+
+  await fab.click();
+  await expect(page.locator('.yg-rating-strip')).toBeVisible();
 });

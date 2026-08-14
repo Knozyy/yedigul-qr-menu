@@ -21,6 +21,7 @@ import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
 import RatingPrompt from '../components/RatingPrompt';
 import RatingStrip from '../components/RatingStrip';
+import RatingFab from '../components/RatingFab';
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
@@ -69,7 +70,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [catbarH, setCatbarH] = useState(64);
   const [collapsedIds, setCollapsedIds] = useState(() => new Set());
   const [rated, setRated] = useState(() => readStorage('rating_done', false));
-  const [stripVisible, setStripVisible] = useState(false);
+  const [stripOpen, setStripOpen] = useState(false);
 
   const catbarRef = useRef(null);
   const ui = UI[lang];
@@ -232,6 +233,9 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const instagram = (meta.info.instagram || '').trim();
   const reviewUrl = import.meta.env.VITE_STATIC === '1' ? '' : (meta.info.google_review_url || '').trim();
   const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
+  const ratingAvailable = !!reviewUrl && !rated && !selectedId;
+  const panelShown = ratingAvailable && stripOpen;
+  const fabShown = ratingAvailable && !stripOpen;
 
   const priceUpdatedText = (() => {
     if (!meta.price_updated_at) return '';
@@ -454,11 +458,13 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         reviewUrl={reviewUrl}
         done={rated}
         onDone={markRated}
-        hidden={!!selectedId}
-        onVisibilityChange={setStripVisible}
+        open={panelShown}
+        onClose={() => setStripOpen(false)}
       />
 
-      <ScrollTopButton label={ui.toTop} obscured={stripVisible} />
+      <RatingFab label={ui.rateFabLabel} visible={fabShown} onClick={() => setStripOpen(true)} />
+
+      <ScrollTopButton label={ui.toTop} obscured={panelShown} raised={fabShown} />
     </div>
   );
 }

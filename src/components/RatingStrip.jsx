@@ -1,53 +1,13 @@
-import { useEffect, useState } from 'react';
-import { readStorage, writeStorage } from '../lib/storage';
 import RatingPrompt from './RatingPrompt';
 
-const DELAY_MS = 60000;
-const SCROLL_RATIO = 0.4;
-
-export default function RatingStrip({ ui, lang, reviewUrl, done, onDone, hidden, onVisibilityChange }) {
-  const [visible, setVisible] = useState(false);
-  const [closed, setClosed] = useState(false);
-  const shown = visible && !closed && !hidden;
-
-  useEffect(() => {
-    if (!reviewUrl || done || readStorage('rating_strip_seen', false)) return undefined;
-
-    let elapsed = false;
-    let scrolled = false;
-    const show = () => {
-      if (!elapsed || !scrolled) return;
-      writeStorage('rating_strip_seen', true);
-      setVisible(true);
-    };
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (max > 0 && window.scrollY / max >= SCROLL_RATIO) {
-        scrolled = true;
-        show();
-      }
-    };
-    const timer = setTimeout(() => {
-      elapsed = true;
-      show();
-    }, DELAY_MS);
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [reviewUrl, done]);
-
-  useEffect(() => {
-    onVisibilityChange?.(shown);
-  }, [shown, onVisibilityChange]);
+export default function RatingStrip({ ui, lang, reviewUrl, done, onDone, open, onClose }) {
+  const shown = open && !!reviewUrl && !done;
 
   if (!shown) return null;
 
   return (
     <div className="yg-rating-strip" role="region" aria-label={ui.rateTitle}>
-      <button type="button" className="yg-rating-strip__close" aria-label={ui.close} onClick={() => setClosed(true)}>
+      <button type="button" className="yg-rating-strip__close" aria-label={ui.close} onClick={onClose}>
         ×
       </button>
       <RatingPrompt ui={ui} lang={lang} reviewUrl={reviewUrl} done={done} onDone={onDone} />
