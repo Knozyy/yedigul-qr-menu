@@ -9,6 +9,7 @@ import CategoryForm from '../../components/admin/CategoryForm';
 import InfoPanel from '../../components/admin/InfoPanel';
 import OverviewView from '../../components/admin/OverviewView';
 import BulkPriceModal from '../../components/admin/BulkPriceModal';
+import FeedbackView from '../../components/admin/FeedbackView';
 import Toast from '../../components/Toast';
 
 const QrPanel = import.meta.env.VITE_STATIC === '1' ? null : lazy(() => import('../../components/admin/QrPanel'));
@@ -24,6 +25,7 @@ const TITLES = {
   home: ['Genel Bakış', dateLine()],
   items: ['Ürünler', 'Menüdeki ürünleri ekleyin, düzenleyin, gizleyin'],
   cats: ['Kategoriler', 'Menü bölümlerini sıralayın ve adlandırın'],
+  feedback: ['Geri Bildirim', 'Menüde düşük puan veren misafirlerin yazdıkları'],
   settings: ['Ayarlar', 'Duyuru, Wi-Fi ve işletme bilgileri'],
   qr: ['QR Kod', 'Masa kartları için menü kodu'],
 };
@@ -39,6 +41,7 @@ export default function DashboardPage() {
   const [editing, setEditing] = useState(null);
   const [bulk, setBulk] = useState(null);
   const [toast, setToast] = useState('');
+  const [unread, setUnread] = useState(0);
   const toastTimer = useRef(null);
 
   const showToast = useCallback((text) => {
@@ -77,7 +80,7 @@ export default function DashboardPage() {
   const [pageTitle, pageSub] = TITLES[view] || TITLES.home;
 
   return (
-    <AdminShell view={view} onSelectView={(v) => { setView(v); setEditing(null); }} onLogout={onLogout}>
+    <AdminShell view={view} onSelectView={(v) => { setView(v); setEditing(null); }} onLogout={onLogout} unread={unread}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginBottom: 18 }}>
         <h2 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 31, fontWeight: 600, lineHeight: 1.1 }}>{pageTitle}</h2>
         <span style={{ fontSize: 13.5, color: 'var(--muted)', letterSpacing: 0.3 }}>{pageSub}</span>
@@ -89,6 +92,8 @@ export default function DashboardPage() {
         <ProductsView categories={categories} products={products} onEdit={setEditing} onReload={reload} onError={setError} onAdd={() => setEditing('new')} onBulk={() => setBulk({ pct: '10', scope: 'all', round: '5' })} />
       ) : view === 'cats' ? (
         <CategoryForm categories={categories} products={products} onChanged={() => { reload(); showToast('Güncellendi'); }} />
+      ) : view === 'feedback' ? (
+        <FeedbackView onError={setError} onUnread={setUnread} />
       ) : view === 'settings' ? (
         <InfoPanel />
       ) : view === 'qr' && QrPanel ? (
