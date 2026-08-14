@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function ScrollTopButton({ label = 'Başa dön' }) {
+export default function ScrollTopButton({ label = 'Başa dön', obscured = false }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -15,14 +15,16 @@ export default function ScrollTopButton({ label = 'Başa dön' }) {
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
   };
 
+  const visible = show && !obscured;
+
   return (
     <button
       type="button"
       onClick={toTop}
       aria-label={label}
       title={label}
-      aria-hidden={!show}
-      tabIndex={show ? 0 : -1}
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
       className="yg-scroll-top"
       style={{
         position: 'fixed',
@@ -40,9 +42,9 @@ export default function ScrollTopButton({ label = 'Başa dön' }) {
         color: 'var(--on-accent)',
         boxShadow: '0 8px 22px -6px rgba(0,0,0,0.45)',
         cursor: 'pointer',
-        opacity: show ? 1 : 0,
-        transform: show ? 'translateY(0)' : 'translateY(12px)',
-        pointerEvents: show ? 'auto' : 'none',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(12px)',
+        pointerEvents: visible ? 'auto' : 'none',
         transition: 'opacity 0.3s ease, transform 0.3s ease',
       }}
     >

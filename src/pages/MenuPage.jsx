@@ -69,6 +69,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [catbarH, setCatbarH] = useState(64);
   const [collapsedIds, setCollapsedIds] = useState(() => new Set());
   const [rated, setRated] = useState(() => readStorage('rating_done', false));
+  const [stripVisible, setStripVisible] = useState(false);
 
   const catbarRef = useRef(null);
   const ui = UI[lang];
@@ -454,9 +455,10 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         done={rated}
         onDone={markRated}
         hidden={!!selectedId}
+        onVisibilityChange={setStripVisible}
       />
 
-      <ScrollTopButton label={ui.toTop} />
+      <ScrollTopButton label={ui.toTop} obscured={stripVisible} />
     </div>
   );
 }

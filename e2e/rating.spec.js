@@ -97,3 +97,29 @@ test('puan verildikten sonra sayfa yenilenince tekrar sorulmaz', async ({ page, 
   await expect(page.locator('.yg-rating').first()).toContainText('Teşekkür ederiz!');
   await expect(page.locator('.yg-rating').first().getByRole('button', { name: '4 yıldız' })).toHaveCount(0);
 });
+
+test('şerit 60 saniye + %40 kaydırmadan sonra görünür, başa dön butonu gizlenir, kapatılabilir', async ({ page, request }) => {
+  const auth = { Authorization: `Bearer ${await token(request)}` };
+  await setReviewUrl(request, auth, REVIEW_URL);
+
+  await page.clock.install();
+
+  await page.goto('/menu/');
+  await expect(page.locator('.yg-rating-strip')).toHaveCount(0);
+
+  await page.evaluate(() => {
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo(0, height * 0.4);
+  });
+
+  await page.clock.fastForward(61_000);
+
+  await expect(page.locator('.yg-rating-strip')).toBeVisible();
+
+  const scrollBtn = page.locator('.yg-scroll-top');
+  await expect(scrollBtn).toHaveAttribute('tabindex', '-1');
+  await expect(scrollBtn).toHaveAttribute('aria-hidden', 'true');
+
+  await page.locator('.yg-rating-strip__close').click();
+  await expect(page.locator('.yg-rating-strip')).toHaveCount(0);
+});

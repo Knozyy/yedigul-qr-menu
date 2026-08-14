@@ -773,10 +773,6 @@ body {
   box-shadow: 0 -6px 24px rgba(10, 31, 53, 0.18);
 }
 
-.yg-menu-page:has(.yg-rating-strip) .yg-scroll-top {
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
 .yg-rating-strip__close {
   position: absolute;
   inset-inline-end: 10px;

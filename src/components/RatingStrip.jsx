@@ -5,9 +5,10 @@ import RatingPrompt from './RatingPrompt';
 const DELAY_MS = 60000;
 const SCROLL_RATIO = 0.4;
 
-export default function RatingStrip({ ui, lang, reviewUrl, done, onDone, hidden }) {
+export default function RatingStrip({ ui, lang, reviewUrl, done, onDone, hidden, onVisibilityChange }) {
   const [visible, setVisible] = useState(false);
   const [closed, setClosed] = useState(false);
+  const shown = visible && !closed && !hidden;
 
   useEffect(() => {
     if (!reviewUrl || done || readStorage('rating_strip_seen', false)) return undefined;
@@ -38,7 +39,11 @@ export default function RatingStrip({ ui, lang, reviewUrl, done, onDone, hidden 
     };
   }, [reviewUrl, done]);
 
-  if (!visible || closed || hidden) return null;
+  useEffect(() => {
+    onVisibilityChange?.(shown);
+  }, [shown, onVisibilityChange]);
+
+  if (!shown) return null;
 
   return (
     <div className="yg-rating-strip" role="region" aria-label={ui.rateTitle}>
