@@ -40,8 +40,15 @@ const tarih = (ms) =>
 
 const yildiz = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
 
-const bugun = () => new Date().toISOString().slice(0, 10);
-const gunOnce = (n) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
+const yerelTarih = (d) => {
+  const yil = d.getFullYear();
+  const ay = String(d.getMonth() + 1).padStart(2, '0');
+  const gun = String(d.getDate()).padStart(2, '0');
+  return `${yil}-${ay}-${gun}`;
+};
+
+const bugun = () => yerelTarih(new Date());
+const gunOnce = (n) => yerelTarih(new Date(Date.now() - n * 86400000));
 
 export default function FeedbackView({ onError, onUnread }) {
   const [items, setItems] = useState([]);
@@ -54,9 +61,10 @@ export default function FeedbackView({ onError, onUnread }) {
       const data = await api.get(`/admin/feedback?from=${from}&to=${to}`);
       setItems(data.items);
       onUnread(data.unread);
-      setLoaded(true);
     } catch (e) {
       onError(e.message);
+    } finally {
+      setLoaded(true);
     }
   }, [from, to, onError, onUnread]);
 

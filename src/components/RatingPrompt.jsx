@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { api } from '../lib/api';
 import { getDeviceId } from '../lib/deviceId';
 
 const STARS = [1, 2, 3, 4, 5];
-const IS_STATIC = import.meta.env.VITE_STATIC === '1';
 const MAX_LEN = 1000;
 
 function Star({ filled, label, onClick, onHover }) {
@@ -13,8 +12,8 @@ function Star({ filled, label, onClick, onHover }) {
       aria-label={label}
       onClick={onClick}
       onMouseEnter={onHover}
-      className="bg-transparent border-none cursor-pointer p-1 leading-none"
-      style={{ color: filled ? 'var(--accent-text)' : 'var(--muted2)' }}
+      className="bg-transparent border-none cursor-pointer leading-none flex items-center justify-center"
+      style={{ color: filled ? 'var(--accent-text)' : 'var(--muted2)', minWidth: 44, minHeight: 44 }}
     >
       <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
         <path
@@ -30,18 +29,20 @@ function Star({ filled, label, onClick, onHover }) {
 }
 
 export default function RatingPrompt({ ui, lang, reviewUrl, done, onDone }) {
+  const messageId = useId();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [message, setMessage] = useState('');
   const [state, setState] = useState('idle');
   const [error, setError] = useState('');
+  const [outcome, setOutcome] = useState('thanks');
 
   if (!reviewUrl) return null;
 
   if (done) {
     return (
       <div className="yg-rating" data-state="done">
-        <span className="yg-rating__thanks">{ui.rateThanks}</span>
+        <span className="yg-rating__thanks">{outcome === 'already' ? ui.rateAlready : ui.rateThanks}</span>
       </div>
     );
   }
@@ -62,12 +63,12 @@ export default function RatingPrompt({ ui, lang, reviewUrl, done, onDone }) {
     setState('sending');
     setError('');
     try {
-      if (!IS_STATIC) {
-        await api.post('/menu/feedback', { id: getDeviceId(), rating, message: text, lang });
-      }
+      await api.post('/menu/feedback', { id: getDeviceId(), rating, message: text, lang });
+      setOutcome('thanks');
       onDone();
     } catch (e) {
       if (e.message === 'limit') {
+        setOutcome('already');
         onDone();
         return;
       }
@@ -94,9 +95,9 @@ export default function RatingPrompt({ ui, lang, reviewUrl, done, onDone }) {
 
       {state !== 'idle' && (
         <div className="yg-rating__form">
-          <label className="yg-rating__label" htmlFor="yg-rating-message">{ui.rateFormLabel}</label>
+          <label className="yg-rating__label" htmlFor={messageId}>{ui.rateFormLabel}</label>
           <textarea
-            id="yg-rating-message"
+            id={messageId}
             rows={3}
             maxLength={MAX_LEN}
             value={message}

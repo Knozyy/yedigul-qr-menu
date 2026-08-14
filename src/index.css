@@ -748,6 +748,13 @@ body {
   resize: vertical;
 }
 .yg-rating__error { font-size: 13px; color: #ef6b6b; }
+
+.yg-menu-footer .yg-rating {
+  --accent-text: #E2B45C;
+  --muted2: var(--hero-muted);
+}
+.yg-menu-footer .yg-rating__title { color: var(--hero-text); }
+.yg-menu-footer .yg-rating__label { color: var(--hero-muted); }
 .yg-rating__send {
   align-self: center;
   min-height: 44px;

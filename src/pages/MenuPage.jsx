@@ -230,7 +230,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const favEmpty = fav && favorites.length === 0;
   const announcement = String(localize(meta.announcement, lang) || '').trim();
   const instagram = (meta.info.instagram || '').trim();
-  const reviewUrl = (meta.info.google_review_url || '').trim();
+  const reviewUrl = import.meta.env.VITE_STATIC === '1' ? '' : (meta.info.google_review_url || '').trim();
   const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
 
   const priceUpdatedText = (() => {
