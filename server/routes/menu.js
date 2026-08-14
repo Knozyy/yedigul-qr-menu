@@ -102,6 +102,7 @@ export function publicMeta(db) {
       hours: getSetting(db, 'info_hours', '') || '',
       wifi: getSetting(db, 'info_wifi', '') || '',
       instagram: getSetting(db, 'info_instagram', '') || '',
+      google_review_url: getSetting(db, 'info_google_review_url', '') || '',
     },
     price_updated_at: getSetting(db, 'price_updated_at', '') || '',
   };

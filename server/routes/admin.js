@@ -151,12 +151,17 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     'info_phone', 'info_hours', 'info_wifi', 'info_instagram',
   ];
 
+  // Serbest metin değil: menüde bir bağlantıya dönüştüğü için şeması
+  // doğrulanır. TEXT_SETTINGS'e konsaydı genel döngü onu doğrulamadan yazardı.
+  const REVIEW_URL_RE = /^https:\/\/[^\s]+$/i;
+
   function settingsPayload() {
     const out = {
       public_base_url: getSetting(db, 'public_base_url', ''),
       menu_path: getSetting(db, 'menu_path', '/menu/'),
     };
     for (const k of TEXT_SETTINGS) out[k] = getSetting(db, k, '') || '';
+    out.info_google_review_url = getSetting(db, 'info_google_review_url', '') || '';
     return out;
   }
 
@@ -180,6 +185,14 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       // sondaki '/' temizle; boş bırakılabilir (o zaman istek origin'i kullanılır)
       setSetting(db, 'public_base_url', String(b.public_base_url || '').trim().replace(/\/+$/, ''));
       changed.push('site adresi');
+    }
+    if ('info_google_review_url' in b) {
+      const url = String(b.info_google_review_url ?? '').trim();
+      if (url && !REVIEW_URL_RE.test(url)) {
+        return res.status(400).json({ error: 'Google yorum bağlantısı https:// ile başlamalı' });
+      }
+      setSetting(db, 'info_google_review_url', url);
+      changed.push('bilgi: google yorum bağlantısı');
     }
     for (const k of TEXT_SETTINGS) {
       if (!(k in b)) continue;

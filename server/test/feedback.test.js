@@ -141,3 +141,38 @@ test('geri bildirim denetim kaydını doldurmaz', async () => {
   await gonder(gecerli({ id: cihaz('denetim') }));
   assert.equal(apiDb.prepare('SELECT COUNT(*) c FROM audit_log').get().c, once);
 });
+
+const ayarKaydet = (body) =>
+  fetch(`${base}/api/admin/settings`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json', cookie },
+    body: JSON.stringify(body),
+  });
+
+const menuMeta = async () => (await (await fetch(`${base}/api/menu/`)).json()).meta;
+
+test('google yorum bağlantısı varsayılan olarak boştur ve menüde görünür', async () => {
+  assert.equal((await menuMeta()).info.google_review_url, '');
+});
+
+test('https bağlantısı kaydedilir ve menü metasında döner', async () => {
+  const res = await ayarKaydet({ info_google_review_url: 'https://g.page/r/ORNEK/review' });
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).info_google_review_url, 'https://g.page/r/ORNEK/review');
+  assert.equal((await menuMeta()).info.google_review_url, 'https://g.page/r/ORNEK/review');
+});
+
+// javascript: bir değer menüde çalıştırılabilir bir bağlantıya dönüşürdü.
+test('https dışındaki şemalar 400 ile reddedilir ve kayıt değişmez', async () => {
+  await ayarKaydet({ info_google_review_url: 'https://g.page/r/ORNEK/review' });
+  for (const kotu of ['javascript:alert(1)', 'http://g.page/r/x', 'data:text/html,x', '//g.page/r/x']) {
+    const res = await ayarKaydet({ info_google_review_url: kotu });
+    assert.equal(res.status, 400, `reddedilmeli: ${kotu}`);
+  }
+  assert.equal((await menuMeta()).info.google_review_url, 'https://g.page/r/ORNEK/review');
+});
+
+test('boş dize kabul edilir; özellik böyle kapatılır', async () => {
+  assert.equal((await ayarKaydet({ info_google_review_url: '' })).status, 200);
+  assert.equal((await menuMeta()).info.google_review_url, '');
+});
