@@ -205,6 +205,52 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     res.json(settingsPayload());
   });
 
+  // ---- Geri bildirim (yalnız düşük puanlı, site içinde kalan) ----
+  const GUN_MS = 24 * 60 * 60 * 1000;
+
+  // 'YYYY-MM-DD' -> yerel gün başı / gün sonu. Geçersizse null döner ve
+  // varsayılan aralık kullanılır; bozuk parametre listeyi boşaltmaz.
+  function gunBasi(deger) {
+    if (typeof deger !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(deger)) return null;
+    const t = new Date(`${deger}T00:00:00`).getTime();
+    return Number.isNaN(t) ? null : t;
+  }
+
+  router.get('/feedback', (req, res) => {
+    const simdi = Date.now();
+    const from = gunBasi(req.query.from) ?? simdi - 30 * GUN_MS;
+    const toBasi = gunBasi(req.query.to);
+    const to = toBasi == null ? simdi : toBasi + GUN_MS - 1;
+
+    // device_id bilerek seçilmez: panelde hiçbir işe yaramaz, yalnız hız
+    // sınırı anahtarıdır. Gönderilmeyen veri sızdırılamaz.
+    const items = db
+      .prepare(
+        `SELECT id, rating, message, lang, created_at, is_read FROM feedback
+         WHERE created_at >= ? AND created_at <= ? ORDER BY created_at DESC`
+      )
+      .all(from, to);
+    const unread = db.prepare('SELECT COUNT(*) c FROM feedback WHERE is_read = 0').get().c;
+    res.json({ items, unread });
+  });
+
+  // Okundu işaretlemesi denetim kaydına yazılmaz: her açılışta tetiklenen
+  // rutin bir işlem, audit_log'u gürültüyle doldururdu.
+  router.patch('/feedback/:id/read', (req, res) => {
+    const isRead = req.body?.is_read === false ? 0 : 1;
+    const info = db.prepare('UPDATE feedback SET is_read = ? WHERE id = ?').run(isRead, Number(req.params.id));
+    if (!info.changes) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
+    res.json({ ok: true });
+  });
+
+  router.delete('/feedback/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const info = db.prepare('DELETE FROM feedback WHERE id = ?').run(id);
+    if (!info.changes) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
+    log('delete', 'feedback', String(id), 'geri bildirim silindi');
+    res.status(204).end();
+  });
+
   // ---- Ürünler ----
   router.post('/products', (req, res) => {
     const b = req.body ?? {};

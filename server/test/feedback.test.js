@@ -176,3 +176,80 @@ test('boş dize kabul edilir; özellik böyle kapatılır', async () => {
   assert.equal((await ayarKaydet({ info_google_review_url: '' })).status, 200);
   assert.equal((await menuMeta()).info.google_review_url, '');
 });
+
+const panelListe = async (qs = '') =>
+  (await fetch(`${base}/api/admin/feedback${qs}`, { headers: { cookie } })).json();
+
+test('panel listesi oturum ister', async () => {
+  assert.equal((await fetch(`${base}/api/admin/feedback`)).status, 401);
+  assert.equal((await fetch(`${base}/api/admin/feedback/1/read`, { method: 'PATCH' })).status, 401);
+  assert.equal((await fetch(`${base}/api/admin/feedback/1`, { method: 'DELETE' })).status, 401);
+});
+
+test('liste yeniden eskiye sıralı döner ve cihaz kimliğini sızdırmaz', async () => {
+  apiDb.exec('DELETE FROM feedback');
+  insertFeedback(apiDb, { rating: 1, message: 'eski', lang: 'tr', deviceId: 'c1' });
+  insertFeedback(apiDb, { rating: 3, message: 'yeni', lang: 'en', deviceId: 'c2' });
+
+  const { items, unread } = await panelListe();
+  assert.deepEqual(items.map((r) => r.message), ['yeni', 'eski']);
+  assert.equal(unread, 2);
+  assert.equal('device_id' in items[0], false, 'cihaz kimliği panele gönderilmez');
+});
+
+test('tarih aralığı süzer; parametresiz çağrı son 30 günü verir', async () => {
+  apiDb.exec('DELETE FROM feedback');
+  const eskiId = insertFeedback(apiDb, { rating: 1, message: 'çok eski', lang: 'tr', deviceId: 'c1' });
+  apiDb.prepare('UPDATE feedback SET created_at = ? WHERE id = ?')
+    .run(Date.now() - 40 * 24 * 60 * 60 * 1000, eskiId);
+  insertFeedback(apiDb, { rating: 2, message: 'bugün', lang: 'tr', deviceId: 'c2' });
+
+  assert.deepEqual((await panelListe()).items.map((r) => r.message), ['bugün']);
+
+  const gun = (offset) => new Date(Date.now() - offset * 86400000).toISOString().slice(0, 10);
+  const genis = await panelListe(`?from=${gun(60)}&to=${gun(0)}`);
+  assert.equal(genis.items.length, 2);
+});
+
+test('okundu işaretlenir ve geri alınır; okunmamış sayısı düşer', async () => {
+  apiDb.exec('DELETE FROM feedback');
+  const id = insertFeedback(apiDb, { rating: 2, message: 'okunacak', lang: 'tr', deviceId: 'c1' });
+
+  const isaretle = (is_read) =>
+    fetch(`${base}/api/admin/feedback/${id}/read`, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json', cookie },
+      body: JSON.stringify({ is_read }),
+    });
+
+  assert.equal((await isaretle(true)).status, 200);
+  assert.equal((await panelListe()).unread, 0);
+  assert.equal((await isaretle(false)).status, 200);
+  assert.equal((await panelListe()).unread, 1);
+});
+
+test('silme 204 döner ve denetim kaydına yazılır', async () => {
+  apiDb.exec('DELETE FROM feedback');
+  const id = insertFeedback(apiDb, { rating: 1, message: 'silinecek', lang: 'tr', deviceId: 'c1' });
+  const once = apiDb.prepare('SELECT COUNT(*) c FROM audit_log').get().c;
+
+  const res = await fetch(`${base}/api/admin/feedback/${id}`, { method: 'DELETE', headers: { cookie } });
+  assert.equal(res.status, 204);
+  assert.equal((await panelListe()).items.length, 0);
+  assert.equal(apiDb.prepare('SELECT COUNT(*) c FROM audit_log').get().c, once + 1);
+});
+
+test('olmayan kayıt 404 döner', async () => {
+  assert.equal(
+    (await fetch(`${base}/api/admin/feedback/999999`, { method: 'DELETE', headers: { cookie } })).status,
+    404,
+  );
+  assert.equal(
+    (await fetch(`${base}/api/admin/feedback/999999/read`, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json', cookie },
+      body: JSON.stringify({ is_read: true }),
+    })).status,
+    404,
+  );
+});
