@@ -766,11 +766,16 @@ body {
   position: fixed;
   inset-inline: 0;
   bottom: 0;
-  z-index: 40;
+  z-index: 41;
   padding: 12px 14px calc(14px + env(safe-area-inset-bottom));
   background: var(--bg);
   border-top: 1px solid var(--ann-border);
   box-shadow: 0 -6px 24px rgba(10, 31, 53, 0.18);
+}
+
+.yg-menu-page:has(.yg-rating-strip) .yg-scroll-top {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 .yg-rating-strip__close {
   position: absolute;

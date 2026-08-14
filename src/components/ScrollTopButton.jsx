@@ -23,6 +23,7 @@ export default function ScrollTopButton({ label = 'Başa dön' }) {
       title={label}
       aria-hidden={!show}
       tabIndex={show ? 0 : -1}
+      className="yg-scroll-top"
       style={{
         position: 'fixed',
         insetInlineEnd: 16,

@@ -19,6 +19,8 @@ import SearchFilters from '../components/SearchFilters';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
+import RatingPrompt from '../components/RatingPrompt';
+import RatingStrip from '../components/RatingStrip';
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
@@ -66,6 +68,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [selectedId, setSelectedId] = useState(null);
   const [catbarH, setCatbarH] = useState(64);
   const [collapsedIds, setCollapsedIds] = useState(() => new Set());
+  const [rated, setRated] = useState(() => readStorage('rating_done', false));
 
   const catbarRef = useRef(null);
   const ui = UI[lang];
@@ -215,12 +218,18 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     setFav(false);
   }, []);
 
+  const markRated = useCallback(() => {
+    writeStorage('rating_done', true);
+    setRated(true);
+  }, []);
+
   const themeVars = getMenuThemeVars(dark, accent);
   const showLoadError = !loading && !!error && CATEGORIES.length === 0 && ITEMS.length === 0;
   const showEmpty = !loading && !showLoadError && sections.length === 0;
   const favEmpty = fav && favorites.length === 0;
   const announcement = String(localize(meta.announcement, lang) || '').trim();
   const instagram = (meta.info.instagram || '').trim();
+  const reviewUrl = (meta.info.google_review_url || '').trim();
   const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
 
   const priceUpdatedText = (() => {
@@ -393,6 +402,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         <footer
           className="yg-menu-footer"
         >
+          <RatingPrompt ui={ui} lang={lang} reviewUrl={reviewUrl} done={rated} onDone={markRated} />
           <span className="font-outfit text-[21px] font-semibold">Yedigül</span>
           {meta.info.hours && (
             <span className="text-[12.5px] tracking-[.4px]" style={{ color: 'var(--muted)' }}>
@@ -435,6 +445,15 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         onClose={() => setSelectedId(null)}
         isFav={selectedId ? favorites.includes(selectedId) : false}
         onToggleFav={toggleFav}
+      />
+
+      <RatingStrip
+        ui={ui}
+        lang={lang}
+        reviewUrl={reviewUrl}
+        done={rated}
+        onDone={markRated}
+        hidden={!!selectedId}
       />
 
       <ScrollTopButton label={ui.toTop} />
