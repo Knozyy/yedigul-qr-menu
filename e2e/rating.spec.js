@@ -118,6 +118,11 @@ test('şerit 60 saniye + yeterli kaydırmadan sonra görünür, başa dön buton
   // Kaydırmanın işlenmesi için sayfaya time ver
   await page.waitForTimeout(100);
 
+  // Kaydırmanın gerçekten olduğunu kanıtla: "başa dön" düğmesi yalnızca 600px'den
+  // sonra görünür hale gelir. Bu doğrulanmazsa aşağıdaki tabindex/aria-hidden
+  // kontrolleri düğme HİÇ görünmediği için de geçer — test yanlış sebeple yeşil olur.
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(600);
+
   await page.clock.fastForward(61_000);
 
   await expect(page.locator('.yg-rating-strip')).toBeVisible();
