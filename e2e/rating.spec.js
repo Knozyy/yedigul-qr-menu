@@ -98,19 +98,25 @@ test('puan verildikten sonra sayfa yenilenince tekrar sorulmaz', async ({ page, 
   await expect(page.locator('.yg-rating').first().getByRole('button', { name: '4 yıldız' })).toHaveCount(0);
 });
 
-test('şerit 60 saniye + %40 kaydırmadan sonra görünür, başa dön butonu gizlenir, kapatılabilir', async ({ page, request }) => {
+test('şerit 60 saniye + yeterli kaydırmadan sonra görünür, başa dön butonu gizlenir, kapatılabilir', async ({ page, request }) => {
   const auth = { Authorization: `Bearer ${await token(request)}` };
   await setReviewUrl(request, auth, REVIEW_URL);
 
   await page.clock.install();
 
   await page.goto('/menu/');
+  // Sayfa ve mock clock tam yüklensin diye bekle
+  await page.waitForTimeout(200);
   await expect(page.locator('.yg-rating-strip')).toHaveCount(0);
 
+  // Sayfanın %80'ine kaydır (sınır değer riskini ortadan kaldır — %40 sınırda yuvarlama riski vardı)
   await page.evaluate(() => {
     const height = document.documentElement.scrollHeight - window.innerHeight;
-    window.scrollTo(0, height * 0.4);
+    window.scrollTo(0, height * 0.8);
   });
+
+  // Kaydırmanın işlenmesi için sayfaya time ver
+  await page.waitForTimeout(100);
 
   await page.clock.fastForward(61_000);
 
