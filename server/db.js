@@ -125,6 +125,22 @@ export function openDb(path) {
       last_at    INTEGER NOT NULL,
       PRIMARY KEY (device_id, product_id)
     );
+    -- Site içinde kalan geri bildirim. YALNIZ 1-3 yıldız buraya yazılır:
+    -- 4-5 yıldız Google Maps'e gider ve bizde kaydı olmaz. Sözleşmenin bu
+    -- şekilde daraltılması tablonun anlamını tek tutar.
+    --
+    -- device_id bir tabloya foreign key ile bağlanmaz: cihaz kimliği kalıcı
+    -- bir varlık değil, yalnızca hız sınırı anahtarıdır.
+    CREATE TABLE IF NOT EXISTS feedback (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      rating     INTEGER NOT NULL,
+      message    TEXT NOT NULL,
+      lang       TEXT NOT NULL DEFAULT 'tr',
+      device_id  TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      is_read    INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS idx_feedback_created ON feedback(created_at);
   `);
   migratePanoSnapshots(db);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
@@ -320,4 +336,30 @@ export function setSetting(db, key, value) {
     `INSERT INTO settings (key, value) VALUES (@key, @value)
      ON CONFLICT(key) DO UPDATE SET value = excluded.value`
   ).run({ key, value: value == null ? null : String(value) });
+}
+
+// ---------------------------------------------------------------------------
+// Geri bildirim: 1-3 yıldız misafir yorumları
+// ---------------------------------------------------------------------------
+const FEEDBACK_WINDOW_MS = 24 * 60 * 60 * 1000;
+const FEEDBACK_MAX_PER_DEVICE = 3;
+
+// menu_views'taki pencere mantığının aynısı, tek farkla: eski satırlar
+// SİLİNMEZ. Sayaç tablolarında satır bir tekrarsızlık işaretidir, burada
+// misafirin yazdığı metnin kendisidir; pencere sorguyla hesaplanır.
+export function canSubmitFeedback(db, deviceId) {
+  const { c } = db
+    .prepare('SELECT COUNT(*) c FROM feedback WHERE device_id = ? AND created_at >= ?')
+    .get(deviceId, Date.now() - FEEDBACK_WINDOW_MS);
+  return c < FEEDBACK_MAX_PER_DEVICE;
+}
+
+export function insertFeedback(db, { rating, message, lang, deviceId }) {
+  const info = db
+    .prepare(
+      `INSERT INTO feedback (rating, message, lang, device_id, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    )
+    .run(rating, message, lang, deviceId, Date.now());
+  return Number(info.lastInsertRowid);
 }
