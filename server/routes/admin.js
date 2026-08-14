@@ -237,14 +237,21 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
   // Okundu işaretlemesi denetim kaydına yazılmaz: her açılışta tetiklenen
   // rutin bir işlem, audit_log'u gürültüyle doldururdu.
   router.patch('/feedback/:id/read', (req, res) => {
+    const id = Number(req.params.id);
+    // id'nin sayısal olup olmadığını kontrol et: Number('abc') → NaN olur ve
+    // sorguya NaN bind edilirse anlaşılmaz sonuçlar doğar. Doğrudan 404 döneriz.
+    if (!Number.isFinite(id)) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
     const isRead = req.body?.is_read === false ? 0 : 1;
-    const info = db.prepare('UPDATE feedback SET is_read = ? WHERE id = ?').run(isRead, Number(req.params.id));
+    const info = db.prepare('UPDATE feedback SET is_read = ? WHERE id = ?').run(isRead, id);
     if (!info.changes) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
     res.json({ ok: true });
   });
 
   router.delete('/feedback/:id', (req, res) => {
     const id = Number(req.params.id);
+    // id'nin sayısal olup olmadığını kontrol et: Number('abc') → NaN olur ve
+    // sorguya NaN bind edilirse anlaşılmaz sonuçlar doğar. Doğrudan 404 döneriz.
+    if (!Number.isFinite(id)) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
     const info = db.prepare('DELETE FROM feedback WHERE id = ?').run(id);
     if (!info.changes) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
     log('delete', 'feedback', String(id), 'geri bildirim silindi');

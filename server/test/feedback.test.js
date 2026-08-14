@@ -253,3 +253,18 @@ test('olmayan kayıt 404 döner', async () => {
     404,
   );
 });
+
+test('sayısal olmayan id 404 döner (abc gibi)', async () => {
+  assert.equal(
+    (await fetch(`${base}/api/admin/feedback/abc`, { method: 'DELETE', headers: { cookie } })).status,
+    404,
+  );
+  assert.equal(
+    (await fetch(`${base}/api/admin/feedback/abc/read`, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json', cookie },
+      body: JSON.stringify({ is_read: true }),
+    })).status,
+    404,
+  );
+});
