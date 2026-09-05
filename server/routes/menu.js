@@ -1,7 +1,10 @@
 import { Router } from 'express';
-import { getSetting, countMenuView, countProductView } from '../db.js';
+import { getSetting, countMenuView, countProductView, feedbackRetryAfterMs, insertFeedback } from '../db.js';
 
 const cleanText = (value) => (typeof value === 'string' ? value.trim() : '');
+
+const FEEDBACK_LANGS = new Set(['tr', 'en', 'ar', 'ru']);
+const FEEDBACK_MAX_LEN = 1000;
 
 // AR/RU boşsa EN'e, o da boşsa TR'ye düşer. Eski kayıtlarda EN boş
 // olabildiğinden TR ve EN de birbirini yedekler.
@@ -99,6 +102,7 @@ export function publicMeta(db) {
       hours: getSetting(db, 'info_hours', '') || '',
       wifi: getSetting(db, 'info_wifi', '') || '',
       instagram: getSetting(db, 'info_instagram', '') || '',
+      google_review_url: getSetting(db, 'info_google_review_url', '') || '',
     },
     price_updated_at: getSetting(db, 'price_updated_at', '') || '',
   };
@@ -188,6 +192,38 @@ export function createMenuRouter(db) {
     const product = typeof req.body?.product === 'string' ? req.body.product.trim().slice(0, 64) : '';
     if (!id || !product) return res.status(400).json({ counted: false });
     res.json({ counted: countProductView(db, id, product) });
+  });
+
+  // Site içinde kalan geri bildirim. Yalnız 1-3 yıldız: 4-5 yıldız istemcide
+  // doğrudan Google Maps'e gider ve buraya hiç uğramaz. Aksi bir istek gelirse
+  // 400'dür — tablonun "düşük puan" anlamı böyle korunur.
+  router.post('/feedback', (req, res) => {
+    const b = req.body ?? {};
+
+    const deviceId = typeof b.id === 'string' ? b.id.trim().slice(0, 64) : '';
+    if (!deviceId) return res.status(400).json({ ok: false, error: 'device' });
+
+    if (!Number.isInteger(b.rating) || b.rating < 1 || b.rating > 3) {
+      return res.status(400).json({ ok: false, error: 'rating' });
+    }
+
+    const message = typeof b.message === 'string' ? b.message.trim() : '';
+    if (!message || message.length > FEEDBACK_MAX_LEN) {
+      return res.status(400).json({ ok: false, error: 'message' });
+    }
+
+    // Dil yalnızca panelde okumayı kolaylaştırır; tanınmayan değer hata değil,
+    // varsayılana düşer. Misafirin yazdığı metin bir dil kodu yüzünden kaybolmaz.
+    const lang = FEEDBACK_LANGS.has(b.lang) ? b.lang : 'tr';
+
+    const retryAfterMs = feedbackRetryAfterMs(db, deviceId);
+    if (retryAfterMs > 0) {
+      res.set('Retry-After', String(Math.ceil(retryAfterMs / 1000)));
+      return res.status(429).json({ ok: false, error: 'limit', retryAfterMs });
+    }
+
+    insertFeedback(db, { rating: b.rating, message, lang, deviceId });
+    res.json({ ok: true });
   });
 
   router.get('/', (req, res) => {

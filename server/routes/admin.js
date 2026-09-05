@@ -151,12 +151,17 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     'info_phone', 'info_hours', 'info_wifi', 'info_instagram',
   ];
 
+  // Serbest metin değil: menüde bir bağlantıya dönüştüğü için şeması
+  // doğrulanır. TEXT_SETTINGS'e konsaydı genel döngü onu doğrulamadan yazardı.
+  const REVIEW_URL_RE = /^https:\/\/[^\s]+$/i;
+
   function settingsPayload() {
     const out = {
       public_base_url: getSetting(db, 'public_base_url', ''),
       menu_path: getSetting(db, 'menu_path', '/menu/'),
     };
     for (const k of TEXT_SETTINGS) out[k] = getSetting(db, k, '') || '';
+    out.info_google_review_url = getSetting(db, 'info_google_review_url', '') || '';
     return out;
   }
 
@@ -181,6 +186,14 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
       setSetting(db, 'public_base_url', String(b.public_base_url || '').trim().replace(/\/+$/, ''));
       changed.push('site adresi');
     }
+    if ('info_google_review_url' in b) {
+      const url = String(b.info_google_review_url ?? '').trim();
+      if (url && !REVIEW_URL_RE.test(url)) {
+        return res.status(400).json({ error: 'Google yorum bağlantısı https:// ile başlamalı' });
+      }
+      setSetting(db, 'info_google_review_url', url);
+      changed.push('bilgi: google yorum bağlantısı');
+    }
     for (const k of TEXT_SETTINGS) {
       if (!(k in b)) continue;
       setSetting(db, k, String(b[k] ?? '').trim());
@@ -190,6 +203,59 @@ export function createAdminRouter({ db, uploadsDir, requireAuth }) {
     }
     if (changed.length) log('update', 'settings', null, [...new Set(changed)].join(', '));
     res.json(settingsPayload());
+  });
+
+  // ---- Geri bildirim (yalnız düşük puanlı, site içinde kalan) ----
+  const GUN_MS = 24 * 60 * 60 * 1000;
+
+  // 'YYYY-MM-DD' -> yerel gün başı / gün sonu. Geçersizse null döner ve
+  // varsayılan aralık kullanılır; bozuk parametre listeyi boşaltmaz.
+  function gunBasi(deger) {
+    if (typeof deger !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(deger)) return null;
+    const t = new Date(`${deger}T00:00:00`).getTime();
+    return Number.isNaN(t) ? null : t;
+  }
+
+  router.get('/feedback', (req, res) => {
+    const simdi = Date.now();
+    const from = gunBasi(req.query.from) ?? simdi - 30 * GUN_MS;
+    const toBasi = gunBasi(req.query.to);
+    const to = toBasi == null ? simdi : toBasi + GUN_MS - 1;
+
+    // device_id bilerek seçilmez: panelde hiçbir işe yaramaz, yalnız hız
+    // sınırı anahtarıdır. Gönderilmeyen veri sızdırılamaz.
+    const items = db
+      .prepare(
+        `SELECT id, rating, message, lang, created_at, is_read FROM feedback
+         WHERE created_at >= ? AND created_at <= ? ORDER BY created_at DESC`
+      )
+      .all(from, to);
+    const unread = db.prepare('SELECT COUNT(*) c FROM feedback WHERE is_read = 0').get().c;
+    res.json({ items, unread });
+  });
+
+  // Okundu işaretlemesi denetim kaydına yazılmaz: her açılışta tetiklenen
+  // rutin bir işlem, audit_log'u gürültüyle doldururdu.
+  router.patch('/feedback/:id/read', (req, res) => {
+    const id = Number(req.params.id);
+    // id'nin sayısal olup olmadığını kontrol et: Number('abc') → NaN olur ve
+    // sorguya NaN bind edilirse anlaşılmaz sonuçlar doğar. Doğrudan 404 döneriz.
+    if (!Number.isFinite(id)) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
+    const isRead = req.body?.is_read === false ? 0 : 1;
+    const info = db.prepare('UPDATE feedback SET is_read = ? WHERE id = ?').run(isRead, id);
+    if (!info.changes) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
+    res.json({ ok: true });
+  });
+
+  router.delete('/feedback/:id', (req, res) => {
+    const id = Number(req.params.id);
+    // id'nin sayısal olup olmadığını kontrol et: Number('abc') → NaN olur ve
+    // sorguya NaN bind edilirse anlaşılmaz sonuçlar doğar. Doğrudan 404 döneriz.
+    if (!Number.isFinite(id)) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
+    const info = db.prepare('DELETE FROM feedback WHERE id = ?').run(id);
+    if (!info.changes) return res.status(404).json({ error: 'Geri bildirim bulunamadı' });
+    log('delete', 'feedback', String(id), 'geri bildirim silindi');
+    res.status(204).end();
   });
 
   // ---- Ürünler ----

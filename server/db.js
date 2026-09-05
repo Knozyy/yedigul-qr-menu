@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import { backfillMenuTranslations } from './translation-backfill.js';
+import { RATING_COOLDOWN_MS } from '../shared/rating-policy.js';
 
 export function openDb(path) {
   const db = new Database(path);
@@ -125,6 +126,22 @@ export function openDb(path) {
       last_at    INTEGER NOT NULL,
       PRIMARY KEY (device_id, product_id)
     );
+    -- Site içinde kalan geri bildirim. YALNIZ 1-3 yıldız buraya yazılır:
+    -- 4-5 yıldız Google Maps'e gider ve bizde kaydı olmaz. Sözleşmenin bu
+    -- şekilde daraltılması tablonun anlamını tek tutar.
+    --
+    -- device_id bir tabloya foreign key ile bağlanmaz: cihaz kimliği kalıcı
+    -- bir varlık değil, yalnızca hız sınırı anahtarıdır.
+    CREATE TABLE IF NOT EXISTS feedback (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      rating     INTEGER NOT NULL,
+      message    TEXT NOT NULL,
+      lang       TEXT NOT NULL DEFAULT 'tr',
+      device_id  TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      is_read    INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS idx_feedback_created ON feedback(created_at);
   `);
   migratePanoSnapshots(db);
   // migration: CREATE TABLE IF NOT EXISTS mevcut tabloyu değiştirmez;
@@ -320,4 +337,32 @@ export function setSetting(db, key, value) {
     `INSERT INTO settings (key, value) VALUES (@key, @value)
      ON CONFLICT(key) DO UPDATE SET value = excluded.value`
   ).run({ key, value: value == null ? null : String(value) });
+}
+
+// ---------------------------------------------------------------------------
+// Geri bildirim: 1-3 yıldız misafir yorumları
+// ---------------------------------------------------------------------------
+
+// menu_views'taki pencere mantığının aynısı, tek farkla: eski satırlar
+// SİLİNMEZ. Sayaç tablolarında satır bir tekrarsızlık işaretidir, burada
+// misafirin yazdığı metnin kendisidir; pencere sorguyla hesaplanır.
+export function canSubmitFeedback(db, deviceId) {
+  return feedbackRetryAfterMs(db, deviceId) === 0;
+}
+
+export function feedbackRetryAfterMs(db, deviceId) {
+  const { last } = db
+    .prepare('SELECT MAX(created_at) AS last FROM feedback WHERE device_id = ?')
+    .get(deviceId);
+  return last == null ? 0 : Math.max(0, last + RATING_COOLDOWN_MS - Date.now());
+}
+
+export function insertFeedback(db, { rating, message, lang, deviceId }) {
+  const info = db
+    .prepare(
+      `INSERT INTO feedback (rating, message, lang, device_id, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    )
+    .run(rating, message, lang, deviceId, Date.now());
+  return Number(info.lastInsertRowid);
 }

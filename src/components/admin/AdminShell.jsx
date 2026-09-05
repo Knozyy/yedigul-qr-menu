@@ -62,7 +62,7 @@ function LogoutIcon({ size = 18 }) {
   );
 }
 
-export default function AdminShell({ view, onSelectView, onLogout, children }) {
+export default function AdminShell({ view, onSelectView, onLogout, unread, children }) {
   const [w, setW] = useState(window.innerWidth);
   useEffect(() => {
     const onResize = () => setW(window.innerWidth);
@@ -143,7 +143,7 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
               background: 'var(--ink)',
             }}
           >
-            <AdminNav view={view} onSelect={onSelectView} variant="bottom" />
+            <AdminNav view={view} onSelect={onSelectView} variant="bottom" unread={unread} />
           </nav>
         </>
       ) : (
@@ -174,7 +174,7 @@ export default function AdminShell({ view, onSelectView, onLogout, children }) {
               </div>
             </div>
 
-            <AdminNav view={view} onSelect={onSelectView} variant="side" />
+            <AdminNav view={view} onSelect={onSelectView} variant="side" unread={unread} />
 
             <div
               style={{
