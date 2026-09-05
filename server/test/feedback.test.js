@@ -1,9 +1,10 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { openDb, canSubmitFeedback, insertFeedback } from '../db.js';
+import { openDb, canSubmitFeedback, insertFeedback, localDay } from '../db.js';
 import { seed } from '../seed.js';
 import { createApp } from '../app.js';
 import { createAuth } from '../auth.js';
+import { RATING_COOLDOWN_MS } from '../../shared/rating-policy.js';
 
 const cihaz = (etiket) => `${etiket}-${Math.random()}`;
 
@@ -52,32 +53,34 @@ test('insertFeedback kaydı yazar, varsayılan okunmamıştır', () => {
   assert.ok(satir.created_at > 0);
 });
 
-test('cihaz başına 24 saatte 3 kayıt sınırı', () => {
+test('aynı cihaz beş saat dolmadan ikinci yorum gönderemez', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: 1800000000000 });
   const db = openDb(':memory:');
   const dev = cihaz('limit');
-  for (let i = 0; i < 3; i += 1) {
-    assert.equal(canSubmitFeedback(db, dev), true, `${i}. gönderim serbest olmalı`);
-    insertFeedback(db, { rating: 1, message: `not ${i}`, lang: 'tr', deviceId: dev });
-  }
-  assert.equal(canSubmitFeedback(db, dev), false, '4. gönderim engellenmeli');
+  assert.equal(canSubmitFeedback(db, dev), true);
+  insertFeedback(db, { rating: 1, message: 'ilk yorum', lang: 'tr', deviceId: dev });
+  assert.equal(canSubmitFeedback(db, dev), false);
+  t.mock.timers.tick(RATING_COOLDOWN_MS - 1);
+  assert.equal(canSubmitFeedback(db, dev), false, 'beş saatten bir ms önce hâlâ engellenmeli');
   assert.equal(canSubmitFeedback(db, cihaz('baska')), true, 'başka cihaz etkilenmemeli');
+  db.close();
 });
 
-test('pencere dolunca cihaz yeniden gönderebilir, eski kayıtlar SİLİNMEZ', () => {
+test('tam beş saatte yeniden gönderilebilir, yeni yorum süreyi başlatır ve kayıtlar silinmez', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: 1800000000000 });
   const db = openDb(':memory:');
   const dev = cihaz('pencere');
-  for (let i = 0; i < 3; i += 1) {
-    insertFeedback(db, { rating: 1, message: `not ${i}`, lang: 'tr', deviceId: dev });
-  }
-  db.prepare('UPDATE feedback SET created_at = ? WHERE device_id = ?')
-    .run(Date.now() - 25 * 60 * 60 * 1000, dev);
-
+  insertFeedback(db, { rating: 1, message: 'ilk yorum', lang: 'tr', deviceId: dev });
+  t.mock.timers.tick(RATING_COOLDOWN_MS);
   assert.equal(canSubmitFeedback(db, dev), true);
+  insertFeedback(db, { rating: 2, message: 'ikinci yorum', lang: 'tr', deviceId: dev });
+  assert.equal(canSubmitFeedback(db, dev), false);
   assert.equal(
     db.prepare('SELECT COUNT(*) c FROM feedback WHERE device_id = ?').get(dev).c,
-    3,
+    2,
     'geri bildirim veridir; pencere dışı kayıtlar sayaç gibi budanmaz',
   );
+  db.close();
 });
 
 test('geçerli gönderim 200 ve ok:true döner, kayıt yazılır', async () => {
@@ -125,15 +128,19 @@ test('bilinmeyen dil hata değildir, tr olarak yazılır', async () => {
   assert.equal(apiDb.prepare('SELECT lang FROM feedback WHERE device_id = ?').get(dev).lang, 'tr');
 });
 
-test('aynı cihazdan 4. gönderim 429 döner, farklı cihaz etkilenmez', async () => {
+test('aynı cihazdan ikinci gönderim kalan süreyle 429 döner; beş saat sonra API kabul eder', async () => {
   const dev = cihaz('cok');
-  for (let i = 0; i < 3; i += 1) {
-    assert.equal((await gonder(gecerli({ id: dev, message: `not ${i}` }))).status, 200);
-  }
-  const dorduncu = await gonder(gecerli({ id: dev, message: 'dördüncü' }));
-  assert.equal(dorduncu.status, 429);
-  assert.equal((await dorduncu.json()).error, 'limit');
+  assert.equal((await gonder(gecerli({ id: dev }))).status, 200);
+  const second = await gonder(gecerli({ id: dev }));
+  assert.equal(second.status, 429);
+  const body = await second.json();
+  assert.equal(body.error, 'limit');
+  assert.ok(body.retryAfterMs > 0 && body.retryAfterMs <= RATING_COOLDOWN_MS);
+  assert.equal(Number(second.headers.get('retry-after')), Math.ceil(body.retryAfterMs / 1000));
   assert.equal((await gonder(gecerli({ id: cihaz('temiz') }))).status, 200);
+  apiDb.prepare('UPDATE feedback SET created_at = ? WHERE device_id = ?').run(Date.now() - RATING_COOLDOWN_MS, dev);
+  assert.equal((await gonder(gecerli({ id: dev }))).status, 200);
+  assert.equal(apiDb.prepare('SELECT COUNT(*) c FROM feedback WHERE device_id = ?').get(dev).c, 2);
 });
 
 test('geri bildirim denetim kaydını doldurmaz', async () => {
@@ -206,7 +213,7 @@ test('tarih aralığı süzer; parametresiz çağrı son 30 günü verir', async
 
   assert.deepEqual((await panelListe()).items.map((r) => r.message), ['bugün']);
 
-  const gun = (offset) => new Date(Date.now() - offset * 86400000).toISOString().slice(0, 10);
+  const gun = (offset) => localDay(new Date(Date.now() - offset * 86400000));
   const genis = await panelListe(`?from=${gun(60)}&to=${gun(0)}`);
   assert.equal(genis.items.length, 2);
 });

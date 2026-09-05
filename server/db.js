@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import { backfillMenuTranslations } from './translation-backfill.js';
+import { RATING_COOLDOWN_MS } from '../shared/rating-policy.js';
 
 export function openDb(path) {
   const db = new Database(path);
@@ -341,17 +342,19 @@ export function setSetting(db, key, value) {
 // ---------------------------------------------------------------------------
 // Geri bildirim: 1-3 yıldız misafir yorumları
 // ---------------------------------------------------------------------------
-const FEEDBACK_WINDOW_MS = 24 * 60 * 60 * 1000;
-const FEEDBACK_MAX_PER_DEVICE = 3;
 
 // menu_views'taki pencere mantığının aynısı, tek farkla: eski satırlar
 // SİLİNMEZ. Sayaç tablolarında satır bir tekrarsızlık işaretidir, burada
 // misafirin yazdığı metnin kendisidir; pencere sorguyla hesaplanır.
 export function canSubmitFeedback(db, deviceId) {
-  const { c } = db
-    .prepare('SELECT COUNT(*) c FROM feedback WHERE device_id = ? AND created_at >= ?')
-    .get(deviceId, Date.now() - FEEDBACK_WINDOW_MS);
-  return c < FEEDBACK_MAX_PER_DEVICE;
+  return feedbackRetryAfterMs(db, deviceId) === 0;
+}
+
+export function feedbackRetryAfterMs(db, deviceId) {
+  const { last } = db
+    .prepare('SELECT MAX(created_at) AS last FROM feedback WHERE device_id = ?')
+    .get(deviceId);
+  return last == null ? 0 : Math.max(0, last + RATING_COOLDOWN_MS - Date.now());
 }
 
 export function insertFeedback(db, { rating, message, lang, deviceId }) {

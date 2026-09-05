@@ -13,6 +13,7 @@ import {
   localize,
 } from '../lib/i18n.js';
 import useScrollSpy from '../lib/useScrollSpy';
+import useRatingCooldown from '../lib/useRatingCooldown';
 import Header from '../components/Header';
 import CategoryBar from '../components/CategoryBar';
 import SearchFilters from '../components/SearchFilters';
@@ -69,7 +70,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [selectedId, setSelectedId] = useState(null);
   const [catbarH, setCatbarH] = useState(64);
   const [collapsedIds, setCollapsedIds] = useState(() => new Set());
-  const [rated, setRated] = useState(() => readStorage('rating_done', false));
+  const { rated, markRated } = useRatingCooldown();
   const [stripOpen, setStripOpen] = useState(false);
 
   const catbarRef = useRef(null);
@@ -218,11 +219,6 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
     setGf(false);
     setVeg(false);
     setFav(false);
-  }, []);
-
-  const markRated = useCallback(() => {
-    writeStorage('rating_done', true);
-    setRated(true);
   }, []);
 
   const themeVars = getMenuThemeVars(dark, accent);

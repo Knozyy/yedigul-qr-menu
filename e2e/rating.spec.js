@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { RATING_COOLDOWN_MS } from '../shared/rating-policy.js';
 
 const API = 'http://localhost:3001';
 const REVIEW_URL = 'https://example.com/yedigul-review';
@@ -134,4 +135,98 @@ test('yıldız düğmesi hemen görünür, panel açar/kapatır, kapatınca dü�
 
   await fab.click();
   await expect(page.locator('.yg-rating-strip')).toBeVisible();
+});
+
+async function prepareClock(page, request) {
+  const auth = { Authorization: `Bearer ${await token(request)}` };
+  await setReviewUrl(request, auth, REVIEW_URL);
+  const now = new Date();
+  await page.clock.install({ time: now });
+  await page.clock.pauseAt(new Date(now.getTime() + 1000));
+}
+
+test('eski rating_done=true kaydı misafiri süresiz kilitlemez', async ({ page, request }) => {
+  await prepareClock(page, request);
+  await page.addInitScript(() => localStorage.setItem('yedigul:rating_done', 'true'));
+  await page.goto('/menu/');
+  await expect(page.locator('.yg-rating-fab')).toBeVisible();
+  await expect(page.locator('.yg-rating').first().getByRole('button', { name: '5 yıldız' })).toHaveCount(1);
+});
+
+test('değerlendirme beş saatte sayfa yenilenmeden açılır ve eski form temizlenir', async ({ page, request }) => {
+  await prepareClock(page, request);
+  // Tarayıcı saati sunucuyu değiştirmez; gerçek API sınırı server/test/feedback.test.js içinde sınanır.
+  const messages = [];
+  await page.route('**/api/menu/feedback', async route => {
+    messages.push(route.request().postDataJSON().message);
+    await route.fulfill({ json: { ok: true } });
+  });
+  await page.goto('/menu/');
+  const block = page.locator('.yg-rating').first();
+  await block.scrollIntoViewIfNeeded();
+  await block.getByRole('button', { name: '2 yıldız' }).click();
+  await block.getByRole('textbox').fill('ilk değerlendirme');
+  await block.getByRole('button', { name: 'Gönder', exact: true }).click();
+  await expect(block).toContainText('Teşekkür ederiz!');
+  await page.clock.fastForward(RATING_COOLDOWN_MS - 1);
+  await expect(block.getByRole('button', { name: '2 yıldız' })).toHaveCount(0);
+  await page.clock.fastForward(1);
+  await expect(block.getByRole('button', { name: '2 yıldız' })).toHaveCount(1);
+  await expect(page.locator('.yg-rating-fab')).toBeVisible();
+  await expect(block.getByRole('textbox')).toHaveCount(0);
+  await block.getByRole('button', { name: '2 yıldız' }).click();
+  await expect(block.getByRole('textbox')).toHaveValue('');
+  await block.getByRole('textbox').fill('ikinci değerlendirme');
+  await block.getByRole('button', { name: 'Gönder', exact: true }).click();
+  await expect(block).toContainText('Teşekkür ederiz!');
+  expect(messages).toEqual(['ilk değerlendirme', 'ikinci değerlendirme']);
+});
+
+test('kayıtlı beş saatlik süre yenilemede korunur ve bitince tekrar açılır', async ({ page, request }) => {
+  await prepareClock(page, request);
+  await page.goto('/menu/');
+  const deadline = await page.evaluate(() => {
+    const until = Date.now() + 60_000;
+    localStorage.setItem('yedigul:rating_until', JSON.stringify(until));
+    return until;
+  });
+  await page.reload();
+  await expect(page.locator('.yg-rating-fab')).toHaveCount(0);
+  await page.clock.fastForward(60_000);
+  await expect(page.locator('.yg-rating-fab')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('.yg-rating-fab')).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('yedigul:rating_until')))).toBe(deadline);
+});
+
+test('429 yanıtı yeni beş saat başlatmak yerine sunucudaki kalan süreyi kullanır', async ({ page, request }) => {
+  await prepareClock(page, request);
+  await page.route('**/api/menu/feedback', route => route.fulfill({ status: 429, json: { ok: false, error: 'limit', retryAfterMs: 60_000 } }));
+  await page.goto('/menu/');
+  const block = page.locator('.yg-rating').first();
+  await block.scrollIntoViewIfNeeded();
+  await block.getByRole('button', { name: '2 yıldız' }).click();
+  await block.getByRole('textbox').fill('tekrar deneyelim');
+  await block.getByRole('button', { name: 'Gönder', exact: true }).click();
+  await expect(block).toContainText('Görüşünüzü zaten aldık');
+  await page.clock.fastForward(59_999);
+  await expect(block.getByRole('button', { name: '2 yıldız' })).toHaveCount(0);
+  await page.clock.fastForward(1);
+  await expect(block.getByRole('button', { name: '2 yıldız' })).toHaveCount(1);
+});
+
+test('başka sekmede yapılan değerlendirme açık menüyle eşzamanlanır', async ({ page, context, request }) => {
+  await prepareClock(page, request);
+  await page.goto('/menu/');
+  await expect(page.locator('.yg-rating-fab')).toBeVisible();
+  const other = await context.newPage();
+  try {
+    await other.goto('/menu/');
+    await other.evaluate(() => localStorage.setItem('yedigul:rating_until', JSON.stringify(Date.now() + 60_000)));
+    await expect(page.locator('.yg-rating-fab')).toHaveCount(0);
+    await other.evaluate(() => localStorage.setItem('yedigul:rating_until', JSON.stringify(Date.now() - 1)));
+    await expect(page.locator('.yg-rating-fab')).toHaveCount(1);
+  } finally {
+    await other.close();
+  }
 });

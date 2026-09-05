@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getSetting, countMenuView, countProductView, canSubmitFeedback, insertFeedback } from '../db.js';
+import { getSetting, countMenuView, countProductView, feedbackRetryAfterMs, insertFeedback } from '../db.js';
 
 const cleanText = (value) => (typeof value === 'string' ? value.trim() : '');
 
@@ -216,8 +216,10 @@ export function createMenuRouter(db) {
     // varsayılana düşer. Misafirin yazdığı metin bir dil kodu yüzünden kaybolmaz.
     const lang = FEEDBACK_LANGS.has(b.lang) ? b.lang : 'tr';
 
-    if (!canSubmitFeedback(db, deviceId)) {
-      return res.status(429).json({ ok: false, error: 'limit' });
+    const retryAfterMs = feedbackRetryAfterMs(db, deviceId);
+    if (retryAfterMs > 0) {
+      res.set('Retry-After', String(Math.ceil(retryAfterMs / 1000)));
+      return res.status(429).json({ ok: false, error: 'limit', retryAfterMs });
     }
 
     insertFeedback(db, { rating: b.rating, message, lang, deviceId });

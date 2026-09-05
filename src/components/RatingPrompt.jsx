@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { api } from '../lib/api';
 import { getDeviceId } from '../lib/deviceId';
 
@@ -37,6 +37,16 @@ export default function RatingPrompt({ ui, lang, reviewUrl, done, onDone }) {
   const [error, setError] = useState('');
   const [outcome, setOutcome] = useState('thanks');
 
+  useEffect(() => {
+    if (done) return;
+    setRating(0);
+    setHover(0);
+    setMessage('');
+    setState('idle');
+    setError('');
+    setOutcome('thanks');
+  }, [done]);
+
   if (!reviewUrl) return null;
 
   if (done) {
@@ -69,7 +79,7 @@ export default function RatingPrompt({ ui, lang, reviewUrl, done, onDone }) {
     } catch (e) {
       if (e.message === 'limit') {
         setOutcome('already');
-        onDone();
+        onDone(e.retryAfterMs);
         return;
       }
       setError(ui.rateError);
