@@ -3,8 +3,9 @@ import cookieParser from 'cookie-parser';
 import { getSetting, bumpStat } from './db.js';
 import { createMenuRouter } from './routes/menu.js';
 import { createAdminRouter } from './routes/admin.js';
+import { mountPanel } from './panel/app.js';
 
-export function createApp({ db, uploadsDir, auth, mode = 'full' }) {
+export function createApp({ db, uploadsDir, auth, mode = 'full', panel = null }) {
   if (!['full', 'public', 'private'].includes(mode)) {
     throw new Error(`Geçersiz uygulama modu: ${mode}`);
   }
@@ -39,6 +40,10 @@ export function createApp({ db, uploadsDir, auth, mode = 'full' }) {
     }
     next();
   });
+
+  // Yönetim paneli (/admin/) yalnız admin API'sinin olduğu süreçte. Gövde
+  // ayrıştırıcılarından önce bağlanır; kendi başlık ve sınırlarını uygular.
+  if (adminEnabled && panel) mountPanel(app, panel);
 
   app.use(express.json());
   app.use(cookieParser());

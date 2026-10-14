@@ -39,6 +39,7 @@ www/mail-config.asp
 /blob-report/
 /playwright/.cache/
 dist-menu
+dist-panel
 
 # arşiv artıfaktları repoya girmesin
 *.zip

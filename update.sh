@@ -8,7 +8,7 @@
 # Yaptığı iş sırasıyla:
 #   1) git pull            → en güncel kodu çeker
 #   2) npm ci              → bağımlılıkları lockfile'a birebir kurar
-#   3) npm run build       → yalnız public menüyü dist/ içine derler
+#   3) npm run build       → menüyü dist/, yönetim panelini dist-panel/ içine derler
 #   4) servis restart      → public + private süreçleri yeniden başlatır
 #   5) sağlık kontrolü     → :3001 ve :3002 izolasyonunu doğrular
 #
@@ -75,10 +75,12 @@ sleep 2
 public_code="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PUBLIC_PORT/api/health" || echo 000)"
 private_code="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PRIVATE_PORT/api/health" || echo 000)"
 public_auth_code="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PUBLIC_PORT/api/auth/me" || echo 000)"
-if [ "$public_code" = "200" ] && [ "$private_code" = "200" ] && [ "$public_auth_code" = "404" ]; then
-  echo "  ✔ Public ve private servisler ayakta; public auth kapalı"
+# loopback'ten gelen istek IP listesine takılmaz; panel derlenmişse 200
+panel_code="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PRIVATE_PORT/admin/" || echo 000)"
+if [ "$public_code" = "200" ] && [ "$private_code" = "200" ] && [ "$public_auth_code" = "404" ] && [ "$panel_code" = "200" ]; then
+  echo "  ✔ Public ve private servisler ayakta; public auth kapalı; yönetim paneli hazır"
 else
-  echo "  ⚠ Beklenmeyen yanıt: public=$public_code private=$private_code public-auth=$public_auth_code"
+  echo "  ⚠ Beklenmeyen yanıt: public=$public_code private=$private_code public-auth=$public_auth_code panel=$panel_code"
   echo "    $SUDO journalctl -u $PUBLIC_SERVICE -u $PRIVATE_SERVICE -n 60 --no-pager"
   exit 1
 fi

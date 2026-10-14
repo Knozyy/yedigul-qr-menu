@@ -5,8 +5,8 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 
 ## Komutlar
 *   **Bağımlılıklar:** `npm install`
-*   **Geliştirme (tek komut, API dahil):** `npm run dev` → tarayıcı `:5173/menu/`te açılır; API :3001'de birlikte kalkar
-*   **Panel + API (build dahil):** `npm run panel` (:3001)
+*   **Geliştirme (tek komut, API dahil):** `npm run dev` → menü `:5173/menu/`, yönetim paneli `:5174/admin/`; API :3001'de birlikte kalkar
+*   **Her şey derlenmiş halde (:3001):** `npm run panel` → menü `/menu/`, yönetim paneli `/admin/`
 *   **Backend testleri:** `npm run test:server` — **E2E:** `npm run test:e2e`
 *   **Statik menü export'u:** `npm run export:menu` → `www/menu/` güncellenir
 *   **Hepsini tek seferde başlat:** `run.bat` (Windows) / `run.sh` (Linux)
@@ -15,7 +15,10 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 ## Teknoloji Yığını (güncel — 2026-07)
 *   **Frontend:** React 19 + Vite + TailwindCSS v4 (Marin/Boğaz paleti: lacivert, krem, altın)
 *   **Backend & DB:** Node.js + Express 5 + better-sqlite3 (`server/`).
-*   **Auth:** Tek şifre (`.env` → `ADMIN_PASSWORD`) + httpOnly cookie'de JWT; IP başına giriş kilidi.
+*   **Yönetim paneli:** `panel/` (React, düz CSS — Tailwind YOK) + `server/panel/` (oturum, CSRF, pano
+    konektörleri, çeviri). Admin API'siyle aynı süreçte `/admin/` altında çalışır, API'ye loopback HTTP ile bağlanır.
+*   **Auth:** Tek şifre (`.env` → `ADMIN_PASSWORD`). Panel JWT'yi sunucu belleğinde tutar, tarayıcıya
+    yalnız oturum çerezi gider. IP başına giriş kilidi; canlıda ek olarak IP listesi (`ALLOWED_IPS` + nginx).
 *   **Görseller:** multer ile sunucuya yüklenir (`server/uploads/`).
 
 ## Veri Akışı (önemli)
@@ -38,7 +41,7 @@ Tek statik menü vardır: masaya özel QR, garson çağırma veya sipariş özel
 |-----|----|
 | `/` | Ana site (`www/`) |
 | `/menu/` | QR menü (canlı, API'den) |
-| `/menu/admin` | Yönetim paneli (`/admin` buraya yönlenir) |
+| `/admin/` | Yönetim paneli (canlıda private süreç :3002, nginx IP listesiyle) |
 | `/api`, `/uploads` | API + ürün görselleri |
 
 Uygulama her ortamda `/menu/` base'i ile build edilir (`vite.config.js`).
@@ -46,3 +49,4 @@ Geliştirmede Vite dev adresi: `http://localhost:5173/menu/`.
 
 ## Dokümanlar
 *   Sunucu kurulumu / deploy: `SUNUCU-KURULUM.md`
+*   Yönetim paneli (nasıl çalışır, kurulum, IP listesi): `deploy/YONETIM-PANELI.md`
