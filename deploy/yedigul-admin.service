@@ -1,6 +1,7 @@
-# Yedigül private admin API — yalnızca SSH tünelinden erişilir.
+# Yedigül private süreç: admin API + yönetim paneli (/admin/).
+# Yalnız loopback'te dinler; panele nginx /admin/ bloğu üzerinden erişilir.
 [Unit]
-Description=Yedigul Restaurant private admin API
+Description=Yedigul Restaurant admin API and panel
 After=network.target
 
 [Service]

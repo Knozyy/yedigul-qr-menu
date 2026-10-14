@@ -9,13 +9,11 @@ export default defineConfig(({ mode }) => ({
   base: '/menu/',
   plugins: [react(), tailwindcss()],
   // `--mode static` (npm run build:menu) → hosting için statik export:
-  // menü menu-data.json'dan okur, admin rotaları + qrcode pakete girmez.
+  // menü menu-data.json'dan okur. Yönetim paneli ayrı derlenir
+  // (vite.panel.config.js), menü paketine hiç girmez.
   // (.env.static dosyası yerine derleme sabiti burada tanımlanır.)
   define: {
     'import.meta.env.VITE_STATIC': JSON.stringify(mode === 'static' ? '1' : ''),
-    'import.meta.env.VITE_ADMIN_ENABLED': JSON.stringify(
-      mode === 'static' || mode === 'public' ? '' : '1',
-    ),
   },
   server: {
     proxy: {

@@ -8,6 +8,9 @@ import { seed } from './seed.js';
 import { createApp } from './app.js';
 import { createAuth } from './auth.js';
 import { loadRuntimeConfig } from './runtime-config.js';
+import { createApp as createPanelApp } from './panel/app.js';
+import { loadConfig as loadPanelConfig } from './panel/config.js';
+import { PanoCache } from './panel/cache.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const runtime = loadRuntimeConfig();
@@ -50,7 +53,20 @@ mkdirSync(UPLOADS_DIR, { recursive: true });
 const db = openDb(DB_PATH);
 seed(db);
 const auth = runtime.adminEnabled ? createAuth({ secret: SECRET, password: PASSWORD }) : null;
-const app = createApp({ db, uploadsDir: UPLOADS_DIR, auth, mode: APP_MODE });
+// Yönetim paneli (/admin/): admin API'siyle aynı süreçte, ona loopback
+// üzerinden bağlanır. Public süreçte hiç oluşturulmaz.
+let panel = null;
+let panoCache = null;
+if (runtime.adminEnabled) {
+  const panelConfig = loadPanelConfig(process.env, { selfPort: PORT });
+  panoCache = new PanoCache(panelConfig.dbPath);
+  panel = createPanelApp({
+    config: panelConfig,
+    cache: panoCache,
+    distDir: resolve(__dirname, '..', 'dist-panel'),
+  });
+}
+const app = createApp({ db, uploadsDir: UPLOADS_DIR, auth, mode: APP_MODE, panel });
 
 // Ters vekil (nginx) arkasındaysa gerçek istemci IP'sini X-Forwarded-For'dan al,
 // böylece giriş hız-sınırı gerçek IP başına çalışır. Varsayılan KAPALI: doğrudan
@@ -61,12 +77,20 @@ if (runtime.publicEnabled && process.env.TRUST_PROXY) {
   app.set('trust proxy', /^\d+$/.test(tp) ? Number(tp) : tp);
 }
 
+// Private süreç yalnız loopback'te dinler; önündeki tek aracı aynı makinedeki
+// yönetim paneli (www.yedigulrestorant.com/admin/). Panel gerçek istemci IP'sini
+// X-Forwarded-For ile iletir — giriş kilidi kişi başına çalışır, bir
+// ziyaretçinin hatalı denemeleri paneli herkese kapatmaz.
+if (APP_MODE === 'private') {
+  app.set('trust proxy', 'loopback');
+}
+
 if (runtime.publicEnabled) {
   const distDir = resolve(__dirname, '..', 'dist');
   const siteDir = resolve(__dirname, '..', 'www');
 
-  // Public süreçte eski web paneli pakette yoktur. Sayfa isteğini ana menüye
-  // döndür; yazma istekleri ve API uçları 404 kalmaya devam etsin.
+  // Public süreçte yönetim paneli yoktur (private süreçte; nginx /admin/'i
+  // oraya yollar). Buraya düşen panel isteği menüye döner, yazmalar 404.
   if (APP_MODE === 'public') {
     app.use((req, res, next) => {
       const path = req.path.replace(/\/+$/, '');
@@ -96,10 +120,6 @@ if (runtime.publicEnabled) {
     }
   }
 
-  if (APP_MODE === 'full') {
-    app.get(/^\/admin(\/.*)?$/, (req, res) => res.redirect('/menu' + req.originalUrl));
-  }
-
   if (existsSync(siteDir)) {
     // .asp dosyaları (özellikle SMTP parolası içeren mail-config.asp) Node
     // tarafından düz metin olarak servis edilmesin — bunlar yalnız IIS host içindir
@@ -120,7 +140,18 @@ if (runtime.publicEnabled) {
   }
 }
 
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
   if (runtime.adminEnabled && !PASSWORD) console.warn('UYARI: ADMIN_PASSWORD boş — admin girişi devre dışı.');
+  if (panel) console.log(`Yönetim paneli: http://${HOST}:${PORT}/admin/`);
   console.log(`Yedigül ${APP_MODE} süreci http://${HOST}:${PORT}`);
 });
+
+function shutdown() {
+  server.close(() => {
+    panoCache?.close();
+    db.close();
+    process.exit(0);
+  });
+}
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);

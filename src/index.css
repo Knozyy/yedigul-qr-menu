@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* Yönetim paneli (panel/) kendi CSS'ini kullanır; sınıflarını menü paketine katma. */
+@source not "../panel";
 
 @theme {
   --font-outfit: "Cormorant Garamond", Georgia, "Times New Roman", serif;

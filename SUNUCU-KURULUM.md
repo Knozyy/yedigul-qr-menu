@@ -33,13 +33,12 @@ Lokal geliştirmede `full` mod kullanılır:
 
 ## Canlı çalışma: iki izole süreç
 
-Canlıda web admin yayınlanmaz. Aynı kod ve SQLite dosyası iki süreç tarafından
-kullanılır:
+Aynı kod ve SQLite dosyası iki süreç tarafından kullanılır:
 
 | Süreç | Bind | İçerik |
 |---|---|---|
 | `yedigul` | `127.0.0.1:3001` | Site, QR menü, `/api/menu`, `/uploads` |
-| `yedigul-admin` | `127.0.0.1:3002` | Yalnız `/api/auth` ve `/api/admin` |
+| `yedigul-admin` | `127.0.0.1:3002` | `/api/auth`, `/api/admin` ve yönetim paneli `/admin/` |
 
 ```bash
 sudo cp deploy/yedigul.service /etc/systemd/system/yedigul.service
@@ -48,8 +47,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now yedigul yedigul-admin
 ```
 
-`3001` ve `3002` firewall'da açılmaz. Nginx yalnız `127.0.0.1:3001` hedefine
-proxy yapar; `3002` portuna yalnız kısıtlı SSH tüneli erişir.
+`3001` ve `3002` firewall'da açılmaz. Nginx `/admin/` yolunu `3002`'ye
+(IP listesi + istek sınırıyla), geri kalan her şeyi `3001`'e iletir;
+`/api/auth` ve `/api/admin` dışarıdan erişilemez. Panel kurulumu, IP listesi ve
+`.env` ayarları: **[deploy/YONETIM-PANELI.md](deploy/YONETIM-PANELI.md)**
 
 Alan adını bağlarken 80/443 → 3001 yönlendirmesi için nginx örneği:
 ```
@@ -86,7 +87,7 @@ Kod GitHub'a push'landıktan sonra sunucuda tek komut:
 ```
 cd /root/yedigul && ./update.sh
 ```
-Sırasıyla: `git pull` → `npm ci` → `npm run build` (yalnız public menü) →
+Sırasıyla: `git pull` → `npm ci` → `npm run build` (menü + yönetim paneli) →
 `yedigul` ve `yedigul-admin` restart → `:3001` ve `:3002` sağlık kontrolü.
 İlk sefer gerekirse: `chmod +x update.sh`.
 

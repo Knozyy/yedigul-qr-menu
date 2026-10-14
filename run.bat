@@ -44,7 +44,7 @@ if /I not "%YEDIGUL_NO_BROWSER%"=="1" start "" /b cmd /c "ping 127.0.0.1 -n 11 >
 echo.
 echo   Ana sayfa:       http://localhost:3001
 echo   QR menu:         http://localhost:3001/menu/
-echo   Yonetim paneli:  http://localhost:3001/menu/admin
+echo   Yonetim paneli:  http://localhost:3001/admin/
 echo.
 echo   Durdurmak icin: Ctrl+C (veya pencereyi kapat)
 echo.

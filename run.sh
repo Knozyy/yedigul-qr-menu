@@ -30,7 +30,7 @@ fi
 echo ""
 echo "  Ana sayfa:       http://localhost:3001"
 echo "  QR menü:         http://localhost:3001/menu/"
-echo "  Yönetim paneli:  http://localhost:3001/menu/admin"
+echo "  Yönetim paneli:  http://localhost:3001/admin/"
 echo ""
 echo "  Durdurmak için: Ctrl+C"
 echo ""
