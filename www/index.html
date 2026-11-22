@@ -12,6 +12,7 @@
   <meta name="language" content="tr">
   <meta name="theme-color" content="#0A192F">
   <link rel="canonical" href="https://www.yedigulrestorant.com/">
+  <link rel="alternate" type="text/markdown" href="/index.md">
 
   <meta property="og:type" content="restaurant">
   <meta property="og:locale" content="tr_TR">
@@ -471,10 +472,15 @@
             </span>
           </div>
           <div class="footer-bar__social">
+            <a href="/about/">Hakkımızda</a>
+            <a href="/contact/">İletişim</a>
+            <a href="/pricing/">Fiyat Listesi</a>
+            <a href="menu/">Menümüz</a>
             <a href="anadolukavagi-nerede-yemek-yenir/">Nerede Yemek Yenir?</a>
             <a href="nasil-gelinir/">Nasıl Gelinir?</a>
             <a href="bogazda-balik-raki/">Balık &amp; Rakı</a>
-            <a href="menu/">Menümüz</a>
+            <a href="/privacy/">Gizlilik ve KVKK</a>
+            <a href="/terms/">Kullanım Koşulları</a>
           </div>
         </div>
       </div>
@@ -499,7 +505,10 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    "@graph": [
+  {
     "@type": "Restaurant",
+    "@id": "https://www.yedigulrestorant.com/#restaurant",
     "name": "Yedigül Restaurant",
     "alternateName": "Yedigül Balık Restaurant",
     "description": "Anadolukavağı sahilinde, Boğaz manzarası eşliğinde 30 yılı aşkın süredir taze balık, meze ve rakı keyfi sunan Yedigül Restaurant.",
@@ -512,6 +521,7 @@
     "priceRange": "₺₺₺",
     "acceptsReservations": "True",
     "menu": "https://www.yedigulrestorant.com/menu/",
+    "hasMenu": { "@id": "https://www.yedigulrestorant.com/fiyatlar/#menu" },
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Anadolu Kavağı Mahallesi, Macar Tabya Cd. 6/A",
@@ -533,7 +543,35 @@
         "closes": "00:00"
       }
     ]
+  },
+  {
+    "@type": "Menu",
+    "@id": "https://www.yedigulrestorant.com/fiyatlar/#menu",
+    "name": "Yedigül Restaurant Menü ve Fiyat Listesi",
+    "url": "https://www.yedigulrestorant.com/fiyatlar/",
+    "inLanguage": "tr-TR",
+    "provider": { "@id": "https://www.yedigulrestorant.com/#restaurant" }
+  },
+  {
+    "@type": "WebSite",
+    "@id": "https://www.yedigulrestorant.com/#website",
+    "name": "Yedigül Restaurant",
+    "url": "https://www.yedigulrestorant.com/",
+    "inLanguage": "tr-TR",
+    "publisher": { "@id": "https://www.yedigulrestorant.com/#restaurant" }
+  },
+  {
+    "@type": "WebPage",
+    "@id": "https://www.yedigulrestorant.com/#webpage",
+    "name": "Yedigül Restaurant — Anadolukavağı Boğaz Balık Restoranı",
+    "url": "https://www.yedigulrestorant.com/",
+    "isPartOf": { "@id": "https://www.yedigulrestorant.com/#website" },
+    "about": { "@id": "https://www.yedigulrestorant.com/#restaurant" },
+    "inLanguage": "tr-TR"
+  }
+    ]
   }
   </script>
+  <!--live-menu-jsonld-->
 </body>
 </html>

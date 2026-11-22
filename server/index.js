@@ -3,11 +3,13 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { mkdirSync, existsSync } from 'node:fs';
 import express from 'express';
-import { openDb } from './db.js';
+import { openDb, pruneExpiredData } from './db.js';
 import { seed } from './seed.js';
 import { createApp } from './app.js';
 import { createAuth } from './auth.js';
 import { loadRuntimeConfig } from './runtime-config.js';
+import { createSiteRouter, createNotFoundHandler } from './site.js';
+import { createMcpRouter, mcpParseErrorHandler } from './mcp.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const runtime = loadRuntimeConfig();
@@ -49,6 +51,8 @@ mkdirSync(UPLOADS_DIR, { recursive: true });
 
 const db = openDb(DB_PATH);
 seed(db);
+pruneExpiredData(db);
+setInterval(() => pruneExpiredData(db), 24 * 60 * 60 * 1000).unref();
 const auth = runtime.adminEnabled ? createAuth({ secret: SECRET, password: PASSWORD }) : null;
 const app = createApp({ db, uploadsDir: UPLOADS_DIR, auth, mode: APP_MODE });
 
@@ -101,6 +105,9 @@ if (runtime.publicEnabled) {
   }
 
   if (existsSync(siteDir)) {
+    app.use(createMcpRouter(db));
+    app.use(mcpParseErrorHandler);
+    app.use(createSiteRouter({ db, siteDir }));
     // .asp dosyaları (özellikle SMTP parolası içeren mail-config.asp) Node
     // tarafından düz metin olarak servis edilmesin — bunlar yalnız IIS host içindir
     app.use((req, res, next) => {
@@ -110,14 +117,13 @@ if (runtime.publicEnabled) {
     app.use(express.static(siteDir));
   }
 
-  // Bilinmeyen yollar → ana menüye at. API ve uploads kendi 404'ünü dönmeli.
-  if (existsSync(distDir)) {
-    app.use((req, res, next) => {
-      if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-      if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
-      res.redirect(302, '/menu/');
-    });
-  }
+  // Bilinmeyen yollar gerçek 404 döner: ajanlar ve arama motorları 200'ü
+  // "sayfa var" diye okur. API ve uploads kendi 404'ünü döner.
+  const notFound = createNotFoundHandler({ siteDir });
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+    notFound(req, res, next);
+  });
 }
 
 app.listen(PORT, HOST, () => {

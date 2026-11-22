@@ -60,6 +60,7 @@ export default function InfoPanel() {
   const [sOpen, setSOpen] = useState('');
   const [sClose, setSClose] = useState('');
   const [sInsta, setSInsta] = useState('');
+  const [sReview, setSReview] = useState('');
   const [infoSaving, setInfoSaving] = useState(false);
   const [infoMsg, setInfoMsg] = useState('');
   const [infoErr, setInfoErr] = useState('');
@@ -77,6 +78,7 @@ export default function InfoPanel() {
         setSOpen(open);
         setSClose(close);
         setSInsta(s.info_instagram || '');
+        setSReview(s.info_google_review_url || '');
         setLoaded(true);
       })
       .catch((e) => setLoadErr(e.message));
@@ -112,6 +114,7 @@ export default function InfoPanel() {
         info_phone: sPhone.trim(),
         info_hours: `${sOpen.trim() || '11:00'} – ${sClose.trim() || '00:00'}`,
         info_instagram: sInsta.trim(),
+        info_google_review_url: sReview.trim(),
       });
       setSWifi(res.info_wifi || '');
       setSPhone(res.info_phone || '');
@@ -119,6 +122,7 @@ export default function InfoPanel() {
       setSOpen(open);
       setSClose(close);
       setSInsta(res.info_instagram || '');
+      setSReview(res.info_google_review_url || '');
       setInfoMsg('Bilgiler kaydedildi');
       setTimeout(() => setInfoMsg(''), 2000);
     } catch (e) {
@@ -185,6 +189,21 @@ export default function InfoPanel() {
           <Field label="Kapanış" placeholder="00:00" value={sClose} onChange={(e) => setSClose(e.target.value)} />
           <Field label="Instagram" placeholder="@yedigulrestorant" value={sInsta} onChange={(e) => setSInsta(e.target.value)} />
         </div>
+
+        <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span style={labelStyle}>Google Yorum Bağlantısı</span>
+          <input
+            style={inputStyle}
+            placeholder="https://g.page/r/.../review"
+            value={sReview}
+            onChange={(e) => setSReview(e.target.value)}
+          />
+          <span style={smallHintStyle}>
+            Google İşletme Profili → "Yorum iste" bağlantısını buraya yapıştırın.
+            Boş bırakılırsa menüdeki yıldız değerlendirme bloğu hiç görünmez.
+            Bağlantı https:// ile başlamalıdır.
+          </span>
+        </label>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button type="button" onClick={saveInfo} disabled={infoSaving} style={{ ...saveBtnStyle, opacity: infoSaving ? 0.6 : 1 }}>

@@ -13,12 +13,16 @@ import {
   localize,
 } from '../lib/i18n.js';
 import useScrollSpy from '../lib/useScrollSpy';
+import useRatingCooldown from '../lib/useRatingCooldown';
 import Header from '../components/Header';
 import CategoryBar from '../components/CategoryBar';
 import SearchFilters from '../components/SearchFilters';
 import MenuSections from '../components/MenuSections';
 import BottomSheet from '../components/BottomSheet';
 import ScrollTopButton from '../components/ScrollTopButton';
+import RatingPrompt from '../components/RatingPrompt';
+import RatingStrip from '../components/RatingStrip';
+import RatingFab from '../components/RatingFab';
 
 const hasVariants = (it) => (it.variants || []).length > 0;
 
@@ -66,6 +70,8 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const [selectedId, setSelectedId] = useState(null);
   const [catbarH, setCatbarH] = useState(64);
   const [collapsedIds, setCollapsedIds] = useState(() => new Set());
+  const { rated, markRated } = useRatingCooldown();
+  const [stripOpen, setStripOpen] = useState(false);
 
   const catbarRef = useRef(null);
   const ui = UI[lang];
@@ -221,7 +227,11 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
   const favEmpty = fav && favorites.length === 0;
   const announcement = String(localize(meta.announcement, lang) || '').trim();
   const instagram = (meta.info.instagram || '').trim();
+  const reviewUrl = import.meta.env.VITE_STATIC === '1' ? '' : (meta.info.google_review_url || '').trim();
   const visibleItemCount = sections.reduce((total, section) => total + section.items.length, 0);
+  const ratingAvailable = !!reviewUrl && !rated && !selectedId;
+  const panelShown = ratingAvailable && stripOpen;
+  const fabShown = ratingAvailable && !stripOpen;
 
   const priceUpdatedText = (() => {
     if (!meta.price_updated_at) return '';
@@ -393,6 +403,7 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         <footer
           className="yg-menu-footer"
         >
+          <RatingPrompt ui={ui} lang={lang} reviewUrl={reviewUrl} done={rated} onDone={markRated} />
           <span className="font-outfit text-[21px] font-semibold">Yedigül</span>
           {meta.info.hours && (
             <span className="text-[12.5px] tracking-[.4px]" style={{ color: 'var(--muted)' }}>
@@ -437,7 +448,19 @@ export default function MenuPage({ defaultLang = 'tr', defaultDark = false, acce
         onToggleFav={toggleFav}
       />
 
-      <ScrollTopButton label={ui.toTop} />
+      <RatingStrip
+        ui={ui}
+        lang={lang}
+        reviewUrl={reviewUrl}
+        done={rated}
+        onDone={markRated}
+        open={panelShown}
+        onClose={() => setStripOpen(false)}
+      />
+
+      <RatingFab label={ui.rateFabLabel} visible={fabShown} onClick={() => setStripOpen(true)} />
+
+      <ScrollTopButton label={ui.toTop} obscured={panelShown} raised={fabShown} />
     </div>
   );
 }

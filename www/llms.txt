@@ -1,0 +1,30 @@
+# Yedigül Restaurant
+
+> Anadolu Kavağı (Beykoz, İstanbul) iskelesinin yanında, Boğaz kıyısında 30 yılı aşkın süredir hizmet veren balık restoranı. Günlük taze balık, meze, ara sıcaklar ve rakı. Her gün 11:00–00:00 açık; rezervasyon telefon veya WhatsApp ile.
+
+- Adres: Anadolu Kavağı Mahallesi, Macar Tabya Cd. 6/A, 34825 Beykoz / İstanbul
+- Telefon ve WhatsApp: +90 536 937 92 80
+- E-posta: info@yedigulrestorant.com
+- Fiyatlar Türk lirası (₺), KDV dahil. Bazı balıklar günlük "piyasa fiyatı" ile satılır.
+
+## Ana sayfalar
+
+- [Ana sayfa (Markdown)](https://www.yedigulrestorant.com/index.md): Restoran hakkında özet, adres, saatler ve iletişim
+- [Menü ve fiyat listesi (Markdown)](https://www.yedigulrestorant.com/fiyatlar.md): Güncel tüm ürünler ve fiyatlar, kategori kategori
+- [Menü ve fiyat listesi (HTML)](https://www.yedigulrestorant.com/fiyatlar/): Aynı liste, schema.org Menu ve Offer işaretlemesiyle
+- [Hakkımızda](https://www.yedigulrestorant.com/hakkimizda/): Restoranın hikâyesi ve mutfak anlayışı
+- [İletişim](https://www.yedigulrestorant.com/iletisim/): Adres, harita, telefon, WhatsApp, e-posta ve çalışma saatleri
+- [Gizlilik ve KVKK](https://www.yedigulrestorant.com/gizlilik/): Hangi verilerin işlendiği, saklama süreleri ve haklar
+- [Kullanım koşulları](https://www.yedigulrestorant.com/kullanim-kosullari/): Fiyat, alerjen, rezervasyon ve içerik kullanım kuralları
+
+## Rehberler
+
+- [Anadolu Kavağı'nda nerede yemek yenir?](https://www.yedigulrestorant.com/anadolukavagi-nerede-yemek-yenir/): Bölgede yemek rehberi
+- [Anadolu Kavağı'na nasıl gidilir?](https://www.yedigulrestorant.com/nasil-gelinir/): Vapur, otobüs ve araçla ulaşım
+- [Boğaz'da balık ve rakı](https://www.yedigulrestorant.com/bogazda-balik-raki/): Balık–rakı sofrası rehberi
+
+## Optional
+
+- [Dijital menü](https://www.yedigulrestorant.com/menu/): Fotoğraflı, 4 dilli (TR, EN, AR, RU) menü; JavaScript gerektirir
+- [Menü API](https://www.yedigulrestorant.com/api/menu/): Menünün JSON hâli (kategoriler, ürünler, fiyatlar, alerjenler)
+- [MCP sunucusu](https://www.yedigulrestorant.com/.well-known/mcp/server-card.json): Salt-okunur MCP (Streamable HTTP, `/mcp`): `search_menu`, `get_restaurant_info`

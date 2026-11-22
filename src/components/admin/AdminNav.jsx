@@ -6,17 +6,44 @@ const NAVD = {
   cats: 'M12 3.6 L20.5 8.3 L12 13 L3.5 8.3 Z M4.8 12.4 L12 16.4 L19.2 12.4 M4.8 16.2 L12 20.2 L19.2 16.2',
   settings: 'M12 8.8 A3.2 3.2 0 1 0 12 15.2 A3.2 3.2 0 1 0 12 8.8 M12 3 V5.4 M12 18.6 V21 M3 12 H5.4 M18.6 12 H21 M5.6 5.6 L7.3 7.3 M16.7 16.7 L18.4 18.4 M18.4 5.6 L16.7 7.3 M7.3 16.7 L5.6 18.4',
   qr: 'M4 4 H9.5 V9.5 H4 Z M14.5 4 H20 V9.5 H14.5 Z M4 14.5 H9.5 V20 H4 Z M13.5 13.5 H16 V16 H13.5 Z M18 13.5 H20 M18 17 H20 V20 M13.5 18 V20 H16',
+  feedback: 'M20 4 H4 V16 H8 L12 20 L12 16 H20 Z M8 8.6 H16 M8 12 H13.5',
 };
 
 const NAV_ITEMS = [
   { id: 'home', label: 'Genel Bakış', d: NAVD.home },
   { id: 'items', label: 'Ürünler', d: NAVD.items },
   { id: 'cats', label: 'Kategoriler', d: NAVD.cats },
+  { id: 'feedback', label: 'Yorumlar', d: NAVD.feedback },
   { id: 'settings', label: 'Ayarlar', d: NAVD.settings },
   { id: 'qr', label: 'QR Kod', d: NAVD.qr },
 ];
 
-function AdminNavSideItem({ item, active, onSelect }) {
+function Badge({ n }) {
+  if (!n) return null;
+  return (
+    <span
+      aria-label={`${n} okunmamış`}
+      style={{
+        minWidth: 18,
+        height: 18,
+        padding: '0 5px',
+        borderRadius: 999,
+        background: 'var(--gold)',
+        color: '#081726',
+        fontSize: 10.5,
+        fontWeight: 700,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        lineHeight: 1,
+      }}
+    >
+      {n > 99 ? '99+' : n}
+    </span>
+  );
+}
+
+function AdminNavSideItem({ item, active, onSelect, badge }) {
   const [hover, setHover] = useState(false);
   return (
     <button
@@ -47,18 +74,19 @@ function AdminNavSideItem({ item, active, onSelect }) {
         <path d={item.d} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <span>{item.label}</span>
+      <Badge n={badge} />
     </button>
   );
 }
 
-export default function AdminNav({ view, onSelect, variant }) {
+export default function AdminNav({ view, onSelect, variant, unread }) {
   const side = variant === 'side';
 
   if (side) {
     return (
       <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, padding: '10px 0' }}>
         {NAV_ITEMS.map((it) => (
-          <AdminNavSideItem key={it.id} item={it} active={view === it.id} onSelect={onSelect} />
+          <AdminNavSideItem key={it.id} item={it} active={view === it.id} onSelect={onSelect} badge={it.id === 'feedback' ? unread : 0} />
         ))}
       </nav>
     );
@@ -94,9 +122,16 @@ export default function AdminNav({ view, onSelect, variant }) {
               padding: 0,
             }}
           >
-            <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
-              <path d={it.d} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <span style={{ position: 'relative', display: 'inline-flex' }}>
+              <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+                <path d={it.d} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {it.id === 'feedback' && (
+                <span style={{ position: 'absolute', top: -4, insetInlineEnd: -8 }}>
+                  <Badge n={unread} />
+                </span>
+              )}
+            </span>
             <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.3px' }}>{it.label}</span>
           </button>
         );

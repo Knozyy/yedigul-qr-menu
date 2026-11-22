@@ -15,7 +15,11 @@ async function request(method, path, body, isForm = false) {
   }
   if (res.status === 204) return null;
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `Hata (${res.status})`);
+  if (!res.ok) {
+    const error = new Error(data.error || `Hata (${res.status})`);
+    error.retryAfterMs = data.retryAfterMs;
+    throw error;
+  }
   return data;
 }
 
