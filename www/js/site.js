@@ -181,3 +181,116 @@
   initScrollDots(".specials__grid", ".scroll-hint");
   initScrollDots(".gallery__grid", ".scroll-hint");
 })();
+
+(function () {
+  "use strict";
+  var mc = navigator.modelContext;
+  if (!mc || (typeof mc.registerTool !== "function" && typeof mc.provideContext !== "function")) return;
+
+  var menuCache = null;
+  function loadMenu() {
+    if (menuCache) return menuCache;
+    menuCache = fetch("/api/menu/", { headers: { Accept: "application/json" } })
+      .then(function (res) {
+        if (!res.ok) throw new Error("api");
+        return res.json();
+      })
+      .catch(function () {
+        return fetch("/menu/menu-data.json").then(function (res) { return res.json(); });
+      })
+      .catch(function (err) {
+        menuCache = null;
+        throw err;
+      });
+    return menuCache;
+  }
+
+  function norm(value) {
+    return String(value || "").toLocaleLowerCase("tr").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ı/g, "i");
+  }
+
+  function text(data) {
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
+  }
+
+  var info = {
+    name: "Yedigül Restaurant",
+    type: "Seafood restaurant",
+    address: "Anadolu Kavağı Mahallesi, Macar Tabya Cd. 6/A, 34825 Beykoz / İstanbul, Türkiye",
+    geo: { latitude: 41.17343, longitude: 29.08846 },
+    opening_hours: "Every day 11:00-00:00 (Europe/Istanbul)",
+    phone: "+905369379280",
+    reservations: "https://wa.me/905369379280",
+    email: "info@yedigulrestorant.com",
+    currency: "TRY",
+    menu_languages: ["tr", "en", "ar", "ru"],
+    links: {
+      prices: "https://www.yedigulrestorant.com/fiyatlar/",
+      prices_markdown: "https://www.yedigulrestorant.com/fiyatlar.md",
+      menu: "https://www.yedigulrestorant.com/menu/",
+      contact: "https://www.yedigulrestorant.com/iletisim/",
+      llms: "https://www.yedigulrestorant.com/llms.txt"
+    }
+  };
+
+  var tools = [
+    {
+      name: "search_menu",
+      description: "Search Yedigül Restaurant's menu by dish, ingredient or category name (Turkish, English, Arabic or Russian). Returns matching items with price in Turkish lira (null means daily market price), portion and allergens.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          query: { type: "string", description: "Dish, ingredient or category, e.g. 'levrek', 'sea bass', 'rakı', 'dessert'." },
+          max_results: { type: "integer", minimum: 1, maximum: 50, description: "Maximum number of items to return (default 10)." }
+        },
+        required: ["query"]
+      },
+      annotations: { readOnlyHint: true },
+      execute: function (input) {
+        var q = norm(input && input.query).trim();
+        var limit = Math.min(Math.max(parseInt(input && input.max_results, 10) || 10, 1), 50);
+        return loadMenu().then(function (menu) {
+          var cats = {};
+          (menu.categories || []).forEach(function (c) { cats[c.id] = c; });
+          var hits = (menu.products || []).filter(function (p) {
+            var cat = cats[p.cat] || {};
+            var hay = [p.name && p.name.tr, p.name && p.name.en, p.name && p.name.ar, p.name && p.name.ru, cat.tr, cat.en]
+              .concat((p.ing && p.ing.tr) || [], (p.ing && p.ing.en) || []);
+            return !q || hay.some(function (v) { return norm(v).indexOf(q) !== -1; });
+          }).slice(0, limit).map(function (p) {
+            var cat = cats[p.cat] || {};
+            return {
+              name: p.name && p.name.tr,
+              name_en: p.name && p.name.en,
+              category: cat.tr,
+              price_try: typeof p.price === "number" ? p.price : null,
+              variants: (p.variants || []).map(function (v) { return { name: v.name && v.name.tr, price_try: v.price }; }),
+              portion: p.portion || null,
+              allergens: (p.alg && p.alg.en) || []
+            };
+          });
+          return text({ query: input && input.query, count: hits.length, items: hits, full_price_list: info.links.prices_markdown });
+        });
+      }
+    },
+    {
+      name: "get_restaurant_info",
+      description: "Get Yedigül Restaurant's address, location, opening hours, phone, reservation link and key page links.",
+      inputSchema: { type: "object", properties: {} },
+      annotations: { readOnlyHint: true },
+      execute: function () {
+        return Promise.resolve(text(info));
+      }
+    }
+  ];
+
+  try {
+    if (typeof mc.registerTool === "function") {
+      tools.forEach(function (tool) { mc.registerTool(tool); });
+    } else {
+      mc.provideContext({ tools: tools });
+    }
+  } catch (err) {
+    return;
+  }
+})();
