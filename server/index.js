@@ -9,6 +9,7 @@ import { createApp } from './app.js';
 import { createAuth } from './auth.js';
 import { loadRuntimeConfig } from './runtime-config.js';
 import { createSiteRouter, createNotFoundHandler } from './site.js';
+import { createMcpRouter, mcpParseErrorHandler } from './mcp.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const runtime = loadRuntimeConfig();
@@ -104,6 +105,8 @@ if (runtime.publicEnabled) {
   }
 
   if (existsSync(siteDir)) {
+    app.use(createMcpRouter(db));
+    app.use(mcpParseErrorHandler);
     app.use(createSiteRouter({ db, siteDir }));
     // .asp dosyaları (özellikle SMTP parolası içeren mail-config.asp) Node
     // tarafından düz metin olarak servis edilmesin — bunlar yalnız IIS host içindir

@@ -27,3 +27,4 @@
 
 - [Dijital menü](https://www.yedigulrestorant.com/menu/): Fotoğraflı, 4 dilli (TR, EN, AR, RU) menü; JavaScript gerektirir
 - [Menü API](https://www.yedigulrestorant.com/api/menu/): Menünün JSON hâli (kategoriler, ürünler, fiyatlar, alerjenler)
+- [MCP sunucusu](https://www.yedigulrestorant.com/.well-known/mcp/server-card.json): Salt-okunur MCP (Streamable HTTP, `/mcp`): `search_menu`, `get_restaurant_info`

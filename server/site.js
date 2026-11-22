@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { getSetting } from './db.js';
 import { readPublicMenu } from './routes/menu.js';
@@ -34,7 +34,18 @@ const escapeHtml = (value) =>
 const escapeMd = (value) => String(value ?? '').replace(/([\\`*_[\]|])/g, '\\$1');
 
 // <script type="application/ld+json"> içinde "</script>" metni bloğu kapatmasın.
-const jsonLd = (data) => JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
+const jsonLd = (data, indent = 2) => JSON.stringify(data, null, indent).replace(/</g, '\\u003c');
+
+// Türkçe sayfaların İngilizce adresleri. Ajanlar ve tarayıcılar hakkımızda/
+// iletişim/yasal sayfaları çoğunlukla bu yollardan tanır; canonical Türkçe kalır.
+const ALIASES = {
+  '/about': 'hakkimizda',
+  '/contact': 'iletisim',
+  '/privacy': 'gizlilik',
+  '/terms': 'kullanim-kosullari',
+};
+
+const HOME_MENU_PLACEHOLDER = '<!--live-menu-jsonld-->';
 
 export const formatPrice = (price) => `${Number(price).toLocaleString('tr-TR')} ₺`;
 
@@ -128,6 +139,37 @@ function menuSchema(model) {
                 : {}),
             })),
           }]
+        : []),
+    ],
+  };
+}
+
+// Ana sayfaya gömülen kısa menü: yalnız ad + fiyat (açıklamasız), ~20 KB.
+export function compactMenuSchema(model) {
+  const offer = (price) => ({ '@type': 'Offer', price, priceCurrency: 'TRY' });
+  const item = (name, price, variants = []) => {
+    const offers = [
+      ...(typeof price === 'number' ? [offer(price)] : []),
+      ...variants.filter((v) => typeof v.price === 'number').map((v) => ({ ...offer(v.price), name: `${name} (${v.name})` })),
+    ];
+    return { '@type': 'MenuItem', name, ...(offers.length ? { offers } : {}) };
+  };
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Menu',
+    '@id': `${SITE_URL}/fiyatlar/#menu`,
+    name: 'Yedigül Restaurant Menü ve Fiyat Listesi',
+    url: `${SITE_URL}/fiyatlar/`,
+    inLanguage: 'tr-TR',
+    ...(model.updated ? { dateModified: model.updated } : {}),
+    hasMenuSection: [
+      ...model.sections.map((s) => ({
+        '@type': 'MenuSection',
+        name: s.name,
+        hasMenuItem: s.items.map((i) => item(i.name, i.price, i.variants)),
+      })),
+      ...(model.sets.length
+        ? [{ '@type': 'MenuSection', name: 'Fix Menüler', hasMenuItem: model.sets.map((s) => item(s.name, s.price)) }]
         : []),
     ],
   };
@@ -316,6 +358,14 @@ export function renderSitemap(db) {
 export function createSiteRouter({ db, siteDir }) {
   const router = Router();
   const homeMd = join(siteDir, 'index.md');
+  const homeHtml = join(siteDir, 'index.html');
+  let homeCache = { mtime: 0, html: '' };
+
+  const readHome = () => {
+    const { mtimeMs } = statSync(homeHtml);
+    if (mtimeMs !== homeCache.mtime) homeCache = { mtime: mtimeMs, html: readFileSync(homeHtml, 'utf8') };
+    return homeCache.html;
+  };
 
   router.get('/', (req, res, next) => {
     res.setHeader('Link', HOME_LINK_HEADER);
@@ -324,8 +374,21 @@ export function createSiteRouter({ db, siteDir }) {
       res.type('text/markdown; charset=utf-8');
       return res.sendFile(homeMd);
     }
-    next();
+    if (!existsSync(homeHtml)) return next();
+    const html = readHome();
+    if (!html.includes(HOME_MENU_PLACEHOLDER)) return next();
+    const block = `<script type="application/ld+json">${jsonLd(compactMenuSchema(buildPriceModel(db)), 0)}</script>`;
+    res.type('html').send(html.replace(HOME_MENU_PLACEHOLDER, block));
   });
+
+  for (const [path, dir] of Object.entries(ALIASES)) {
+    router.get(path, (req, res, next) => {
+      if (!req.path.endsWith('/')) return res.redirect(301, `${path}/`);
+      const file = join(siteDir, dir, 'index.html');
+      if (!existsSync(file)) return next();
+      res.sendFile(file);
+    });
+  }
 
   router.get('/index.md', (req, res, next) => {
     if (!existsSync(homeMd)) return next();
@@ -340,13 +403,15 @@ export function createSiteRouter({ db, siteDir }) {
 
   router.get('/fiyatlar.md', (_req, res) => sendPricesMarkdown(res));
 
-  router.get('/fiyatlar', (req, res) => {
-    if (!req.path.endsWith('/')) return res.redirect(301, '/fiyatlar/');
-    res.setHeader('Link', '</fiyatlar.md>; rel="alternate"; type="text/markdown"');
-    res.vary('Accept');
-    if (wantsMarkdown(req)) return sendPricesMarkdown(res);
-    res.type('html').send(renderPricesHtml(buildPriceModel(db)));
-  });
+  for (const path of ['/fiyatlar', '/pricing']) {
+    router.get(path, (req, res) => {
+      if (!req.path.endsWith('/')) return res.redirect(301, `${path}/`);
+      res.setHeader('Link', '</fiyatlar.md>; rel="alternate"; type="text/markdown"');
+      res.vary('Accept');
+      if (wantsMarkdown(req)) return sendPricesMarkdown(res);
+      res.type('html').send(renderPricesHtml(buildPriceModel(db)));
+    });
+  }
 
   router.get('/sitemap.xml', (_req, res) => {
     res.type('application/xml; charset=utf-8').send(renderSitemap(db));
