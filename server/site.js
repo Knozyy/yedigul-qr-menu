@@ -17,6 +17,8 @@ const PAGES = [
   { path: '/anadolukavagi-nerede-yemek-yenir/', lastmod: '2026-07-12', priority: '0.6' },
   { path: '/nasil-gelinir/', lastmod: '2026-07-12', priority: '0.6' },
   { path: '/bogazda-balik-raki/', lastmod: '2026-07-12', priority: '0.6' },
+  { path: '/gizlilik/', lastmod: '2026-11-22', priority: '0.3' },
+  { path: '/kullanim-kosullari/', lastmod: '2026-11-22', priority: '0.3' },
 ];
 
 const HOME_LINK_HEADER = [
@@ -249,6 +251,8 @@ export function renderPricesHtml(model) {
           <a href="/menu/">Dijital Menü</a>
           <a href="/hakkimizda/">Hakkımızda</a>
           <a href="/iletisim/">İletişim</a>
+          <a href="/gizlilik/">Gizlilik</a>
+          <a href="/kullanim-kosullari/">Kullanım Koşulları</a>
         </nav>
         <p>Yedigül Restaurant · Anadolu Kavağı Mah. Macar Tabya Cd. 6/A, Beykoz / İstanbul · <a href="tel:+905369379280">+90 536 937 92 80</a></p>
       </div>

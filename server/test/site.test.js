@@ -105,15 +105,16 @@ test('ana sayfa birden çok şema türü ve hakkımızda/iletişim/fiyat bağlan
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
   const types = new Set(blocks.flatMap((b) => (b['@graph'] || [b]).map((n) => n['@type'])));
   for (const t of ['Restaurant', 'Menu', 'WebSite', 'WebPage']) assert.ok(types.has(t), t);
-  for (const href of ['hakkimizda/', 'iletisim/', 'fiyatlar/']) assert.match(html, new RegExp(`href="${href}"`));
+  for (const href of ['hakkimizda/', 'iletisim/', 'fiyatlar/', 'gizlilik/', 'kullanim-kosullari/']) assert.match(html, new RegExp(`href="${href}"`));
 });
 
-test('hakkımızda ve iletişim sayfaları yayında', async () => {
-  for (const path of ['/hakkimizda/', '/iletisim/']) {
+test('hakkımızda, iletişim ve yasal sayfalar yayında, yer tutucu içermez', async () => {
+  for (const path of ['/hakkimizda/', '/iletisim/', '/gizlilik/', '/kullanim-kosullari/']) {
     const res = await get(path);
     assert.equal(res.status, 200, path);
     const html = await res.text();
     assert.match(html, /application\/ld\+json/);
+    assert.doesNotMatch(html, /\[[^\]<]*\.\.\.[^\]<]*\]|TASLAK/, path);
   }
 });
 

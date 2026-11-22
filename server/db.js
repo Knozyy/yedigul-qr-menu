@@ -357,6 +357,21 @@ export function feedbackRetryAfterMs(db, deviceId) {
   return last == null ? 0 : Math.max(0, last + RATING_COOLDOWN_MS - Date.now());
 }
 
+// KVKK saklama süresi (gizlilik sayfasında yazan süre): yorumlar ve günlük
+// sayaçlar 2 yıl tutulur. Cihaz kimliği taşıyan pencere tabloları zaten
+// 6 saatte temizlenir. Panelin istatistik aralığı da en fazla 730 gün.
+export const RETENTION_DAYS = 730;
+
+export function pruneExpiredData(db, now = Date.now()) {
+  const cutoffMs = now - RETENTION_DAYS * 24 * 60 * 60 * 1000;
+  const cutoffDay = localDay(new Date(cutoffMs));
+  return {
+    feedback: db.prepare('DELETE FROM feedback WHERE created_at < ?').run(cutoffMs).changes,
+    stats: db.prepare('DELETE FROM stats_daily WHERE day < ?').run(cutoffDay).changes,
+    productViews: db.prepare('DELETE FROM product_views_daily WHERE day < ?').run(cutoffDay).changes,
+  };
+}
+
 export function insertFeedback(db, { rating, message, lang, deviceId }) {
   const info = db
     .prepare(

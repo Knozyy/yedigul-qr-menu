@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { mkdirSync, existsSync } from 'node:fs';
 import express from 'express';
-import { openDb } from './db.js';
+import { openDb, pruneExpiredData } from './db.js';
 import { seed } from './seed.js';
 import { createApp } from './app.js';
 import { createAuth } from './auth.js';
@@ -50,6 +50,8 @@ mkdirSync(UPLOADS_DIR, { recursive: true });
 
 const db = openDb(DB_PATH);
 seed(db);
+pruneExpiredData(db);
+setInterval(() => pruneExpiredData(db), 24 * 60 * 60 * 1000).unref();
 const auth = runtime.adminEnabled ? createAuth({ secret: SECRET, password: PASSWORD }) : null;
 const app = createApp({ db, uploadsDir: UPLOADS_DIR, auth, mode: APP_MODE });
 

@@ -14,6 +14,8 @@
 - [Menü ve fiyat listesi (HTML)](https://www.yedigulrestorant.com/fiyatlar/): Aynı liste, schema.org Menu ve Offer işaretlemesiyle
 - [Hakkımızda](https://www.yedigulrestorant.com/hakkimizda/): Restoranın hikâyesi ve mutfak anlayışı
 - [İletişim](https://www.yedigulrestorant.com/iletisim/): Adres, harita, telefon, WhatsApp, e-posta ve çalışma saatleri
+- [Gizlilik ve KVKK](https://www.yedigulrestorant.com/gizlilik/): Hangi verilerin işlendiği, saklama süreleri ve haklar
+- [Kullanım koşulları](https://www.yedigulrestorant.com/kullanim-kosullari/): Fiyat, alerjen, rezervasyon ve içerik kullanım kuralları
 
 ## Rehberler
 
